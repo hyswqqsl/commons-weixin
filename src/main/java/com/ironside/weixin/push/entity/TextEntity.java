@@ -6,7 +6,7 @@ package com.ironside.weixin.push.entity;
  * @author 雪庭
  * @sine 1.0 at 2015年4月6日
  */
-public class TextEntity extends BaseEntity{
+public class TextEntity extends AbstractBaseEntity{
 	
 	/** 对应xml中定义的'文本消息内容'标识 */
 	public final static String CONTENT = "Content";

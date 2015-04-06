@@ -2,7 +2,6 @@ package com.ironside.weixin.push;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.dom4j.Document;
@@ -11,7 +10,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.util.Assert;
 
-import com.ironside.weixin.push.entity.BaseEntity;
+import com.ironside.weixin.push.entity.AbstractBaseEntity;
 import com.ironside.weixin.push.entity.EntityEnum;
 import com.ironside.weixin.push.entity.TextEntity;
 
@@ -26,12 +25,12 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	private IPostProcessor processor;
 
 	@Override
-	Entry<EntityEnum, Object> analyze(String postData) {
+	AbstractBaseEntity analyze(String postData) {
 		Assert.hasText(postData, "postData 参数不能为空");
 		// 将postData解析成properties对象
 		Properties properties = doAnalyze(postData);
 		// 解析properties对象，建立entity对象
-		Entry<EntityEnum, Object> entry = doAnalyze(properties);
+		AbstractBaseEntity entry = doAnalyze(properties);
 		return entry; 
 	}
 
@@ -64,7 +63,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体对象
 	 */
-	Entry<EntityEnum, Object> doAnalyze(Properties properties) {
+	AbstractBaseEntity doAnalyze(Properties properties) {
 		Assert.notNull(properties);
 		String msgType = properties.getProperty("MsgType");
 		
@@ -81,7 +80,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体对象
 	 */
-	private Entry<EntityEnum, Object> doEventAnalyze(Properties properties) {
+	private AbstractBaseEntity doEventAnalyze(Properties properties) {
 
 		return null;
 	}
@@ -91,7 +90,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体对象
 	 */
-	private Entry<EntityEnum, Object> doMessageAnalyze(Properties properties) {
+	private AbstractBaseEntity doMessageAnalyze(Properties properties) {
 		String msgType = properties.getProperty("MsgType");
 		if (msgType.equals(EntityEnum.TEXT.getIdentify())) {
 			return doTextAnalyze(properties);
@@ -122,7 +121,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的文本对象
 	 */
-	private Entry<EntityEnum, Object> doTextAnalyze(Properties properties) {
+	private AbstractBaseEntity doTextAnalyze(Properties properties) {
 		String toUserName = properties.getProperty(TextEntity.TO_USER_NAME);
 		Assert.hasText(toUserName);
 		String fromUserName = properties.getProperty(TextEntity.FORM_USER_NAME);
@@ -144,41 +143,41 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		entity.setContent(content);
 		entity.setMsgId(msgId);
 		
-		return (BaseEntity)entity;
+		return (AbstractBaseEntity)entity;
 	}
 
-	private Entry<EntityEnum, Object> doImageAnalyze(Properties properties) {
+	private AbstractBaseEntity doImageAnalyze(Properties properties) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private Entry<EntityEnum, Object> doLocationAnalyze(Properties properties) {
+	private AbstractBaseEntity doLocationAnalyze(Properties properties) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private Entry<EntityEnum, Object> doVideoAnalyze(Properties properties) {
+	private AbstractBaseEntity doVideoAnalyze(Properties properties) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private Entry<EntityEnum, Object> doVoiceAnalyze(Properties properties) {
+	private AbstractBaseEntity doVoiceAnalyze(Properties properties) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private Entry<EntityEnum, Object> doShortVideoAnalyze(Properties properties) {
+	private AbstractBaseEntity doShortVideoAnalyze(Properties properties) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private Entry<EntityEnum, Object> doLinkAnalyze(Properties properties) {
+	private AbstractBaseEntity doLinkAnalyze(Properties properties) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	String process(Entry<EntityEnum, Object> entity) {
+	String process(AbstractBaseEntity entity) {
 		return null;
 	}
 
