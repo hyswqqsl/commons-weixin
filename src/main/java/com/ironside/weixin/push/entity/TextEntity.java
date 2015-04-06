@@ -50,5 +50,13 @@ public class TextEntity extends AbstractBaseEntity{
 		this.msgId = msgId;
 	}
 	
+	/**
+	 * 取得消息类型
+	 * @return 消息类型
+	 */
+	public String getMsgType() {
+		return getMsgEnum().getIdentify();
+	}
+	
 	
 }

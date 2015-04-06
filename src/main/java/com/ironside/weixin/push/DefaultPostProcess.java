@@ -65,7 +65,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 */
 	AbstractBaseEntity doAnalyze(Properties properties) {
 		Assert.notNull(properties);
-		String msgType = properties.getProperty("MsgType");
+		String msgType = properties.getProperty(AbstractBaseEntity.MSG_TYPE);
 		
 		// 解析事件消息
 		if (msgType.equals("event")) {
@@ -139,7 +139,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		entity.setToUserName(toUserName);
 		entity.setFromUserName(fromUserName);
 		entity.setCreateTime(createTime);
-		entity.setMsgType(EntityEnum.TEXT);
+		entity.setMsgEnum(EntityEnum.TEXT);
 		entity.setContent(content);
 		entity.setMsgId(msgId);
 		
