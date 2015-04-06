@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 
 import com.ironside.weixin.push.entity.AbstractBaseEntity;
 import com.ironside.weixin.push.entity.EntityEnum;
+import com.ironside.weixin.push.entity.ImageEntity;
 import com.ironside.weixin.push.entity.TextEntity;
 
 /**
@@ -23,6 +24,14 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	
 	/** 消息处理器 */
 	private IPostProcessor processor;
+	/** 开发者微信号  */
+	//private String toUserName;
+	/** 发送方帐号（一个OpenID） */
+	//private String fromUserName;
+	/** 消息创建时间  */
+	//private Date createTime;
+	/** 消息id，64位整型 */
+	//private String msgId;	
 
 	@Override
 	AbstractBaseEntity analyze(String postData) {
@@ -68,7 +77,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		String msgType = properties.getProperty(AbstractBaseEntity.MSG_TYPE);
 		
 		// 解析事件消息
-		if (msgType.equals("event")) {
+		if (msgType.equals(EntityEnum.EVENT_CLICK.getMsgType())) {
 			return doEventAnalyze(properties); 
 		}
 		// 解析普通消息
@@ -92,36 +101,36 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 */
 	private AbstractBaseEntity doMessageAnalyze(Properties properties) {
 		String msgType = properties.getProperty("MsgType");
-		if (msgType.equals(EntityEnum.TEXT.getIdentify())) {
+		if (msgType.equals(EntityEnum.TEXT.getMsgType())) {
 			return doTextAnalyze(properties);
 		}
-		if (msgType.equals(EntityEnum.IMAGE.getIdentify())) {
+		if (msgType.equals(EntityEnum.IMAGE.getMsgType())) {
 			return doImageAnalyze(properties);
 		}
-		if (msgType.equals(EntityEnum.LOCATION.getIdentify())) {
+		if (msgType.equals(EntityEnum.LOCATION.getMsgType())) {
 			return doLocationAnalyze(properties);
 		}
-		if (msgType.equals(EntityEnum.VIDEO.getIdentify())) {
+		if (msgType.equals(EntityEnum.VIDEO.getMsgType())) {
 			return doVideoAnalyze(properties);
 		}
-		if (msgType.equals(EntityEnum.VOICE.getIdentify())) {
+		if (msgType.equals(EntityEnum.VOICE.getMsgType())) {
 			return doVoiceAnalyze(properties);
 		}
-		if (msgType.equals(EntityEnum.SHORTVIDEO.getIdentify())) {
+		if (msgType.equals(EntityEnum.SHORTVIDEO.getMsgType())) {
 			return doShortVideoAnalyze(properties);
 		}
-		if (msgType.equals(EntityEnum.LINK.getIdentify())) {
+		if (msgType.equals(EntityEnum.LINK.getMsgType())) {
 			return doLinkAnalyze(properties);
 		}
 		throw new IllegalStateException(String.format("解析普通消息出错:(%s)消息类型未知", msgType));
 	}
-
+	
 	/**
-	 * 解析普通文本消息
+	 * 基础解析
 	 * @param properties POST推送数据解析后的properties
-	 * @return 解析后的文本对象
+	 * @param entity 用于基础解析的实体
 	 */
-	private AbstractBaseEntity doTextAnalyze(Properties properties) {
+	private void doBaseAnalyze(Properties properties, AbstractBaseEntity entity) {
 		String toUserName = properties.getProperty(TextEntity.TO_USER_NAME);
 		Assert.hasText(toUserName);
 		String fromUserName = properties.getProperty(TextEntity.FORM_USER_NAME);
@@ -130,25 +139,75 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		Assert.hasText(createTimeStr);
 		// 将时间整形转换为对象
 		Date createTime = new Date(Long.parseLong(createTimeStr));
-		String content = properties.getProperty(TextEntity.CONTENT);
-		Assert.hasText(content);
-		String msgId = properties.getProperty(TextEntity.MSG_ID);
-		Assert.hasText(msgId);
+		Assert.notNull(createTime);
 		
-		TextEntity entity = new TextEntity();
 		entity.setToUserName(toUserName);
 		entity.setFromUserName(fromUserName);
 		entity.setCreateTime(createTime);
+	}
+
+	/**
+	 * 解析普通文本消息
+	 * @param properties POST推送数据解析后的properties
+	 * @return 解析后的实体
+	 */
+	private AbstractBaseEntity doTextAnalyze(Properties properties) {
+		/* 示例
+	 	 <xml>
+	     <ToUserName><![CDATA[toUser]]></ToUserName>
+	 	 <FromUserName><![CDATA[fromUser]]></FromUserName> 
+	 	 <CreateTime>1348831860</CreateTime>
+	 	 <MsgType><![CDATA[text]]></MsgType>
+	 	 <Content><![CDATA[this is a test]]></Content>
+	 	 <MsgId>1234567890123456</MsgId>
+	 	 </xml>
+	 	 */ 
+		TextEntity entity = new TextEntity();
+		doBaseAnalyze(properties, entity);
+		String content = properties.getProperty(TextEntity.CONTENT);
+		Assert.hasText(content);
+		String msgId = properties.getProperty(TextEntity.MSG_ID);
+		Assert.hasText(msgId);		
+
 		entity.setMsgEnum(EntityEnum.TEXT);
 		entity.setContent(content);
 		entity.setMsgId(msgId);
 		
-		return (AbstractBaseEntity)entity;
+		return entity;
 	}
-
+	
+	/**
+	 * 解析普通图片消息
+	 * @param properties POST推送数据解析后的properties
+	 * @return 解析后的实体
+	 */
 	private AbstractBaseEntity doImageAnalyze(Properties properties) {
-		// TODO Auto-generated method stub
-		return null;
+		/* 示例
+		 <xml>
+ 		 <ToUserName><![CDATA[toUser]]></ToUserName>
+ 		 <FromUserName><![CDATA[fromUser]]></FromUserName>
+ 		 <CreateTime>1348831860</CreateTime>
+ 		 <MsgType><![CDATA[image]]></MsgType>
+ 		 <PicUrl><![CDATA[this is a url]]></PicUrl>
+ 		 <MediaId><![CDATA[media_id]]></MediaId>
+ 		 <MsgId>1234567890123456</MsgId>
+ 		 </xml>
+		 */
+		ImageEntity entity = new ImageEntity();
+		doBaseAnalyze(properties, entity);
+		String picUrl = properties.getProperty(ImageEntity.PIC_URL);
+		Assert.hasText(picUrl);
+		String mediaId = properties.getProperty(ImageEntity.MEDIA_URL);
+		Assert.hasText(mediaId);
+		String msgId = properties.getProperty(TextEntity.MSG_ID);
+		Assert.hasText(msgId);				
+
+		entity.setMsgEnum(EntityEnum.IMAGE);
+		entity.setPicUrl(picUrl);
+		entity.setMediaId(mediaId);
+		entity.setMsgId(msgId);
+		
+		return entity;
 	}
 
 	private AbstractBaseEntity doLocationAnalyze(Properties properties) {

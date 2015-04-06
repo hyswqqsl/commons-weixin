@@ -8,44 +8,57 @@ package com.ironside.weixin.push.entity;
  */
 public enum EntityEnum {
 
-	TEXT("text", "文本消息"),
-	IMAGE("image", "图像消息"),
-	VOICE("voice", "语音消息"),
-	VIDEO("video", "视频消息"), 
-	SHORTVIDEO("shortvideo", "小视频消息"),
-	LOCATION("location", "地理位置消息"),
-	LINK("link", "链接消息"),
-	/** 关注/取消关注-订阅事件 或 扫描带参数二维码-用户未关注时，进行关注后的事件(需要根据EventKey来区分) */	
-	EVENT_SUBSCRIBE("subscribe", "关注/取消关注-订阅事件"),
-	VENT_UNSUBSCRIBE("unsubscribe", "关注/取消关注-取消订阅事件"),
-	/** 关注/取消关注-订阅事件 或 扫描带参数二维码-用户未关注时，进行关注后的事件(需要根据EventKey来区分) */	
-	EVENT_SCAN_SUBSCRIBE("subscribe", "扫描带参数二维码-用户未关注时，进行关注后的事件"),
-	EVENT_SCAN("scan", "扫描带参数二维码-用户已关注时的事件"),
-	EVENT_LOCATION("location", "上报地理位置事件"),
-	EVENT_CLICK("click", "自定义菜单-点击菜单拉取消息时的事件"),
-	EVENT_VIEW("view", "自定义菜单-点击菜单跳转链接时的事件");
+	TEXT("text", null, "文本消息"),
+	IMAGE("image", null, "图像消息"),
+	VOICE("voice", null, "语音消息"),
+	VIDEO("video", null, "视频消息"), 
+	SHORTVIDEO("shortvideo", null, "小视频消息"),
+	LOCATION("location", null, "地理位置消息"),
+	LINK("link", null, "链接消息"),
+	EVENT_SUBSCRIBE("event", "subscribe", "关注/取消关注-订阅事件"),
+	VENT_UNSUBSCRIBE("event", "unsubscribe", "关注/取消关注-取消订阅事件"),
+	EVENT_SCAN_SUBSCRIBE("event", "subscribe", "扫描带参数二维码-用户未关注时，进行关注后的事件"),
+	EVENT_SCAN("event", "scan", "扫描带参数二维码-用户已关注时的事件"),
+	EVENT_LOCATION("event", "location", "上报地理位置事件"),
+	EVENT_CLICK("event", "click", "自定义菜单-点击菜单拉取消息时的事件"),
+	EVENT_VIEW("event", "view", "自定义菜单-点击菜单跳转链接时的事件");
 
 	/**
 	 * 消息类型构造函数
-	 * @param identify 消息标识
+	 * @param msgType 消息类型
 	 * @param remark 消息说明
 	 */
-	EntityEnum(String identify, String remark) {
-		this.identify = identify;
+	EntityEnum(String msgType, String event, String remark) {
+		this.msgType = msgType;
+		if (event.equals(null)) {
+			this.event = "";
+		} else {
+			this.event = event;
+		}
 		this.remark = remark;
 	}
 	
-	/** 消息识别 */
-	private String identify;
+	/** 消息类型 */
+	private String msgType;
+	/** 事件类型 */
+	private String event;
 	/** 消息说明 */
 	private String remark;
-	
+
 	/**
-	 * 取得消息识别
-	 * @return 消息识别
+	 * 取得消息类型
+	 * @return 消息类型
 	 */
-	public String getIdentify() {
-		return identify;
+	public String getMsgType() {
+		return msgType;
+	}
+
+	/**
+	 * 取得事件类型
+	 * @return 事件类型
+	 */
+	public String getEvent() {
+		return event;
 	}
 
 	/**

@@ -10,8 +10,6 @@ public class TextEntity extends AbstractBaseEntity{
 	
 	/** 对应xml中定义的'文本消息内容'标识 */
 	public final static String CONTENT = "Content";
-	/** 对应xml中定义的'消息id'标识 */
-	public final static String MSG_ID= "MsgId";
 
 	/** 文本消息内容 */
 	private String content;
@@ -49,14 +47,5 @@ public class TextEntity extends AbstractBaseEntity{
 	public void setMsgId(String msgId) {
 		this.msgId = msgId;
 	}
-	
-	/**
-	 * 取得消息类型
-	 * @return 消息类型
-	 */
-	public String getMsgType() {
-		return getMsgEnum().getIdentify();
-	}
-	
 	
 }

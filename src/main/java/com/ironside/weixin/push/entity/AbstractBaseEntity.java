@@ -17,6 +17,8 @@ public abstract class AbstractBaseEntity {
 	public final static String CREATE_TIME = "CreateTime";
 	/** 对应xml中定义的'消息类型'标识 */
 	public final static String MSG_TYPE = "MsgType";
+	/** 对应xml中定义的'消息id'标识 */
+	public final static String MSG_ID= "MsgId";	
 	
 	/** 开发者微信号  */
 	private String toUserName;
@@ -24,6 +26,8 @@ public abstract class AbstractBaseEntity {
 	private String fromUserName;
 	/** 消息创建时间  */
 	private Date createTime;
+	/** 消息类型对象 */
+	private EntityEnum msgEnum; 
 	
 	
 	/**
@@ -75,12 +79,27 @@ public abstract class AbstractBaseEntity {
 	}
 	
 	/**
+	 * 取得消息类型对象
+	 * @return 消息类型对象
 	 */
+	public EntityEnum getMsgEnum() {
+		return msgEnum;
 	}
 	
 	/**
+	 * 设置消息类型对象
+	 * @param msgType 消息类型对象
 	 */
+	public void setMsgEnum(EntityEnum msgEnum) {
+		this.msgEnum = msgEnum;
 	}
 		
+	/**
+	 * 取得消息类型
+	 * @return 消息类型
+	 */
+	public String getMsgType() {
+		return getMsgEnum().getMsgType();
+	}
+	
 }
-
