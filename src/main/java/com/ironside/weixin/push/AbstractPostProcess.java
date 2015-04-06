@@ -29,13 +29,13 @@ public abstract class AbstractPostProcess implements IPostProcess {
 	 * @param postData POST方式推送的数据
 	 * @return 解析后的实体，包含类型和对象
 	 */
-	protected abstract Entry<EntityEnum, Object> analyze(String postData);
+	abstract Entry<EntityEnum, Object> analyze(String postData);
 
 	/**
 	 * 处理实体
 	 * @param entity 实体，包含类型和对象
 	 * @return 处理响应信息
 	 */
-	protected abstract String process(Entry<EntityEnum, Object> entity); 
+	abstract String process(Entry<EntityEnum, Object> entity); 
 
 }
