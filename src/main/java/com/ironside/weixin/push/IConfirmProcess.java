@@ -5,7 +5,7 @@ package com.ironside.weixin.push;
  * 并且带上四个参数（signature、timestamp、nonce、echostr），
  * 开发者通过对签名（即signature）的效验，来判断此条消息的真实性。 
  * @author 雪庭
- * @since 1.0
+ * @since 1.0 at 2015年4月3日
  */
 public interface IConfirmProcess {
 
