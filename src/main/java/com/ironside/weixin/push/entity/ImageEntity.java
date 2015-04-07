@@ -14,8 +14,15 @@ public class ImageEntity extends AbstractBaseEntity {
 	private String picUrl;
 	/** 图片消息媒体id，可以调用多媒体文件下载接口拉取数据 */
 	private String mediaId;
-	/** 消息id，64位整型  */
+	/** 消息id，64位整型 */
 	private String msgId;
+	
+	/**
+	 * 构造函数，设置类型
+	 */
+	public ImageEntity() {
+		this.setMsgEnum(EntityEnum.IMAGE);
+	}
 	
 	/**
 	 * 取得图片链接

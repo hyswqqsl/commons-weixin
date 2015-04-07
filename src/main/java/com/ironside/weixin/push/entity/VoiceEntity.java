@@ -7,8 +7,6 @@ package com.ironside.weixin.push.entity;
  */
 public class VoiceEntity extends AbstractBaseEntity {
 	
-	/** 对应xml中定义的'语音消息媒体id'标识 */
-	public final static String MEDIA_ID = "MediaId ";
 	/** 对应xml中定义的'语音格式'标识 */
 	public final static String FORMAT = "Format";
 
@@ -18,6 +16,13 @@ public class VoiceEntity extends AbstractBaseEntity {
 	private String format;
 	/** 消息id，64位整型 */
 	private String msgId;
+	
+	/**
+	 * 构造函数，设置类型 
+	 */
+	public VoiceEntity() {
+		this.setMsgEnum(EntityEnum.VOICE);
+	}
 	
 	/**
 	 * 取得语音消息媒体id

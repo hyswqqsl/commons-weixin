@@ -15,6 +15,13 @@ public class TextEntity extends AbstractBaseEntity{
 	private String content;
 	/** 消息id，64位整型 */
 	private String msgId;
+
+	/**
+	 * 构造函数，设置类型
+	 */
+	public TextEntity() {
+		this.setMsgEnum(EntityEnum.TEXT);
+	}
 	
 	/**
 	 * 取得文本消息内容

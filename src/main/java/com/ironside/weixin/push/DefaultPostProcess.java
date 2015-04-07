@@ -13,8 +13,11 @@ import org.springframework.util.Assert;
 import com.ironside.weixin.push.entity.AbstractBaseEntity;
 import com.ironside.weixin.push.entity.EntityEnum;
 import com.ironside.weixin.push.entity.ImageEntity;
+import com.ironside.weixin.push.entity.LinkEntity;
 import com.ironside.weixin.push.entity.LocationEntity;
+import com.ironside.weixin.push.entity.ShortVideoEntity;
 import com.ironside.weixin.push.entity.TextEntity;
+import com.ironside.weixin.push.entity.VideoEntity;
 import com.ironside.weixin.push.entity.VoiceEntity;
 
 /**
@@ -164,7 +167,6 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		String msgId = properties.getProperty(TextEntity.MSG_ID);
 		Assert.hasText(msgId);		
 
-		entity.setMsgEnum(EntityEnum.TEXT);
 		entity.setContent(content);
 		entity.setMsgId(msgId);
 		
@@ -197,7 +199,6 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		String msgId = properties.getProperty(TextEntity.MSG_ID);
 		Assert.hasText(msgId);				
 
-		entity.setMsgEnum(EntityEnum.IMAGE);
 		entity.setPicUrl(picUrl);
 		entity.setMediaId(mediaId);
 		entity.setMsgId(msgId);
@@ -211,6 +212,17 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @return 解析后的实体
 	 */
 	private AbstractBaseEntity doVoiceAnalyze(Properties properties) {
+		/* 示例
+		 <xml>
+		 <ToUserName><![CDATA[toUser]]></ToUserName>
+		 <FromUserName><![CDATA[fromUser]]></FromUserName>
+		 <CreateTime>1357290913</CreateTime>
+		 <MsgType><![CDATA[voice]]></MsgType>
+		 <MediaId><![CDATA[media_id]]></MediaId>
+		 <Format><![CDATA[Format]]></Format>
+		 <MsgId>1234567890123456</MsgId>
+		 </xml>
+		 */
 		VoiceEntity entity = new VoiceEntity();
 		doBaseAnalyze(properties, entity);
 		String mediaId = properties.getProperty(VoiceEntity.MEDIA_ID);
@@ -225,16 +237,72 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		entity.setMsgId(msgId);
 		
 		return entity;
-	}
+	}	
 	
+	/**
+	 * 解析普通视频消息
+	 * @param properties POST推送数据解析后的properties
+	 * @return 解析后的实体
+	 */
 	private AbstractBaseEntity doVideoAnalyze(Properties properties) {
-		// TODO Auto-generated method stub
-		return null;
+		/* 示例
+		 <xml>
+		 <ToUserName><![CDATA[toUser]]></ToUserName>
+		 <FromUserName><![CDATA[fromUser]]></FromUserName>
+		 <CreateTime>1357290913</CreateTime>
+		 <MsgType><![CDATA[video]]></MsgType>
+		 <MediaId><![CDATA[media_id]]></MediaId>
+		 <ThumbMediaId><![CDATA[thumb_media_id]]></ThumbMediaId>
+		 <MsgId>1234567890123456</MsgId>
+		 </xml>
+		 */
+		VideoEntity entity = new VideoEntity();
+		doBaseAnalyze(properties, entity);
+		String mediaId = properties.getProperty(VideoEntity.MEDIA_ID);
+		Assert.hasText(mediaId);
+		String thumbMediaId = properties.getProperty(VideoEntity.THUMB_MEDIA_ID);
+		Assert.hasText(thumbMediaId);
+		String msgId = properties.getProperty(VideoEntity.MSG_ID);
+		Assert.hasText(msgId);				
+		
+		entity.setMediaId(mediaId);
+		entity.setThumbMediaId(thumbMediaId);
+		entity.setMsgId(msgId);
+		
+		return entity;
 	}
 
+	/**
+	 * 解析普通小视频消息
+	 * @param properties POST推送数据解析后的properties
+	 * @return 解析后的实体
+	 */
 	private AbstractBaseEntity doShortVideoAnalyze(Properties properties) {
-		// TODO Auto-generated method stub
-		return null;
+		/* 示例
+		 <xml>
+		 <ToUserName><![CDATA[toUser]]></ToUserName>
+		 <FromUserName><![CDATA[fromUser]]></FromUserName>
+		 <CreateTime>1357290913</CreateTime>
+		 <MsgType><![CDATA[shortvideo]]></MsgType>
+		 <MediaId><![CDATA[media_id]]></MediaId>
+		 <ThumbMediaId><![CDATA[thumb_media_id]]></ThumbMediaId>
+		 <MsgId>1234567890123456</MsgId>
+		 </xml>
+		 */
+		ShortVideoEntity entity = new ShortVideoEntity();
+		doBaseAnalyze(properties, entity);
+		String mediaId = properties.getProperty(VideoEntity.MEDIA_ID);
+		Assert.hasText(mediaId);
+		String thumbMediaId = properties.getProperty(VideoEntity.THUMB_MEDIA_ID);
+		Assert.hasText(thumbMediaId);
+		String msgId = properties.getProperty(VideoEntity.MSG_ID);
+		Assert.hasText(msgId);				
+		
+		entity.setMediaId(mediaId);
+		entity.setThumbMediaId(thumbMediaId);
+		entity.setMsgId(msgId);
+		
+		return entity;
 	}	
 
 	/**
@@ -278,9 +346,41 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		return entity;
 	}
 
+	/**
+	 * 解析普通链接消息
+	 * @param properties POST推送数据解析后的properties
+	 * @return 解析后的实体
+	 */
 	private AbstractBaseEntity doLinkAnalyze(Properties properties) {
-		// TODO Auto-generated method stub
-		return null;
+		/*
+		 <xml>
+		 <ToUserName><![CDATA[toUser]]></ToUserName>
+		 <FromUserName><![CDATA[fromUser]]></FromUserName>
+		 <CreateTime>1351776360</CreateTime>
+		 <MsgType><![CDATA[link]]></MsgType>
+		 <Title><![CDATA[公众平台官网链接]]></Title>
+		 <Description><![CDATA[公众平台官网链接]]></Description>
+		 <Url><![CDATA[url]]></Url>
+		 <MsgId>1234567890123456</MsgId>
+		 </xml> 
+		 */
+		LinkEntity entity = new LinkEntity();
+		doBaseAnalyze(properties, entity);
+		String title = properties.getProperty(LinkEntity.TITLE);
+		Assert.hasText(title);
+		String description = properties.getProperty(LinkEntity.DESCRIPTION);
+		Assert.hasText(description);
+		String url = properties.getProperty(LinkEntity.URL);
+		Assert.hasText(url);
+		String msgId = properties.getProperty(TextEntity.MSG_ID);
+		Assert.hasText(msgId);
+		
+		entity.setTitle(title);
+		entity.setDescription(description);
+		entity.setUrl(url);
+		entity.setMsgId(msgId);
+		
+		return entity;
 	}
 
 	@Override

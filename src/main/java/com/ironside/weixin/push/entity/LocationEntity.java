@@ -28,6 +28,13 @@ public class LocationEntity extends AbstractBaseEntity {
 	private String msgId;
 	
 	/**
+	 * 构造函数，设置类型
+	 */
+	public LocationEntity() {
+		this.setMsgEnum(EntityEnum.LOCATION);		
+	}
+	
+	/**
 	 * 取得地理位置维度
 	 * @return 地理位置维度
 	 */
