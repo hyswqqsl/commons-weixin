@@ -9,10 +9,7 @@ public class ImageEntity extends AbstractBaseEntity {
 	
 	/** 对应xml中定义的'图片链接'标识 */
 	public final static String PIC_URL= "PicUrl";
-	/** 对应xml中定义的'图片消息媒体id'标识 */
-	public final static String MEDIA_URL= "MediaId";
 	
-
 	/** 图片链接 */
 	private String picUrl;
 	/** 图片消息媒体id，可以调用多媒体文件下载接口拉取数据 */
@@ -46,7 +43,7 @@ public class ImageEntity extends AbstractBaseEntity {
 	
 	/**
 	 * 设置图片消息媒体id
-	 * @param picUrl 图片消息媒体id
+	 * @param mediaId 图片消息媒体id
 	 */	
 	public void setMediaId(String mediaId) {
 		this.mediaId = mediaId;
@@ -62,7 +59,7 @@ public class ImageEntity extends AbstractBaseEntity {
 	
 	/**
 	 * 设置消息id
-	 * @param picUrl 消息id
+	 * @param msgId 消息id
 	 */	
 	public void setMsgId(String msgId) {
 		this.msgId = msgId;

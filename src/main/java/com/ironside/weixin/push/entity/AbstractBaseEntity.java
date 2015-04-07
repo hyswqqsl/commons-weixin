@@ -18,7 +18,9 @@ public abstract class AbstractBaseEntity {
 	/** 对应xml中定义的'消息类型'标识 */
 	public final static String MSG_TYPE = "MsgType";
 	/** 对应xml中定义的'消息id'标识 */
-	public final static String MSG_ID= "MsgId";	
+	public final static String MSG_ID= "MsgId";
+	/** 对应xml中定义的'消息媒体id'标识 */
+	public final static String MEDIA_ID= "MediaId";
 	
 	/** 开发者微信号  */
 	private String toUserName;

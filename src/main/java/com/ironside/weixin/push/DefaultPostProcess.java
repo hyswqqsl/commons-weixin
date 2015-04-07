@@ -13,7 +13,9 @@ import org.springframework.util.Assert;
 import com.ironside.weixin.push.entity.AbstractBaseEntity;
 import com.ironside.weixin.push.entity.EntityEnum;
 import com.ironside.weixin.push.entity.ImageEntity;
+import com.ironside.weixin.push.entity.LocationEntity;
 import com.ironside.weixin.push.entity.TextEntity;
+import com.ironside.weixin.push.entity.VoiceEntity;
 
 /**
  * POST方式推送给微信公众账号的消息处理，具体实现消息解析、处理实体。
@@ -24,14 +26,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	
 	/** 消息处理器 */
 	private IPostProcessor processor;
-	/** 开发者微信号  */
-	//private String toUserName;
-	/** 发送方帐号（一个OpenID） */
-	//private String fromUserName;
-	/** 消息创建时间  */
-	//private Date createTime;
-	/** 消息id，64位整型 */
-	//private String msgId;	
+	
 
 	@Override
 	AbstractBaseEntity analyze(String postData) {
@@ -107,18 +102,18 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		if (msgType.equals(EntityEnum.IMAGE.getMsgType())) {
 			return doImageAnalyze(properties);
 		}
-		if (msgType.equals(EntityEnum.LOCATION.getMsgType())) {
-			return doLocationAnalyze(properties);
+		if (msgType.equals(EntityEnum.VOICE.getMsgType())) {
+			return doVoiceAnalyze(properties);
 		}
 		if (msgType.equals(EntityEnum.VIDEO.getMsgType())) {
 			return doVideoAnalyze(properties);
 		}
-		if (msgType.equals(EntityEnum.VOICE.getMsgType())) {
-			return doVoiceAnalyze(properties);
-		}
 		if (msgType.equals(EntityEnum.SHORTVIDEO.getMsgType())) {
 			return doShortVideoAnalyze(properties);
 		}
+		if (msgType.equals(EntityEnum.LOCATION.getMsgType())) {
+			return doLocationAnalyze(properties);
+		}		
 		if (msgType.equals(EntityEnum.LINK.getMsgType())) {
 			return doLinkAnalyze(properties);
 		}
@@ -197,7 +192,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		doBaseAnalyze(properties, entity);
 		String picUrl = properties.getProperty(ImageEntity.PIC_URL);
 		Assert.hasText(picUrl);
-		String mediaId = properties.getProperty(ImageEntity.MEDIA_URL);
+		String mediaId = properties.getProperty(ImageEntity.MEDIA_ID);
 		Assert.hasText(mediaId);
 		String msgId = properties.getProperty(TextEntity.MSG_ID);
 		Assert.hasText(msgId);				
@@ -210,17 +205,29 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		return entity;
 	}
 
-	private AbstractBaseEntity doLocationAnalyze(Properties properties) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private AbstractBaseEntity doVideoAnalyze(Properties properties) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	/**
+	 * 解析普通语音消息
+	 * @param properties POST推送数据解析后的properties
+	 * @return 解析后的实体
+	 */
 	private AbstractBaseEntity doVoiceAnalyze(Properties properties) {
+		VoiceEntity entity = new VoiceEntity();
+		doBaseAnalyze(properties, entity);
+		String mediaId = properties.getProperty(VoiceEntity.MEDIA_ID);
+		Assert.hasText(mediaId);
+		String format = properties.getProperty(VoiceEntity.FORMAT);
+		Assert.hasText(format);
+		String msgId = properties.getProperty(TextEntity.MSG_ID);
+		Assert.hasText(msgId);				
+		
+		entity.setMediaId(mediaId);
+		entity.setFormat(format);
+		entity.setMsgId(msgId);
+		
+		return entity;
+	}
+	
+	private AbstractBaseEntity doVideoAnalyze(Properties properties) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -228,6 +235,47 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	private AbstractBaseEntity doShortVideoAnalyze(Properties properties) {
 		// TODO Auto-generated method stub
 		return null;
+	}	
+
+	/**
+	 * 解析普通位置消息
+	 * @param properties POST推送数据解析后的properties
+	 * @return 解析后的实体
+	 */
+	private AbstractBaseEntity doLocationAnalyze(Properties properties) {
+		/* 示例
+		 <xml>
+		 <ToUserName><![CDATA[toUser]]></ToUserName>
+		 <FromUserName><![CDATA[fromUser]]></FromUserName>
+	  	 <CreateTime>1351776360</CreateTime>
+		 <MsgType><![CDATA[location]]></MsgType>
+		 <Location_X>23.134521</Location_X>
+		 <Location_Y>113.358803</Location_Y>
+		 <Scale>20</Scale>
+		 <Label><![CDATA[位置信息]]></Label>
+		 <MsgId>1234567890123456</MsgId>
+		 </xml> 		
+		 */
+		LocationEntity entity = new LocationEntity();
+		doBaseAnalyze(properties, entity);
+		String locationX = properties.getProperty(LocationEntity.LOCATION_X);
+		Assert.hasText(locationX);
+		String locationY = properties.getProperty(LocationEntity.LOCATION_Y);
+		Assert.hasText(locationY);
+		String scale = properties.getProperty(LocationEntity.SCALE);
+		Assert.hasText(scale);
+		String label = properties.getProperty(LocationEntity.LABEL);
+		Assert.hasText(label);
+		String msgId = properties.getProperty(TextEntity.MSG_ID);
+		Assert.hasText(msgId);
+		
+		entity.setLocationX(locationX);
+		entity.setLocationY(locationY);
+		entity.setScale(scale);
+		entity.setLabel(label);
+		entity.setMsgId(msgId);
+		
+		return entity;
 	}
 
 	private AbstractBaseEntity doLinkAnalyze(Properties properties) {
