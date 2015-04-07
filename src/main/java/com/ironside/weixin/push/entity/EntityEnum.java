@@ -22,28 +22,28 @@ public enum EntityEnum {
 	EVENT_LOCATION("event", "location", "上报地理位置事件"),
 	EVENT_CLICK("event", "click", "自定义菜单-点击菜单拉取消息时的事件"),
 	EVENT_VIEW("event", "view", "自定义菜单-点击菜单跳转链接时的事件");
-
-	/**
-	 * 消息类型构造函数
-	 * @param msgType 消息类型
-	 * @param remark 消息说明
-	 */
-	EntityEnum(String msgType, String event, String remark) {
-		this.msgType = msgType;
-		if (event.equals(null)) {
-			this.event = "";
-		} else {
-			this.event = event;
-		}
-		this.remark = remark;
-	}
 	
 	/** 消息类型 */
 	private String msgType;
 	/** 事件类型 */
 	private String event;
 	/** 消息说明 */
-	private String remark;
+	private String remark;	
+
+	/**
+	 * 消息类型构造函数
+	 * @param msgType 消息类型
+	 * @param remark 消息说明
+	 */
+	private EntityEnum(String msgType, String event, String remark) {
+		this.msgType = msgType;
+		if (event==null) {
+			this.event = "";
+		} else {
+			this.event = event;
+		}
+		this.remark = remark;
+	}
 
 	/**
 	 * 取得消息类型

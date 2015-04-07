@@ -1,7 +1,5 @@
 package com.ironside.weixin.push;
 
-import static org.junit.Assert.*;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
