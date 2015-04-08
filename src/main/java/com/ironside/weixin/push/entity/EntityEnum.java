@@ -7,6 +7,7 @@ package com.ironside.weixin.push.entity;
  * @since 1.0
  */
 public enum EntityEnum {
+	
 	/** 文本消息 */
 	TEXT("text", null),
 	/** 图像消息 */
@@ -24,7 +25,7 @@ public enum EntityEnum {
 	/** 关注/取消关注-订阅事件 */
 	EVENT_SUBSCRIBE("event", "subscribe"),
 	/** 关注/取消关注-取消订阅事件 */
-	VENT_UNSUBSCRIBE("event", "unsubscribe"),
+	EVENT_UNSUBSCRIBE("event", "unsubscribe"),
 	/** 扫描带参数二维码-用户未关注时，进行关注后的事件 */
 	EVENT_SCAN_SUBSCRIBE("event", "subscribe"),
 	/** 扫描带参数二维码-用户已关注时的事件 */

@@ -9,9 +9,12 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import com.ironside.weixin.push.entity.AbstractBaseEntity;
 import com.ironside.weixin.push.entity.EntityEnum;
+import com.ironside.weixin.push.entity.EventSubscribeEntity;
+import com.ironside.weixin.push.entity.EventUnSubscribeEntity;
 import com.ironside.weixin.push.entity.ImageEntity;
 import com.ironside.weixin.push.entity.LinkEntity;
 import com.ironside.weixin.push.entity.LocationEntity;
@@ -88,8 +91,79 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @return 解析后的实体对象
 	 */
 	private AbstractBaseEntity doEventAnalyze(Properties properties) {
+		String event = properties.getProperty(AbstractBaseEntity.EVENT);
+		String eventKey = properties.getProperty(AbstractBaseEntity.EVENT_KEY);
+		if (event.equals(EntityEnum.EVENT_SUBSCRIBE.getEvent()) && StringUtils.isEmpty(eventKey)) {
+			return doEventSubscribeAnalyze(properties);
+		}
+		if (event.equals(EntityEnum.EVENT_UNSUBSCRIBE.getEvent()) && StringUtils.isEmpty(eventKey)) {
+			return doEventUnSubscribeAnalyze(properties);
+		}
+		if (event.equals(EntityEnum.EVENT_SCAN_SUBSCRIBE.getEvent()) && StringUtils.isEmpty(eventKey)==false) {
+			return doEventScanSubscribeAnalyze(properties);
+		}
+		if (event.equals(EntityEnum.EVENT_SCAN.getEvent())) {
+			return doEventScanAnalyze(properties);
+		}
+		if (event.equals(EntityEnum.EVENT_LOCATION.getEvent())) {
+			return doEventLocationAnalyze(properties);
+		}
+		if (event.equals(EntityEnum.EVENT_CLICK.getEvent())) {
+			return doEventClickAnalyze(properties);
+		}
+		if (event.equals(EntityEnum.EVENT_VIEW.getEvent())) {
+			return doEventViewAnalyze(properties);
+		}
+		throw new IllegalStateException(String.format("解析事件消息出错:(%s)事件类型未知", event));
+	}
 
-		return null;
+	/**
+	 * 解析关注/取消关注-订阅事件文本消息
+	 * @param properties POST推送数据解析后的properties
+	 * @return 解析后的实体
+	 */
+	private AbstractBaseEntity doEventSubscribeAnalyze(Properties properties) {
+		EventSubscribeEntity entity = new EventSubscribeEntity();
+		doBaseAnalyze(properties, entity);
+		
+		return entity;
+	}
+	
+	/**
+	 * 解析关注/取消关注-取消订阅事件文本消息
+	 * @param properties POST推送数据解析后的properties
+	 * @return 解析后的实体
+	 */
+	private AbstractBaseEntity doEventUnSubscribeAnalyze(Properties properties) {
+		EventUnSubscribeEntity entity = new EventUnSubscribeEntity();
+		doBaseAnalyze(properties, entity);
+		
+		return entity;
+	}
+
+	private void doEventScanSubscribeAnalyze(Properties properties) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void doEventScanAnalyze(Properties properties) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void doEventLocationAnalyze(Properties properties) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void doEventClickAnalyze(Properties properties) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void doEventViewAnalyze(Properties properties) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/**
@@ -98,7 +172,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @return 解析后的实体对象
 	 */
 	private AbstractBaseEntity doMessageAnalyze(Properties properties) {
-		String msgType = properties.getProperty("MsgType");
+		String msgType = properties.getProperty(AbstractBaseEntity.MSG_TYPE);
 		if (msgType.equals(EntityEnum.TEXT.getMsgType())) {
 			return doTextAnalyze(properties);
 		}

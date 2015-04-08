@@ -1,5 +1,7 @@
 package com.ironside.weixin.push;
 
+import java.util.Date;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -7,6 +9,7 @@ import org.junit.Test;
 
 import com.ironside.weixin.push.entity.AbstractBaseEntity;
 import com.ironside.weixin.push.entity.EntityEnum;
+import com.ironside.weixin.push.entity.ImageEntity;
 
 public class DefaultPostProcessTest {
 	
@@ -35,7 +38,11 @@ public class DefaultPostProcessTest {
 		AbstractBaseEntity entity = process.analyze(xml);
 		// 验证结果
 		Assert.assertEquals(entity.getMsgEnum(), EntityEnum.IMAGE);
-		Assert.assertEquals(entity.getToUserName(), "toUser");
+		Assert.assertEquals("toUser", entity.getToUserName());
+		Assert.assertTrue(entity.getCreateTime() instanceof Date);
+		Assert.assertTrue(entity instanceof ImageEntity);
+		ImageEntity iEntity = (ImageEntity)entity;
+		Assert.assertEquals("this is a url", iEntity.getPicUrl()); 
 	}
 
 }

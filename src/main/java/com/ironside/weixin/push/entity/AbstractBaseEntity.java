@@ -17,6 +17,10 @@ public abstract class AbstractBaseEntity {
 	public final static String CREATE_TIME = "CreateTime";
 	/** 对应xml中定义的'消息类型'标识 */
 	public final static String MSG_TYPE = "MsgType";
+	/** 对应xml中定义的'事件类型'标识 */
+	public final static String EVENT = "Event";
+	/** 事件KEY值 */
+	public final static String EVENT_KEY = "EventKey";
 	/** 对应xml中定义的'消息id'标识 */
 	public final static String MSG_ID= "MsgId";
 	/** 对应xml中定义的'消息媒体id'标识 */
