@@ -7,7 +7,6 @@ package com.ironside.weixin.push.entity;
  * @since 1.0
  */
 public enum EntityEnum {
-	
 	/** 文本消息 */
 	TEXT("text", null),
 	/** 图像消息 */

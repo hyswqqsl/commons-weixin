@@ -13,8 +13,13 @@ import org.springframework.util.StringUtils;
 
 import com.ironside.weixin.push.entity.AbstractBaseEntity;
 import com.ironside.weixin.push.entity.EntityEnum;
+import com.ironside.weixin.push.entity.EventClickEntity;
+import com.ironside.weixin.push.entity.EventLocationEntity;
+import com.ironside.weixin.push.entity.EventScanEntity;
+import com.ironside.weixin.push.entity.EventScanSubscribeEntity;
 import com.ironside.weixin.push.entity.EventSubscribeEntity;
 import com.ironside.weixin.push.entity.EventUnSubscribeEntity;
+import com.ironside.weixin.push.entity.EventViewEntity;
 import com.ironside.weixin.push.entity.ImageEntity;
 import com.ironside.weixin.push.entity.LinkEntity;
 import com.ironside.weixin.push.entity.LocationEntity;
@@ -118,11 +123,20 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	}
 
 	/**
-	 * 解析关注/取消关注-订阅事件文本消息
+	 * 解析关注/取消关注-订阅事件消息
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */
 	private AbstractBaseEntity doEventSubscribeAnalyze(Properties properties) {
+		/*
+		 <xml>
+		 <ToUserName><![CDATA[toUser]]></ToUserName>
+		 <FromUserName><![CDATA[FromUser]]></FromUserName>
+		 <CreateTime>123456789</CreateTime>
+		 <MsgType><![CDATA[event]]></MsgType>
+		 <Event><![CDATA[subscribe]]></Event>
+		 </xml>
+		 */
 		EventSubscribeEntity entity = new EventSubscribeEntity();
 		doBaseAnalyze(properties, entity);
 		
@@ -130,40 +144,170 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	}
 	
 	/**
-	 * 解析关注/取消关注-取消订阅事件文本消息
+	 * 解析关注/取消关注-取消订阅事件消息
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */
 	private AbstractBaseEntity doEventUnSubscribeAnalyze(Properties properties) {
+		/*
+		 <xml>
+		 <ToUserName><![CDATA[toUser]]></ToUserName>
+		 <FromUserName><![CDATA[FromUser]]></FromUserName>
+		 <CreateTime>123456789</CreateTime>
+		 <MsgType><![CDATA[event]]></MsgType>
+		 <Event><![CDATA[unsubscribe]]></Event>
+		 </xml>
+		 */
 		EventUnSubscribeEntity entity = new EventUnSubscribeEntity();
 		doBaseAnalyze(properties, entity);
 		
 		return entity;
 	}
 
-	private void doEventScanSubscribeAnalyze(Properties properties) {
-		// TODO Auto-generated method stub
+	/**
+	 * 解析扫描带参数二维码-用户未关注时，进行关注后的事件消息
+	 * @param properties POST推送数据解析后的properties
+	 * @return 解析后的实体
+	 */
+	private AbstractBaseEntity doEventScanSubscribeAnalyze(Properties properties) {
+		/*
+		 <xml>
+		 <ToUserName><![CDATA[toUser]]></ToUserName>
+		 <FromUserName><![CDATA[FromUser]]></FromUserName>
+		 <CreateTime>123456789</CreateTime>
+		 <MsgType><![CDATA[event]]></MsgType>
+		 <Event><![CDATA[subscribe]]></Event>
+		 <EventKey><![CDATA[qrscene_123123]]></EventKey>
+		 <Ticket><![CDATA[TICKET]]></Ticket>
+		 </xml>
+		 */
+		EventScanSubscribeEntity entity = new EventScanSubscribeEntity();
+		doBaseAnalyze(properties, entity);
+		String eventKey = properties.getProperty(AbstractBaseEntity.EVENT_KEY);
+		Assert.hasText(eventKey);
+		String ticket = properties.getProperty(EventScanSubscribeEntity.TICKET);
+		Assert.hasText(ticket);
 		
+		entity.setEventKey(eventKey);
+		entity.setTicket(ticket);
+		
+		return entity;
 	}
 
-	private void doEventScanAnalyze(Properties properties) {
-		// TODO Auto-generated method stub
+	/**
+	 * 解析扫描带参数二维码-用户已关注时的事件消息
+	 * @param properties POST推送数据解析后的properties
+	 * @return 解析后的实体
+	 */	
+	private AbstractBaseEntity doEventScanAnalyze(Properties properties) {
+		/*
+		 <xml>
+		 <ToUserName><![CDATA[toUser]]></ToUserName>
+		 <FromUserName><![CDATA[FromUser]]></FromUserName>
+		 <CreateTime>123456789</CreateTime>
+		 <MsgType><![CDATA[event]]></MsgType>
+		 <Event><![CDATA[SCAN]]></Event>
+		 <EventKey><![CDATA[SCENE_VALUE]]></EventKey>
+		 <Ticket><![CDATA[TICKET]]></Ticket>
+		 </xml>
+		 */
+		EventScanEntity entity = new EventScanEntity();
+		doBaseAnalyze(properties, entity);
+		String eventKey = properties.getProperty(AbstractBaseEntity.EVENT_KEY);
+		Assert.hasText(eventKey);
+		String ticket = properties.getProperty(EventScanEntity.TICKET);
+		Assert.hasText(ticket);
 		
+		entity.setEventKey(eventKey);
+		entity.setTicket(ticket);
+		
+		return entity;
 	}
 
-	private void doEventLocationAnalyze(Properties properties) {
-		// TODO Auto-generated method stub
+	/**
+	 * 解析上报地理位置事件消息
+	 * @param properties POST推送数据解析后的properties
+	 * @return 解析后的实体
+	 */		
+	private AbstractBaseEntity doEventLocationAnalyze(Properties properties) {
+		/*
+		 <xml>
+		 <ToUserName><![CDATA[toUser]]></ToUserName>
+		 <FromUserName><![CDATA[fromUser]]></FromUserName>
+		 <CreateTime>123456789</CreateTime>
+		 <MsgType><![CDATA[event]]></MsgType>
+		 <Event><![CDATA[LOCATION]]></Event>
+		 <Latitude>23.137466</Latitude>
+		 <Longitude>113.352425</Longitude>
+		 <Precision>119.385040</Precision>
+		 </xml>
+		 */
+		EventLocationEntity entity = new EventLocationEntity();
+		doBaseAnalyze(properties, entity);
+		String latitude = properties.getProperty(EventLocationEntity.LATITUDE);
+		Assert.hasText(latitude);
+		String longitude = properties.getProperty(EventLocationEntity.LONGITUDE);
+		Assert.hasText(longitude);
+		String precision = properties.getProperty(EventLocationEntity.PRECISION);
+		Assert.hasText(precision);
 		
+		entity.setLatitude(latitude);
+		entity.setLongitude(longitude);
+		entity.setPrecision(precision);
+		
+		return entity;
 	}
 
-	private void doEventClickAnalyze(Properties properties) {
-		// TODO Auto-generated method stub
+	/**
+	 * 解析自定义菜单-点击菜单拉取消息时的事件消息
+	 * @param properties POST推送数据解析后的properties
+	 * @return 解析后的实体
+	 */
+	private AbstractBaseEntity doEventClickAnalyze(Properties properties) {
+		/*
+	  	 <xml>
+	 	 <ToUserName><![CDATA[toUser]]></ToUserName>
+		 <FromUserName><![CDATA[FromUser]]></FromUserName>
+		 <CreateTime>123456789</CreateTime>
+		 <MsgType><![CDATA[event]]></MsgType>
+		 <Event><![CDATA[CLICK]]></Event>
+		 <EventKey><![CDATA[EVENTKEY]]></EventKey>
+		 </xml>
+		 */
+		EventClickEntity entity = new EventClickEntity();
+		doBaseAnalyze(properties, entity);
+		String eventKey = properties.getProperty(AbstractBaseEntity.EVENT_KEY);
+		Assert.hasText(eventKey);
 		
+		entity.setEventKey(eventKey);
+		
+		return entity;
 	}
 
-	private void doEventViewAnalyze(Properties properties) {
-		// TODO Auto-generated method stub
+	/**
+	 * 解析自定义菜单-点击菜单跳转链接时的事件消息
+	 * @param properties POST推送数据解析后的properties
+	 * @return 解析后的实体
+	 */
+	private AbstractBaseEntity doEventViewAnalyze(Properties properties) {
+		/*
+		 <xml>
+		 <ToUserName><![CDATA[toUser]]></ToUserName>
+		 <FromUserName><![CDATA[FromUser]]></FromUserName>
+		 <CreateTime>123456789</CreateTime>
+		 <MsgType><![CDATA[event]]></MsgType>
+		 <Event><![CDATA[VIEW]]></Event>
+	  	 <EventKey><![CDATA[www.qq.com]]></EventKey>
+		 </xml>
+		 */
+		EventViewEntity entity = new EventViewEntity();
+		doBaseAnalyze(properties, entity);
+		String eventKey = properties.getProperty(AbstractBaseEntity.EVENT_KEY);
+		Assert.hasText(eventKey);
 		
+		entity.setEventKey(eventKey);
+		
+		return entity;
 	}
 
 	/**
@@ -224,7 +368,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @return 解析后的实体
 	 */
 	private AbstractBaseEntity doTextAnalyze(Properties properties) {
-		/* 示例
+		/*
 	 	 <xml>
 	     <ToUserName><![CDATA[toUser]]></ToUserName>
 	 	 <FromUserName><![CDATA[fromUser]]></FromUserName> 
@@ -253,7 +397,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @return 解析后的实体
 	 */
 	private AbstractBaseEntity doImageAnalyze(Properties properties) {
-		/* 示例
+		/*
 		 <xml>
  		 <ToUserName><![CDATA[toUser]]></ToUserName>
  		 <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -286,7 +430,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @return 解析后的实体
 	 */
 	private AbstractBaseEntity doVoiceAnalyze(Properties properties) {
-		/* 示例
+		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
 		 <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -319,7 +463,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @return 解析后的实体
 	 */
 	private AbstractBaseEntity doVideoAnalyze(Properties properties) {
-		/* 示例
+		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
 		 <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -352,7 +496,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @return 解析后的实体
 	 */
 	private AbstractBaseEntity doShortVideoAnalyze(Properties properties) {
-		/* 示例
+		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
 		 <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -385,7 +529,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @return 解析后的实体
 	 */
 	private AbstractBaseEntity doLocationAnalyze(Properties properties) {
-		/* 示例
+		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
 		 <FromUserName><![CDATA[fromUser]]></FromUserName>

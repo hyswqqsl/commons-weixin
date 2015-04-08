@@ -7,4 +7,11 @@ package com.ironside.weixin.push.entity;
  */
 public class EventUnSubscribeEntity extends AbstractBaseEntity {
 
+	/**
+	 * 构造函数，设置类型
+	 */
+	public EventUnSubscribeEntity() {
+		this.setMsgEnum(EntityEnum.EVENT_UNSUBSCRIBE);
+	}
+	
 }

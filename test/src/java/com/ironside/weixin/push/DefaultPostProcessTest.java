@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import com.ironside.weixin.push.entity.AbstractBaseEntity;
 import com.ironside.weixin.push.entity.EntityEnum;
+import com.ironside.weixin.push.entity.EventScanSubscribeEntity;
+import com.ironside.weixin.push.entity.EventSubscribeEntity;
 import com.ironside.weixin.push.entity.ImageEntity;
 
 public class DefaultPostProcessTest {
@@ -26,14 +28,20 @@ public class DefaultPostProcessTest {
 	}
 
 	/**
-	 * 测试解析
+	 * 测试解析普通消息
 	 */
 	@Test
-	public void testAnalyze() {
+	public void testAnalyzeMessage() {
 		// 构造xml
-		String xml = "<xml>	 <ToUserName><![CDATA[toUser]]></ToUserName> <FromUserName><![CDATA[fromUser]]></FromUserName>" +
-					"<CreateTime>1348831860</CreateTime> <MsgType><![CDATA[image]]></MsgType> <PicUrl><![CDATA[this is a url]]>" +
-					"</PicUrl>	 <MediaId><![CDATA[media_id]]></MediaId> <MsgId>1234567890123456</MsgId> </xml>";	
+		String xml = "<xml>" +
+				"<ToUserName><![CDATA[toUser]]></ToUserName>" +
+				"<FromUserName><![CDATA[fromUser]]></FromUserName>" +
+				"<CreateTime>1348831860</CreateTime>" +
+				"<MsgType><![CDATA[image]]></MsgType>" +
+				"<PicUrl><![CDATA[this is a url]]></PicUrl>" +
+				"<MediaId><![CDATA[media_id]]></MediaId>" +
+				"<MsgId>1234567890123456</MsgId>" +
+				"</xml>";
 		// 调用解析
 		AbstractBaseEntity entity = process.analyze(xml);
 		// 验证结果
@@ -43,6 +51,51 @@ public class DefaultPostProcessTest {
 		Assert.assertTrue(entity instanceof ImageEntity);
 		ImageEntity iEntity = (ImageEntity)entity;
 		Assert.assertEquals("this is a url", iEntity.getPicUrl()); 
+	}
+	
+	/**
+	 * 测试解析事件消息
+	 */
+	@Test
+	public void testAnalyzeEvent() {
+		/** 测试关注/取消关注-订阅事件 */
+		// 构造xml
+		String xml = 
+				"<xml>" +
+				"<ToUserName><![CDATA[toUser]]></ToUserName>" +
+				"<FromUserName><![CDATA[FromUser]]></FromUserName>" +
+				"<CreateTime>123456789</CreateTime>" +
+				"<MsgType><![CDATA[event]]></MsgType>" +
+				"<Event><![CDATA[subscribe]]></Event>" +
+				"</xml>";
+		// 调用解析
+		AbstractBaseEntity entity = process.analyze(xml);
+		EventSubscribeEntity sEntity = (EventSubscribeEntity)entity;
+		Assert.assertEquals(EntityEnum.EVENT_SUBSCRIBE.getMsgType(), sEntity.getMsgType());
+		Assert.assertEquals(EntityEnum.EVENT_SUBSCRIBE.getEvent(), sEntity.getEvent());
+		Assert.assertEquals("toUser", sEntity.getToUserName());
+		// 验证结果
+		Assert.assertEquals(EntityEnum.EVENT_SUBSCRIBE, entity.getMsgEnum());
+		/** 扫描带参数二维码-用户未关注时，进行关注后的事件 */
+		// 构造xml
+		xml = 
+				"<xml>" +
+				"<ToUserName><![CDATA[toUser]]></ToUserName>" +
+				"<FromUserName><![CDATA[FromUser]]></FromUserName>" +
+				"<CreateTime>123456789</CreateTime>" +
+				"<MsgType><![CDATA[event]]></MsgType>" +
+				"<Event><![CDATA[subscribe]]></Event>" +
+				"<EventKey><![CDATA[qrscene_123123]]></EventKey>" +
+				"<Ticket><![CDATA[TICKET]]></Ticket>" +
+				"</xml>";
+		// 调用解析
+		entity = process.analyze(xml);
+		// 验证结果
+		Assert.assertEquals(EntityEnum.EVENT_SCAN_SUBSCRIBE, entity.getMsgEnum());
+		EventScanSubscribeEntity ssEntity = (EventScanSubscribeEntity)entity;
+		Assert.assertEquals(EntityEnum.EVENT_SUBSCRIBE.getMsgType(), ssEntity.getMsgType());
+		Assert.assertEquals(EntityEnum.EVENT_SUBSCRIBE.getEvent(), ssEntity.getEvent());
+		Assert.assertEquals("toUser", ssEntity.getToUserName());
 	}
 
 }
