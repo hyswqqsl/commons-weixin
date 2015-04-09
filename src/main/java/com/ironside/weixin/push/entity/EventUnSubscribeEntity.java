@@ -14,4 +14,12 @@ public class EventUnSubscribeEntity extends AbstractBaseEntity {
 		this.setMsgEnum(EntityEnum.EVENT_UNSUBSCRIBE);
 	}
 	
+	/**
+	 * 取得事件类型
+	 * @return 事件类型
+	 */
+	public String getEvent() {
+		return getMsgEnum().getEvent();
+	}	
+	
 }

@@ -38,6 +38,12 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	/** 消息处理器 */
 	private IPostProcessor processor;
 	
+	/**
+	 * 构造函数，设置默认POST处理器
+	 */
+	public DefaultPostProcess() {
+		this.processor = new DefaultPostProcessor();
+	} 
 
 	@Override
 	AbstractBaseEntity analyze(String postData) {
@@ -603,7 +609,38 @@ public class DefaultPostProcess extends AbstractPostProcess {
 
 	@Override
 	String process(AbstractBaseEntity entity) {
-		return null;
+		switch(entity.getMsgEnum()) {
+		case TEXT:
+			return this.processor.postProcessText((TextEntity)entity);
+		case IMAGE:
+			return this.processor.postProcessImage((ImageEntity)entity);
+		case VOICE:
+			return this.processor.postProcessVoice((VoiceEntity)entity);
+		case VIDEO:
+			return this.processor.postProcessVideo((VideoEntity)entity);
+		case SHORTVIDEO:
+			return this.processor.postProcessShortVideo((ShortVideoEntity)entity);
+		case LOCATION:
+			return this.processor.postProcessLocation((LocationEntity)entity);
+		case LINK:
+			return this.processor.postProcessLink((LinkEntity)entity);
+		case EVENT_SUBSCRIBE:
+			return this.processor.postProcessEventSubscribe((EventSubscribeEntity)entity);
+		case EVENT_UNSUBSCRIBE:
+			return this.processor.postProcessEventUnSubscribe((EventUnSubscribeEntity)entity);
+		case EVENT_SCAN_SUBSCRIBE:
+			return this.processor.postProcessEventScanSubscribe((EventScanSubscribeEntity)entity);
+		case EVENT_SCAN:
+			return this.processor.postProcessEventScan((EventScanEntity)entity);
+		case EVENT_LOCATION:
+			return this.processor.postProcessEventLocation((EventLocationEntity)entity);
+		case EVENT_CLICK:
+			return this.processor.postProcessEventClick((EventClickEntity)entity);
+		case EVENT_VIEW:
+			return this.processor.postProcessEventView((EventViewEntity)entity);
+		default:
+			throw new IllegalStateException(String.format("处理实体异常-实体不是预期的类型(%s)", entity.getMsgType()));
+		}
 	}
 
 	/**

@@ -31,5 +31,14 @@ public class EventClickEntity extends AbstractBaseEntity {
 	 */
 	public void setEventKey(String eventKey) {
 		this.eventKey = eventKey;
-	}	
+	}
+	
+	/**
+	 * 取得事件类型
+	 * @return 事件类型
+	 */
+	public String getEvent() {
+		return getMsgEnum().getEvent();
+	}
+	
 }

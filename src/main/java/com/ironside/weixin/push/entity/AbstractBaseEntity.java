@@ -108,12 +108,4 @@ public abstract class AbstractBaseEntity {
 		return getMsgEnum().getMsgType();
 	}
 	
-	/**
-	 * 取得事件类型
-	 * @return 事件类型
-	 */
-	public String getEvent() {
-		return getMsgEnum().getEvent();
-	}
-	
 }
