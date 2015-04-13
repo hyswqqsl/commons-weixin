@@ -27,6 +27,7 @@ import com.ironside.weixin.request.entity.ShortVideoEntity;
 import com.ironside.weixin.request.entity.TextEntity;
 import com.ironside.weixin.request.entity.VideoEntity;
 import com.ironside.weixin.request.entity.VoiceEntity;
+import com.ironside.weixin.response.XmlParse;
 
 /**
  * POST方式推送给微信公众账号的消息处理，具体实现消息解析、处理实体。
@@ -37,6 +38,15 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	
 	/** 消息处理器 */
 	private IPostProcessor processor;
+	private XmlParse xmlParse;
+
+	public XmlParse getXmlParse() {
+		return xmlParse;
+	}
+
+	public void setXmlParse(XmlParse xmlParse) {
+		this.xmlParse = xmlParse;
+	}		
 	
 	/**
 	 * 构造函数，设置默认POST处理器
@@ -49,36 +59,12 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	AbstractBaseEntity analyze(String postData) {
 		Assert.hasText(postData, "postData 参数不能为空");
 		// 将postData解析成properties对象
-		Properties properties = doAnalyze(postData);
+		Properties properties = xmlParse.parse(postData);
 		// 解析properties对象，建立entity对象
 		AbstractBaseEntity entry = doAnalyze(properties);
 		return entry; 
 	}
 
-	/**
-	 * 将postData解析成properties对象
-	 * @param postData POST方式推送的数据
-	 * @return 解析后的properties对象
-	 */
-	Properties doAnalyze(String postData) {
-		Properties properties = new Properties();
-		Document document = null;
-		try {
-			document = DocumentHelper.parseText(postData);
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		}
-		Assert.notNull(document);
-		Element root = document.getRootElement();
-		List elements = root.elements();
-		Element element;
-		for (int i = 0; i < elements.size(); i++) {
-			element = (Element)elements.get(i);
-			properties.put(element.getName(), element.getText());
-		}
-		return properties;
-	}
-	
 	/**
 	 * 解析properties对象，建立entity对象
 	 * @param properties POST推送数据解析后的properties

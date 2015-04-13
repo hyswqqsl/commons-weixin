@@ -13,6 +13,7 @@ import com.ironside.weixin.request.entity.EntityEnum;
 import com.ironside.weixin.request.entity.EventScanSubscribeEntity;
 import com.ironside.weixin.request.entity.EventSubscribeEntity;
 import com.ironside.weixin.request.entity.ImageEntity;
+import com.ironside.weixin.response.XmlParse;
 
 public class DefaultPostProcessTest {
 	
@@ -22,6 +23,8 @@ public class DefaultPostProcessTest {
 	@Before
 	public void setUp() throws Exception {
 		process = new DefaultPostProcess();
+		XmlParse xmlParse = new XmlParse();
+		process.setXmlParse(xmlParse);
 	}
 
 	@After

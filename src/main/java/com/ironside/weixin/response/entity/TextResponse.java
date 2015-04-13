@@ -7,7 +7,7 @@ package com.ironside.weixin.response.entity;
  */
 
 public class TextResponse extends AbstractBaseResponse {
-	
+	 
 	/** 对应xml中定义的'文本消息内容'标识 */
 	public final static String CONTENT = "Content";
 
