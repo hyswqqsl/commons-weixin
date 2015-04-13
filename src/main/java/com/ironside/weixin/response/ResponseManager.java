@@ -37,7 +37,7 @@ public class ResponseManager {
 	}	
 
 	/** 取得文本回复实体 */
-	public 	TextResponse getTextResponse() {
+	public TextResponse getTextResponse() {
 		// 取得xml字符串
 		String str = xmlParse.getXmlString("text");
 		// 取得xml名字和值对应
