@@ -59,7 +59,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	AbstractBaseEntity analyze(String postData) {
 		Assert.hasText(postData, "postData 参数不能为空");
 		// 将postData解析成properties对象
-		Properties properties = xmlParse.parse(postData);
+		Properties properties = xmlParse.parseString(postData);
 		// 解析properties对象，建立entity对象
 		AbstractBaseEntity entry = doAnalyze(properties);
 		return entry; 

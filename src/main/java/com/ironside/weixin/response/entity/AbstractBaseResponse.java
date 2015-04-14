@@ -24,10 +24,9 @@ public class AbstractBaseResponse {
 	private String fromUserName;
 	/** 消息创建时间  */
 	private Date createTime;
-	/** 消息类型 */
-	private String msgType; 
-	
-	
+	/** 消息类型对象 */
+	private ResponseEnum msgEnum;
+
 	/**
 	 * 取得开发者微信号
 	 * @return 开发者微信号
@@ -77,19 +76,27 @@ public class AbstractBaseResponse {
 	}
 	
 	/**
+	 * 取得消息类型对象
+	 * @return 消息类型对象
+	 */	
+	public ResponseEnum getMsgEnum() {
+		return msgEnum;
+	}
+
+	/**
+	 * 设置消息类型对象
+	 * @param msgType 消息类型对象
+	 */	
+	public void setMsgEnum(ResponseEnum msgEnum) {
+		this.msgEnum = msgEnum;
+	}
+	
+	/**
 	 * 取得消息类型
 	 * @return 消息类型
 	 */
 	public String getMsgtype() {
-		return msgType;
+		return msgEnum.getMsgType();
 	}
-	
-	/**
-	 * 设置消息类型
-	 * @param msgType 消息类型
-	 */
-	public void setMsgEnum(String msgType) {
-		this.msgType = msgType;
-	}		
-	
+
 }

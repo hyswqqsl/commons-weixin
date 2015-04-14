@@ -9,15 +9,15 @@ import com.ironside.weixin.response.entity.TextResponse;
 
 public class ResponseManagerTest {
 	
-	private final String XML_FILENAME = "template.xml";
+	// private final String XML_FILENAME = "text
 	private ResponseManager responseManager;
 
 	@Before
 	public void setUp() throws Exception {
 		responseManager = new ResponseManager();
-		responseManager.setXmlFileName(XML_FILENAME);
+		// responseManager.setXmlFileName(XML_FILENAME);
 		XmlParse xmlParse = new XmlParse();
-		xmlParse.setXmlFileName(responseManager.getXmlFileName());
+		//xmlParse.setXmlFileName(responseManager.getXmlFileName());
 		responseManager.setXmlParse(xmlParse);
 	}
 

@@ -1,6 +1,5 @@
 package com.ironside.weixin.request.entity;
 
-
 /**
  * POST方式推送给微信公众账号的消息类型
  * @author 雪庭

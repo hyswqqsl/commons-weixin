@@ -17,9 +17,11 @@ import com.ironside.weixin.response.entity.TextResponse;
  */
 public class ResponseManager {
 	
-	private String xmlFileName;
+	//private String xmlFileName;
 	private XmlParse xmlParse;
 	
+	private final String DEFAULT_TEXT_XML_FILE = "textResponse.xml";
+	/*
 	public String getXmlFileName() {
 		return xmlFileName;
 	}
@@ -27,7 +29,7 @@ public class ResponseManager {
 	public void setXmlFileName(String xmlFile) {
 		this.xmlFileName = xmlFile;
 	}
-	
+	*/
 	public XmlParse getXmlParse() {
 		return xmlParse;
 	}
@@ -39,9 +41,9 @@ public class ResponseManager {
 	/** 取得文本回复实体 */
 	public TextResponse getTextResponse() {
 		// 取得xml字符串
-		String str = xmlParse.getXmlString("text");
+		//String str = xmlParse.getXmlString(DEFAULT_TEXT_XML_FILE);
 		// 取得xml名字和值对应
-		Properties properties = xmlParse.parse(str);
+		Properties properties = xmlParse.parseXmlFile(DEFAULT_TEXT_XML_FILE);
 		// 根据名字和值对应生成对象
 		return  doTextResponse(properties);
 	}

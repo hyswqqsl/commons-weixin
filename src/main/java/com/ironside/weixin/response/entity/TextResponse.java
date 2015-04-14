@@ -2,7 +2,7 @@ package com.ironside.weixin.response.entity;
 
 /**
  * 文本回复实体类
- * @author ZXJ
+ * @author 雪庭
  * @sine 1.0 at 2015年4月9日
  */
 
@@ -13,6 +13,10 @@ public class TextResponse extends AbstractBaseResponse {
 
 	/** 文本消息内容 */
 	private String content;	
+	
+	public TextResponse() {
+		this.setMsgEnum(ResponseEnum.TEXT);
+	}
 
 	/**
 	 * 取得文本消息内容
