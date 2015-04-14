@@ -20,7 +20,10 @@ public enum ResponseEnum {
 	/** 图文回复 */
 	NEWS("news");
 	
-	
+	/**
+	 * 消息类型构造函数
+	 * @param msgType 消息类型
+	 */	
 	private ResponseEnum(String msgType) {
 		this.msgType = msgType;
 	}

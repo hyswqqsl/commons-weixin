@@ -12,42 +12,55 @@ import com.ironside.weixin.response.entity.TextResponse;
 
 /**
  * 回复实体管理
- * @author ZXJ
+ * @author 雪庭
  * @sine 1.0 at 2015年4月9日
  */
 public class ResponseManager {
-	
-	//private String xmlFileName;
-	private XmlParse xmlParse;
-	
-	private final String DEFAULT_TEXT_XML_FILE = "textResponse.xml";
-	/*
-	public String getXmlFileName() {
-		return xmlFileName;
-	}
 
-	public void setXmlFileName(String xmlFile) {
-		this.xmlFileName = xmlFile;
-	}
-	*/
+	/** 默认文本类型回复xml文件 */
+	private final String DEFAULT_TEXT_XML_FILE = "textResponse.xml";
+	
+	/** xml解析对象 */
+	private XmlParse xmlParse;
+
+	/** 
+	 * 取得xml解析对象
+	 * @return xml解析对象
+	 */
 	public XmlParse getXmlParse() {
 		return xmlParse;
 	}
 
+	/**
+	 * 设置xml解析对象
+	 * @param xmlParse xml解析对象
+	 */
 	public void setXmlParse(XmlParse xmlParse) {
 		this.xmlParse = xmlParse;
 	}	
 
-	/** 取得文本回复实体 */
+	/**
+	 * 取得默认文本回复实体
+	 * @return 文本回复实体
+	 */
 	public TextResponse getTextResponse() {
-		// 取得xml字符串
-		//String str = xmlParse.getXmlString(DEFAULT_TEXT_XML_FILE);
-		// 取得xml名字和值对应
+		// 取得名字和值信息
 		Properties properties = xmlParse.parseXmlFile(DEFAULT_TEXT_XML_FILE);
 		// 根据名字和值对应生成对象
 		return  doTextResponse(properties);
 	}
-	
+
+	/**
+	 * 根据传递的xml文件取得文本回复实体
+	 * @return 文本回复实体
+	 */
+	public TextResponse getTextResponse(String xmlFile) {
+		// 取得名字和值信息
+		Properties properties = xmlParse.parseXmlFile(xmlFile);
+		// 根据名字和值对应生成对象
+		return  doTextResponse(properties);
+	}
+
 	/**
 	 * 基础解析
 	 * @param properties 解析后的properties

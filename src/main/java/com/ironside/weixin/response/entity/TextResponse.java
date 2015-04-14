@@ -13,7 +13,10 @@ public class TextResponse extends AbstractBaseResponse {
 
 	/** 文本消息内容 */
 	private String content;	
-	
+
+	/**
+	 * 构造函数，设置类型
+	 */
 	public TextResponse() {
 		this.setMsgEnum(ResponseEnum.TEXT);
 	}

@@ -1,6 +1,5 @@
 package com.ironside.weixin.request.entity;
 
-
 /**
  * 文本消息实体
  * @author 雪庭

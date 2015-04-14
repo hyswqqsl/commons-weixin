@@ -1,6 +1,7 @@
 package com.ironside.weixin.response;
 
 import java.io.File;
+import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
@@ -11,68 +12,43 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.springframework.util.Assert;
 
+/**
+ * xml解析
+ * @author 雪庭
+ * @sine at 2015年4月14日
+ */
 public class XmlParse {
-
-	/*
-	public void setXmlFileName(String xmlFileName) {
-		//this.xmlFileName = xmlFileName;;
-		// 创建文件对象
-		String url = ClassLoader.getSystemResource(xmlFileName).getPath();
-		File file= new File(url);
-		if (file.isFile()==false) {
-			this.xmlFileName = null;
-			this.document = null;
-			return;
-		}
-		// 创建SAX阅读器
-		SAXReader reader= new SAXReader();
-		try {
-			document = reader.read(file);
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		}
-		//读取内容生成Document对象
-		Assert.notNull(document);			
-	}
-	*/
-	@SuppressWarnings("rawtypes")
+	
+	/**
+	 * 解析xml文件，得到名字和值信息
+	 * @param xmlFile xml文件
+	 * @return 名字和值信息
+	 */
 	public Properties parseXmlFile(String xmlFile) {
-		// 创建文件对象
-		String url = ClassLoader.getSystemResource(xmlFile).getPath();
-		File file= new File(url);
+		// 取得文件绝对路径
+		URL url = ClassLoader.getSystemResource(xmlFile);
+		if (url==null) {
+			throw new IllegalStateException("xml文件不存在-" + xmlFile); 
+		}
+		String xmlFilePath = ClassLoader.getSystemResource(xmlFile).getPath();
+		File file= new File(xmlFilePath);
 		Assert.isTrue(file.isFile());
 		// 创建SAX阅读器
 		SAXReader reader= new SAXReader();
 		Document document = null;
 		try {
+			// 读取内容生成Document对象
 			document = reader.read(file);
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
-		//读取内容生成Document对象
 		Assert.notNull(document);			
-		// 
 		return parseDocument(document);
-		/*
-		Element root = document.getRootElement();
-		
-		List elements = root.elements();
-		Element element;
-		for (int i = 0; i < elements.size(); i++) {
-			element = (Element) elements.get(i);
-			if (element.getName().equals(name)) {
-				return element.getText();
-			}
-		}
-		return EMPTY_STR;
-		*/
 	}
 
 	/**
-	 * 将xmlStr解析成properties对象
-	 * 
-	 * @param xmlStr
-	 *            xml字符串
+	 * 解析xml字符串，得到名字和值信息
+	 * @param xmlStr xml字符串
 	 * @return 解析后的properties对象
 	 */
 	public Properties parseString(String xmlStr) {
@@ -86,14 +62,23 @@ public class XmlParse {
 		return parseDocument(document);
 	}
 
+	/**
+	 * 解析xml定义，得到名字和值信息
+	 * @param document xml定义
+	 * @return 名字和值信息
+	 */
 	@SuppressWarnings("rawtypes")
 	private Properties parseDocument(Document document) {
+		// 取得取得根节点
 		Element root = document.getRootElement();
+		// 取得子元素
 		List elements = root.elements();
 		Properties properties = new Properties();
 		Element element;
+		// 遍历子元素
 		for (int i = 0; i < elements.size(); i++) {
 			element = (Element) elements.get(i);
+			// 添加名字和值信息
 			properties.put(element.getName(), element.getText());
 		}
 		return properties;
