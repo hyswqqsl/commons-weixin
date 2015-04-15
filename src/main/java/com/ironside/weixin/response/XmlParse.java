@@ -25,11 +25,13 @@ public class XmlParse {
 	 * @return 名字和值信息
 	 */
 	public Properties parseXmlFile(String xmlFile) {
-		// 取得文件绝对路径
+		Assert.hasText(xmlFile);
 		URL url = ClassLoader.getSystemResource(xmlFile);
+		// 如果xml文件不存在
 		if (url==null) {
-			throw new IllegalStateException("xml文件不存在-" + xmlFile); 
+			throw new IllegalStateException(String.format("xml文件不存在: %s", xmlFile));
 		}
+		// 取得文件绝对路径
 		String xmlFilePath = ClassLoader.getSystemResource(xmlFile).getPath();
 		File file= new File(xmlFilePath);
 		Assert.isTrue(file.isFile());
