@@ -8,6 +8,7 @@ import org.springframework.util.Assert;
 import com.ironside.weixin.request.entity.AbstractBaseEntity;
 import com.ironside.weixin.request.entity.TextEntity;
 import com.ironside.weixin.response.entity.AbstractBaseResponse;
+import com.ironside.weixin.response.entity.ResponseEnum;
 import com.ironside.weixin.response.entity.TextResponse;
 
 /**
@@ -22,6 +23,8 @@ public class ResponseManager {
 	
 	/** xml解析对象 */
 	private XmlParse xmlParse;
+
+	TextResponse textResponse;
 
 	/** 
 	 * 取得xml解析对象
@@ -54,13 +57,14 @@ public class ResponseManager {
 	 * 根据传递的xml文件取得文本回复实体
 	 * @return 文本回复实体
 	 */
+	/*
 	public TextResponse getTextResponse(String xmlFile) {
 		// 取得名字和值信息
 		Properties properties = xmlParse.parseXmlFile(xmlFile);
 		// 根据名字和值对应生成对象
 		return  doTextResponse(properties);
 	}
-
+*/
 	/**
 	 * 基础解析
 	 * @param properties 解析后的properties
@@ -101,9 +105,17 @@ public class ResponseManager {
 		doBaseAnalyze(properties, entity);
 		String content = properties.getProperty(TextEntity.CONTENT);
 		Assert.hasText(content);
-		
+		String msgType = properties.getProperty(TextEntity.MSG_TYPE);
+		Assert.hasText(msgType);
+		Assert.isTrue(msgType.equals(ResponseEnum.TEXT), String.format("文本回复xml中MsgType有误： %s", msgType));
+
 		entity.setContent(content);
 		return entity;
+	}
+
+	public void setTextResponseXml(String xmlFile) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/** 取得图片回复实体 */
