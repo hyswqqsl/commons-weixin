@@ -11,6 +11,7 @@ import com.ironside.weixin.response.entity.AbstractBaseResponse;
 import com.ironside.weixin.response.entity.ImageResponse;
 import com.ironside.weixin.response.entity.ResponseEnum;
 import com.ironside.weixin.response.entity.TextResponse;
+import com.ironside.weixin.response.entity.ImageResponse.Image;
 
 /**
  * 回复实体管理
@@ -49,10 +50,15 @@ public class ResponseManager {
 
 	/** 文本类型回复xml文件 */
 	private String textXmlFile;
+	/** 图片类型回复xml文件 */
+	private String imageXmlFile;
+
 	/** xml解析对象 */
 	private XmlParse xmlParse;
 	/** 文本回复消息缓冲 */
 	TextResponse textResponse;
+	/** 图片回复消息缓冲 */
+	ImageResponse imageResponse;
 
 	/**
 	 * 取得文本类型回复xml文件
@@ -74,6 +80,28 @@ public class ResponseManager {
 		this.textXmlFile = textXmlFile;
 		// 清空缓存
 		this.textResponse = null;
+	}
+	
+	/**
+	 * 取得图片类型回复xml文件
+	 * 
+	 * @return 文本类型回复xml文件
+	 */
+	public String getImageXmlFile() {
+		return imageXmlFile;
+	}
+
+	/**
+	 * 设置图片类型回复xml文件
+	 * 
+	 * @param textXmlFile
+	 *            图片类型回复xml文件
+	 */	
+	public void setImageXmlFile(String imageXmlFile) {
+		Assert.hasText(imageXmlFile);
+		this.imageXmlFile = imageXmlFile;
+		// 清空缓存
+		this.imageResponse = null;
 	}
 
 	/**
@@ -133,12 +161,6 @@ public class ResponseManager {
 		return doTextResponse(properties);
 	}
 
-	/*
-	 * public TextResponse getTextResponse(String xmlFile) { // 取得名字和值信息
-	 * Properties properties = xmlParse.parseXmlFile(xmlFile); // 根据名字和值对应生成对象
-	 * return doTextResponse(properties); }
-	 */
-
 	/**
 	 * 基础解析
 	 * 
@@ -177,7 +199,7 @@ public class ResponseManager {
 		doBaseAnalyze(properties, entity);
 		String content = properties.getProperty(TextResponse.CONTENT);
 		Assert.hasText(content);
-		String msgType = properties.getProperty(TextResponse.MSG_TYPE);
+		String msgType = properties.getProperty(AbstractBaseResponse.MSG_TYPE);
 		Assert.hasText(msgType);
 		Assert.isTrue(msgType.equals(ResponseEnum.TEXT.getMsgType()),
 				String.format("文本回复xml中MsgType有误： %s", msgType));
@@ -189,10 +211,59 @@ public class ResponseManager {
 	/** 取得图片回复实体 */
 	public ImageResponse getImageResponse()
 	{
-		Properties properties;
-		properties = xmlParse.parseString(DEFAULT_IMAGE_XML_STRING);
-		return null;
+		if (this.imageResponse == null) {
+			this.imageResponse = doGetImageResponse();
+		}
+		return this.imageResponse;
 	}
+
+	/**
+	 * 从xml文件中解析实体</br> 
+	 * 如果设置了xml文件，从xml文件中解析；否则从默认xml文件中解析
+	 * 
+	 * @return 图片回复实体
+	 */	
+	private ImageResponse doGetImageResponse() {
+		Properties properties;
+		if (StringUtils.isEmpty(this.imageXmlFile)) {
+			properties = xmlParse.parseString(DEFAULT_IMAGE_XML_STRING);
+			return doImageResponse(properties);
+		}
+		URL url = ClassLoader.getSystemResource(this.imageXmlFile);
+		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
+		if (url == null) {
+			this.imageXmlFile = null;
+			properties = xmlParse.parseString(DEFAULT_IMAGE_XML_STRING);
+			return doImageResponse(properties);
+		}
+		// 取得名字和值信息
+		properties = xmlParse.parseXmlFile(this.imageXmlFile);
+		// 根据名字和值对应生成对象
+		return doImageResponse(properties);
+	}
+
+	/**
+	 * 根据名字和值对应生成对象
+	 * 
+	 * @param properties
+	 *            xml名字和值对应
+	 * @return 图片回复实体
+	 */
+	private ImageResponse doImageResponse(Properties properties) {
+		ImageResponse entity = new ImageResponse();
+		doBaseAnalyze(properties, entity);
+		String msgType = properties.getProperty(AbstractBaseResponse.MSG_TYPE);
+		Assert.hasText(msgType);
+		Assert.isTrue(msgType.equals(ResponseEnum.IMAGE.getMsgType()),
+				String.format("文本回复xml中MsgType有误： %s", msgType));
+		String mediaId = properties.getProperty(ImageResponse.MEDIA_ID);
+		Assert.hasText(mediaId);
+
+		entity.setMediaId(mediaId);
+		return entity;
+	}
+	
+	
 
 	/** 取得语音回复实体 */
 	// public VoiceResponse getVoiceResponse();

@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ironside.weixin.response.entity.ImageResponse;
+import com.ironside.weixin.response.entity.ResponseEnum;
 import com.ironside.weixin.response.entity.TextResponse;
 
 /**
@@ -46,21 +47,21 @@ public class ResponseManagerTest {
 		// 验证消息
 		Assert.assertEquals(textResponse.getFromUserName(), "fromUser");
 		Assert.assertEquals(textResponse.getToUserName(), "toUser");
-		Assert.assertEquals(textResponse.getMsgtype(), "text");
+		Assert.assertEquals(textResponse.getMsgtype(), ResponseEnum.TEXT.getMsgType());
 		// *** 测试根据回复实体xml文件取得文本回复实体 ***
 		this.responseManager.setTextXmlFile(TEST_TEXT_XMLFILE);
 		textResponse = this.responseManager.getTextResponse();
 		// 验证取得的是根据xml文件解析消息
 		Assert.assertEquals(textResponse.getFromUserName(), "testFromUser");
 		Assert.assertEquals(textResponse.getToUserName(), "testToUser");
-		Assert.assertEquals(textResponse.getMsgtype(), "text");
+		Assert.assertEquals(textResponse.getMsgtype(), ResponseEnum.TEXT.getMsgType());
 		// *** 测试不存在的xml文件 ***
 		this.responseManager.setTextXmlFile(NOEXISTING_TEST_XMLFILE);
 		textResponse = this.responseManager.getTextResponse();
 		// 验证取得的是默认消息
 		Assert.assertEquals(textResponse.getFromUserName(), "fromUser");
 		Assert.assertEquals(textResponse.getToUserName(), "toUser");
-		Assert.assertEquals(textResponse.getMsgtype(), "text");
+		Assert.assertEquals(textResponse.getMsgtype(), ResponseEnum.TEXT.getMsgType());
 		// *** 测试有问题的实体xml文件
 		this.responseManager.setTextXmlFile(WRONG_XMLFILE);
 		try {
@@ -100,8 +101,15 @@ public class ResponseManagerTest {
 	
 	@Test
 	public void testImageResponse() {
+		// *** 测试取得默认消息 ***
 		ImageResponse response = this.responseManager.getImageResponse();
-		Assert.assertNull(response);
+		Assert.assertEquals(response.getMsgtype(), ResponseEnum.IMAGE.getMsgType());
+		Assert.assertEquals(response.getMediaId(), "media_id");
+		// *** 测试根据回复实体xml文件取得图片回复实体 ***
+		this.responseManager.setImageXmlFile("testImageResponse.xml");
+		response = this.responseManager.getImageResponse();
+		Assert.assertEquals(response.getMsgtype(), ResponseEnum.IMAGE.getMsgType());
+		Assert.assertEquals(response.getMediaId(), "test_media_id");		
 	}
 
 }

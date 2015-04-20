@@ -1,7 +1,5 @@
 package com.ironside.weixin.response.entity;
 
-import java.util.List;
-
 /**
  * 图片回复实体类
  * @author 雪庭
@@ -12,20 +10,21 @@ public class ImageResponse extends AbstractBaseResponse {
 	/** 对应xml中定义的'文本消息内容'标识 */
 	public final static String IMAGE = "Image";
 	
-	private List<Image> images;
+	private Image image;
 	
-	public String getMediaId() {
-		return this.images.get(0).getMediaId();
-	}
-
-	public void setMediaId(String mediaId) {
-		this.images.get(0).setMediaId(mediaId);
-	}
-
 	public ImageResponse() {
+		image = new Image();
 		this.setMsgEnum(ResponseEnum.IMAGE);
 	}
 	
+	public String getMediaId() {
+		return this.image.getMediaId();
+	}
+
+	public void setMediaId(String mediaId) {
+		this.image.setMediaId(mediaId);
+	}
+
 	public class Image {
 		
 		String mediaId;
