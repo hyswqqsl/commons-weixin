@@ -16,11 +16,11 @@ import com.ironside.weixin.request.entity.VideoEntity;
 import com.ironside.weixin.request.entity.VoiceEntity;
 
 /**
- * 默认POST处理器
+ * POST处理器缺省适配模式
  * @author 雪庭
  * @sine 1.0 at 2015年4月9日
  */
-public class DefaultPostProcessor implements IPostProcessor {
+public class PostProcessorAdapter implements IPostProcessor {
 	
 	/** 默认回复消息 */
 	protected final String result = "success"; 

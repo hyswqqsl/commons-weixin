@@ -7,20 +7,45 @@ import java.util.Properties;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import com.ironside.weixin.request.entity.TextEntity;
 import com.ironside.weixin.response.entity.AbstractBaseResponse;
+import com.ironside.weixin.response.entity.ImageResponse;
 import com.ironside.weixin.response.entity.ResponseEnum;
 import com.ironside.weixin.response.entity.TextResponse;
 
 /**
  * 回复实体管理
+ * 
  * @author 雪庭
  * @sine 1.0 at 2015年4月9日
  */
 public class ResponseManager {
 
-	/** 默认文本类型回复xml文件 */
-	private final String DEFAULT_TEXT_XML_FILE = "textResponse.xml";
+	/** 默认文本类型回复字符串 */
+	/*
+	 * <xml> 
+	 * <ToUserName><![CDATA[toUser]]></ToUserName>
+	 * <FromUserName><![CDATA[fromUser]]></FromUserName>
+	 * <CreateTime>12345678</CreateTime> 
+	 * <MsgType><![CDATA[text]]></MsgType>
+	 * <Content><![CDATA[你好]]></Content> 
+	 * </xml>
+	 */
+	private final String DEFAULT_TEXT_XML_STRING = "<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName>"
+			+ "<CreateTime>12345678</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[你好]]></Content></xml>";
+	/** 默认图片类型回复字符串 */
+	/*
+	 * <xml> 
+	 * <ToUserName><![CDATA[toUser]]></ToUserName>
+	 * <FromUserName><![CDATA[fromUser]]></FromUserName>
+	 * <CreateTime>12345678</CreateTime>
+	 * <MsgType><![CDATA[image]]></MsgType>
+	 * <Image>
+	 * <MediaId><![CDATA[media_id]]></MediaId>
+	 *</Image>
+	 *</xml>
+	 */	
+	private final String DEFAULT_IMAGE_XML_STRING = "<xml>	<ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName>"
+			+ "<CreateTime>12345678</CreateTime><MsgType><![CDATA[image]]></MsgType><Image><MediaId><![CDATA[media_id]]></MediaId></Image></xml>"; 
 
 	/** 文本类型回复xml文件 */
 	private String textXmlFile;
@@ -31,6 +56,7 @@ public class ResponseManager {
 
 	/**
 	 * 取得文本类型回复xml文件
+	 * 
 	 * @return 文本类型回复xml文件
 	 */
 	public String getTextXmlFile() {
@@ -39,7 +65,9 @@ public class ResponseManager {
 
 	/**
 	 * 设置文本类型回复xml文件
-	 * @param textXmlFile 文本类型回复xml文件
+	 * 
+	 * @param textXmlFile
+	 *            文本类型回复xml文件
 	 */
 	public void setTextXmlFile(String textXmlFile) {
 		Assert.hasText(textXmlFile);
@@ -48,8 +76,9 @@ public class ResponseManager {
 		this.textResponse = null;
 	}
 
-	/** 
+	/**
 	 * 取得xml解析对象
+	 * 
 	 * @return xml解析对象
 	 */
 	public XmlParse getXmlParse() {
@@ -58,120 +87,123 @@ public class ResponseManager {
 
 	/**
 	 * 设置xml解析对象
-	 * @param xmlParse xml解析对象
+	 * 
+	 * @param xmlParse
+	 *            xml解析对象
 	 */
 	public void setXmlParse(XmlParse xmlParse) {
 		Assert.notNull(xmlParse);
 		this.xmlParse = xmlParse;
-	}	
+	}
 
 	/**
-	 * 取得文本回复实体</br>
-	 * 如果缓冲中有实体，直接返回；否则从xml文件中解析实体
+	 * 取得文本回复实体</br> 如果缓冲中有实体，直接返回；否则从xml文件中解析实体
+	 * 
 	 * @return 文本回复实体
 	 */
 	public TextResponse getTextResponse() {
-		if (this.textResponse==null) {
+		if (this.textResponse == null) {
 			this.textResponse = doGetTextResponse();
 		}
 		return this.textResponse;
 	}
-	
+
 	/**
-	 * 从xml文件中解析实体</br>
+	 * 从xml文件中解析实体</br> 
 	 * 如果设置了xml文件，从xml文件中解析；否则从默认xml文件中解析
+	 * 
 	 * @return 文本回复实体
 	 */
 	private TextResponse doGetTextResponse() {
-		String xmlFile;
+		Properties properties;
 		if (StringUtils.isEmpty(this.textXmlFile)) {
-			xmlFile = DEFAULT_TEXT_XML_FILE;
-		} else {
-			URL url = ClassLoader.getSystemResource(this.textXmlFile);
-			// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
-			if (url==null) {
-				xmlFile = DEFAULT_TEXT_XML_FILE;
-				this.textXmlFile = null;
-			} else {
-				xmlFile = this.textXmlFile;
-			}
+			properties = xmlParse.parseString(DEFAULT_TEXT_XML_STRING);
+			return doTextResponse(properties);
+		}
+		URL url = ClassLoader.getSystemResource(this.textXmlFile);
+		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
+		if (url == null) {
+			this.textXmlFile = null;
+			properties = xmlParse.parseString(DEFAULT_TEXT_XML_STRING);
+			return doTextResponse(properties);
 		}
 		// 取得名字和值信息
-		Properties properties = xmlParse.parseXmlFile(xmlFile);
+		properties = xmlParse.parseXmlFile(this.textXmlFile);
 		// 根据名字和值对应生成对象
 		return doTextResponse(properties);
 	}
 
 	/*
-	public TextResponse getTextResponse(String xmlFile) {
-		// 取得名字和值信息
-		Properties properties = xmlParse.parseXmlFile(xmlFile);
-		// 根据名字和值对应生成对象
-		return  doTextResponse(properties);
-	}
+	 * public TextResponse getTextResponse(String xmlFile) { // 取得名字和值信息
+	 * Properties properties = xmlParse.parseXmlFile(xmlFile); // 根据名字和值对应生成对象
+	 * return doTextResponse(properties); }
 	 */
-	
+
 	/**
 	 * 基础解析
-	 * @param properties 解析后的properties
-	 * @param entity 用于基础解析的实体
+	 * 
+	 * @param properties
+	 *            解析后的properties
+	 * @param entity
+	 *            用于基础解析的实体
 	 */
-	private void doBaseAnalyze(Properties properties, AbstractBaseResponse entity) {
-		String toUserName = properties.getProperty(TextEntity.TO_USER_NAME);
+	private void doBaseAnalyze(Properties properties,
+			AbstractBaseResponse entity) {
+		String toUserName = properties.getProperty(TextResponse.TO_USER_NAME);
 		Assert.hasText(toUserName);
-		String fromUserName = properties.getProperty(TextEntity.FORM_USER_NAME);
+		String fromUserName = properties
+				.getProperty(TextResponse.FORM_USER_NAME);
 		Assert.hasText(fromUserName);
-		String createTimeStr = properties.getProperty(TextEntity.CREATE_TIME);
+		String createTimeStr = properties.getProperty(TextResponse.CREATE_TIME);
 		Assert.hasText(createTimeStr);
 		// 将时间整形转换为对象
 		Date createTime = new Date(Long.parseLong(createTimeStr));
 		Assert.notNull(createTime);
-		
+
 		entity.setToUserName(toUserName);
 		entity.setFromUserName(fromUserName);
 		entity.setCreateTime(createTime);
-	}	
+	}
 
 	/**
 	 * 根据名字和值对应生成对象
-	 * @param properties xml名字和值对应
+	 * 
+	 * @param properties
+	 *            xml名字和值对应
 	 * @return 文本回复实体
 	 */
 	private TextResponse doTextResponse(Properties properties) {
-		/*
-		 <xml>
-		 <ToUserName><![CDATA[toUser]]></ToUserName>
-		 <FromUserName><![CDATA[fromUser]]></FromUserName>
-		 <CreateTime>12345678</CreateTime>
-		 <MsgType><![CDATA[text]]></MsgType>
-		 <Content><![CDATA[你好]]></Content>
-	  	 </xml>
-		 */
 		TextResponse entity = new TextResponse();
 		doBaseAnalyze(properties, entity);
-		String content = properties.getProperty(TextEntity.CONTENT);
+		String content = properties.getProperty(TextResponse.CONTENT);
 		Assert.hasText(content);
-		String msgType = properties.getProperty(TextEntity.MSG_TYPE);
+		String msgType = properties.getProperty(TextResponse.MSG_TYPE);
 		Assert.hasText(msgType);
-		Assert.isTrue(msgType.equals(ResponseEnum.TEXT.getMsgType()), String.format("文本回复xml中MsgType有误： %s", msgType));
+		Assert.isTrue(msgType.equals(ResponseEnum.TEXT.getMsgType()),
+				String.format("文本回复xml中MsgType有误： %s", msgType));
 
 		entity.setContent(content);
 		return entity;
 	}
 
 	/** 取得图片回复实体 */
-	// public 	ImageResponse getImageResponse();
-	
+	public ImageResponse getImageResponse()
+	{
+		Properties properties;
+		properties = xmlParse.parseString(DEFAULT_IMAGE_XML_STRING);
+		return null;
+	}
+
 	/** 取得语音回复实体 */
-	// public 	VoiceResponse getVoiceResponse();
-	
+	// public VoiceResponse getVoiceResponse();
+
 	/** 取得视频回复实体 */
-	// public 	VideoResponse getVideoResponse();
-	
+	// public VideoResponse getVideoResponse();
+
 	/** 取得音乐回复实体 */
-	// public 	MusicResponse getMusicResponse();
-	
+	// public MusicResponse getMusicResponse();
+
 	/** 取得图文回复实体 */
-	// public 	NewsResponse getNewsResponse();
+	// public NewsResponse getNewsResponse();
 
 }

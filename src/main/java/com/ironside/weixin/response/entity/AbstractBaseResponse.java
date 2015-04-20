@@ -17,6 +17,9 @@ public class AbstractBaseResponse {
 	public final static String CREATE_TIME = "CreateTime";
 	/** 对应xml中定义的'消息类型'标识 */
 	public final static String MSG_TYPE = "MsgType";
+	/** 对应xml中定义的'通过上传多媒体文件，得到的id '标识 */
+	public final static String MEDIA_ID = "MediaId";	
+	
 		
 	/** 开发者微信号  */
 	private String toUserName;

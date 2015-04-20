@@ -3,6 +3,7 @@ package com.ironside.weixin.response;
 import java.io.File;
 import java.net.URL;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Properties;
 
 import org.dom4j.Document;
@@ -11,6 +12,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * xml解析
@@ -78,10 +80,19 @@ public class XmlParse {
 		Properties properties = new Properties();
 		Element element;
 		// 遍历子元素
+		List childElements;
+		Element childElement;
 		for (int i = 0; i < elements.size(); i++) {
 			element = (Element) elements.get(i);
 			// 添加名字和值信息
 			properties.put(element.getName(), element.getText());
+			if (StringUtils.isEmpty(element.getText())) {
+				childElements = element.elements();
+				for (int j=0; j<childElements.size(); j++) {
+					childElement = (Element)childElements.get(j);
+					properties.put(childElement.getName(), childElement.getText());
+				}
+			}
 		}
 		return properties;
 	}

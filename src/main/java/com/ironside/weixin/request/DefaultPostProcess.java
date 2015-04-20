@@ -52,7 +52,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * 构造函数，设置默认POST处理器
 	 */
 	public DefaultPostProcess() {
-		this.processor = new DefaultPostProcessor();
+		this.processor = new PostProcessorAdapter();
 	} 
 
 	@Override

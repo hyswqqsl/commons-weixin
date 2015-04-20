@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ironside.weixin.response.entity.ImageResponse;
 import com.ironside.weixin.response.entity.TextResponse;
 
 /**
@@ -95,6 +96,12 @@ public class ResponseManagerTest {
 		textResponse = this.responseManager.getTextResponse(); 
 		// 验证缓冲会更新
 		Assert.assertTrue((textResponse.getContent().equals(cacheContent)==false));		
+	}
+	
+	@Test
+	public void testImageResponse() {
+		ImageResponse response = this.responseManager.getImageResponse();
+		Assert.assertNull(response);
 	}
 
 }
