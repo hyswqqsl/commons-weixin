@@ -85,13 +85,16 @@ public class XmlParse {
 		for (int i = 0; i < elements.size(); i++) {
 			element = (Element) elements.get(i);
 			// 添加名字和值信息
-			properties.put(element.getName(), element.getText());
-			if (StringUtils.isEmpty(element.getText())) {
-				childElements = element.elements();
-				for (int j=0; j<childElements.size(); j++) {
-					childElement = (Element)childElements.get(j);
-					properties.put(childElement.getName(), childElement.getText());
-				}
+			// 如果节点没有字节点，直接获取内容
+			if (element.elements().size()==0) {
+				properties.setProperty(element.getName(), element.getText());
+				continue;
+			}
+			// 如果节点有字节点，获取所有子字节点内容
+			childElements = element.elements();
+			for (int j=0; j<childElements.size(); j++) {
+				childElement = (Element)childElements.get(j);
+				properties.put(childElement.getName(), childElement.getText());
 			}
 		}
 		return properties;
