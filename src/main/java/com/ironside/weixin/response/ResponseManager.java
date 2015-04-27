@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 
 import com.ironside.weixin.response.entity.AbstractBaseResponse;
 import com.ironside.weixin.response.entity.ImageResponse;
+import com.ironside.weixin.response.entity.MusicResponse;
 import com.ironside.weixin.response.entity.ResponseEnum;
 import com.ironside.weixin.response.entity.TextResponse;
 import com.ironside.weixin.response.entity.VideoResponse;
@@ -83,6 +84,25 @@ public class ResponseManager {
 			"<CreateTime>12345678</CreateTime><MsgType><![CDATA[video]]></MsgType><Video><MediaId><![CDATA[media_id]]></MediaId><Title><![CDATA[title]]></Title>" +
 			"<Description><![CDATA[description]]></Description></Video></xml>";
 	
+	/*
+     * <xml>
+     * <ToUserName><![CDATA[toUser]]></ToUserName>
+     * <FromUserName><![CDATA[fromUser]]></FromUserName>
+     * <CreateTime>12345678</CreateTime>
+     * <MsgType><![CDATA[music]]></MsgType>
+     * <Music>
+     * <Title><![CDATA[TITLE]]></Title>
+     * <Description><![CDATA[DESCRIPTION]]></Description>
+     * <MusicUrl><![CDATA[MUSIC_Url]]></MusicUrl>
+     * <HQMusicUrl><![CDATA[HQ_MUSIC_Url]]></HQMusicUrl>
+     * <ThumbMediaId><![CDATA[media_id]]></ThumbMediaId>
+     * </Music>
+     * </xml>
+	 */
+	private final String DEFAULT_MUSIC_XML_STRING = "<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName>" +
+			"<CreateTime>12345678</CreateTime><MsgType><![CDATA[music]]></MsgType><Music><Title><![CDATA[TITLE]]></Title><Description><![CDATA[DESCRIPTION]]></Description>" +
+			"<MusicUrl><![CDATA[MUSIC_Url]]></MusicUrl><HQMusicUrl><![CDATA[HQ_MUSIC_Url]]></HQMusicUrl><ThumbMediaId><![CDATA[media_id]]></ThumbMediaId></Music></xml>";
+	
 	/** 文本类型回复xml文件 */
 	String textXmlFile;
 	/** 图片类型回复xml文件 */
@@ -90,7 +110,9 @@ public class ResponseManager {
 	/** 语音类型回复xml文件 */
 	String voiceXmlFile;
 	/** 视频类型回复xml文件 */
-	String videoXmlFile;	
+	String videoXmlFile;
+	/** 音乐类型回复xml文件 */
+	String musicXmlFile;
 
 	/** 文本回复消息缓冲 */
 	TextResponse textResponse;
@@ -100,6 +122,8 @@ public class ResponseManager {
 	VoiceResponse voiceResponse;
 	/** 视频回复消息缓冲 */
 	VideoResponse videoResponse;
+	/** 音乐回复消息缓冲 */
+	MusicResponse musicResponse;
 	
 	/** xml解析对象 */
 	private XmlParse xmlParse;
@@ -151,6 +175,17 @@ public class ResponseManager {
 		// 清空缓存
 		this.videoResponse = null;
 	}
+	
+	/**
+	 * 设置音乐类型回复xml文件
+	 * @param videoXmlFile 音乐类型回复xml文件
+	 */
+	public void setMusicXmlFile(String musicXmlFile) {
+		Assert.hasText(musicXmlFile);
+		this.musicXmlFile = musicXmlFile;
+		// 清空缓存
+		this.musicResponse = null;		
+	}	
 	
 	/**
 	 * 取得xml解析对象
@@ -205,7 +240,7 @@ public class ResponseManager {
 		}
 		// 取得名字和值信息
 		properties = xmlParse.parseXmlFile(this.textXmlFile);
-		// 用完清楚xml文件，防止再次解析
+		// 用完清除xml文件，防止再次解析
 		this.textXmlFile = null;
 		// 根据名字和值对应生成对象
 		return doTextResponse(properties);
@@ -291,7 +326,7 @@ public class ResponseManager {
 		}
 		// 取得名字和值信息
 		properties = xmlParse.parseXmlFile(this.imageXmlFile);
-		// 用完清楚xml文件，防止再次解析
+		// 用完清除xml文件，防止再次解析
 		this.imageXmlFile = null;		
 		// 根据名字和值对应生成对象
 		return doImageResponse(properties);
@@ -351,7 +386,7 @@ public class ResponseManager {
 		}
 		// 取得名字和值信息
 		properties = xmlParse.parseXmlFile(this.voiceXmlFile);
-		// 用完清楚xml文件，防止再次解析
+		// 用完清除xml文件，防止再次解析
 		this.voiceXmlFile = null;
 		// 根据名字和值对应生成对象
 		return doVoiceResponse(properties);
@@ -410,7 +445,7 @@ public class ResponseManager {
 		}
 		// 取得名字和值信息
 		properties = xmlParse.parseXmlFile(this.videoXmlFile);
-		// 用完清楚xml文件，防止再次解析
+		// 用完清除xml文件，防止再次解析
 		this.videoXmlFile = null;
 		// 根据名字和值对应生成对象
 		return doVideoResponse(properties);

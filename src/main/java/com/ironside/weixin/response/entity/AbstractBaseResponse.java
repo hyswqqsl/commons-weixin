@@ -19,7 +19,9 @@ public class AbstractBaseResponse {
 	public final static String MSG_TYPE = "MsgType";
 	/** 对应xml中定义的'通过上传多媒体文件，得到的id '标识 */
 	public final static String MEDIA_ID = "MediaId";	
-	
+	public final static String TITLE = "Title";	
+	/** 对应xml中定义的'视频消息描述'标识 */
+	public final static String DESCRIPTION = "Description";	
 		
 	/** 开发者微信号  */
 	private String toUserName;

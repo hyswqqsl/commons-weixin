@@ -10,9 +10,6 @@ public class VideoResponse extends AbstractBaseResponse {
 	/** 对应xml中定义的'视频消息内容'标识 */
 	public final static String VIDEO = "Video";	
 	/** 对应xml中定义的'视频消息标题'标识 */
-	public final static String TITLE = "Title";	
-	/** 对应xml中定义的'视频消息描述'标识 */
-	public final static String DESCRIPTION = "Description";
 	
 	/** 内部视频对象 */
 	private Video video;
