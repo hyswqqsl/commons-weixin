@@ -64,13 +64,13 @@ public class ResponseManagerTest {
 		Assert.assertEquals(textResponse.getFromUserName(), "fromUser");
 		Assert.assertEquals(textResponse.getToUserName(), "toUser");
 		Assert.assertEquals(textResponse.getMsgtype(), ResponseEnum.TEXT.getMsgType());
-		Assert.assertNull(this.responseManager.getTextXmlFile());
+		Assert.assertNull(this.responseManager.textXmlFile);
 		// *** 测试有问题的实体xml文件
 		this.responseManager.setTextXmlFile(WRONG_XMLFILE);
 		try {
 			textResponse = this.responseManager.getTextResponse();
 		} catch(IllegalArgumentException e) {
-			Assert.assertNull(this.responseManager.getTextXmlFile());
+			Assert.assertNull(this.responseManager.textXmlFile);
 			return;
 		}
 		Assert.fail("测试有问题的实体xml文件出错");
@@ -114,7 +114,7 @@ public class ResponseManagerTest {
 		response = this.responseManager.getImageResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.IMAGE.getMsgType());
 		Assert.assertEquals(response.getMediaId(), "test_media_id");
-		Assert.assertNull(this.responseManager.getImageXmlFile());
+		Assert.assertNull(this.responseManager.imageXmlFile);
 	}
 	
 	@Test
@@ -128,13 +128,13 @@ public class ResponseManagerTest {
 		response = this.responseManager.getVoiceResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.VOICE.getMsgType());
 		Assert.assertEquals(response.getMediaId(), "test_media_id");
-		Assert.assertNull(this.responseManager.getVoiceXmlFile());
+		Assert.assertNull(this.responseManager.voiceXmlFile);
 		// *** 测试有问题的实体xml文件
 		this.responseManager.setVoiceXmlFile(WRONG_XMLFILE);
 		try {
 			response = this.responseManager.getVoiceResponse();
 		} catch(IllegalArgumentException e) {
-			Assert.assertNull(this.responseManager.getVoiceXmlFile());
+			Assert.assertNull(this.responseManager.voiceXmlFile);
 			response = this.responseManager.getVoiceResponse();
 			Assert.assertEquals(response.getMsgtype(), ResponseEnum.VOICE.getMsgType());
 			Assert.assertEquals(response.getMediaId(), "media_id");
@@ -158,14 +158,14 @@ public class ResponseManagerTest {
 		Assert.assertEquals(response.getMediaId(), "test_media_id");
 		Assert.assertNull(response.getTitle());
 		Assert.assertEquals(response.getDescription(), "test_description");
-		Assert.assertNull(this.responseManager.getVideoXmlFile());
+		Assert.assertNull(this.responseManager.videoXmlFile);
 		// *** 测试有问题的实体xml文件
 		this.responseManager.setVideoXmlFile(WRONG_XMLFILE);
 		
 		try {
 			response = this.responseManager.getVideoResponse();
 		} catch(IllegalArgumentException e) {
-			Assert.assertNull(this.responseManager.getVideoXmlFile());
+			Assert.assertNull(this.responseManager.videoXmlFile);
 			response = this.responseManager.getVideoResponse();
 			Assert.assertEquals(response.getMsgtype(), ResponseEnum.VIDEO.getMsgType());
 			Assert.assertEquals(response.getMediaId(), "media_id");

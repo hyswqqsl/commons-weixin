@@ -84,17 +84,14 @@ public class ResponseManager {
 			"<Description><![CDATA[description]]></Description></Video></xml>";
 	
 	/** 文本类型回复xml文件 */
-	private String textXmlFile;
+	String textXmlFile;
 	/** 图片类型回复xml文件 */
-	private String imageXmlFile;
+	String imageXmlFile;
 	/** 语音类型回复xml文件 */
-	private String voiceXmlFile;
+	String voiceXmlFile;
 	/** 视频类型回复xml文件 */
-	private String videoXmlFile;	
+	String videoXmlFile;	
 
-	/** xml解析对象 */
-	private XmlParse xmlParse;
-	
 	/** 文本回复消息缓冲 */
 	TextResponse textResponse;
 	/** 图片回复消息缓冲 */
@@ -103,15 +100,9 @@ public class ResponseManager {
 	VoiceResponse voiceResponse;
 	/** 视频回复消息缓冲 */
 	VideoResponse videoResponse;
-
-	/**
-	 * 取得文本类型回复xml文件
-	 * 
-	 * @return 文本类型回复xml文件
-	 */
-	public String getTextXmlFile() {
-		return textXmlFile;
-	}
+	
+	/** xml解析对象 */
+	private XmlParse xmlParse;
 
 	/**
 	 * 设置文本类型回复xml文件
@@ -124,15 +115,6 @@ public class ResponseManager {
 		this.textXmlFile = textXmlFile;
 		// 清空缓存
 		this.textResponse = null;
-	}
-
-	/**
-	 * 取得图片类型回复xml文件
-	 * 
-	 * @return 文本类型回复xml文件
-	 */
-	public String getImageXmlFile() {
-		return imageXmlFile;
 	}
 
 	/**
@@ -149,15 +131,6 @@ public class ResponseManager {
 	}
 	
 	/**
-	 * 取得语音类型回复xml文件
-	 * @return 语音类型回复xml文件
-	 */
-	public String getVoiceXmlFile() {
-		return voiceXmlFile;
-	}
-
-	
-	/**
 	 * 设置语音类型回复xml文件
 	 * @param voiceXmlFile 语音类型回复xml文件
 	 */
@@ -166,14 +139,6 @@ public class ResponseManager {
 		this.voiceXmlFile = voiceXmlFile;
 		// 清空缓存
 		this.voiceResponse = null;		
-	}
-
-	/**
-	 * 取得视频类型回复xml文件
-	 * @return 视频类型回复xml文件
-	 */
-	public String getVideoXmlFile() {
-		return videoXmlFile;
 	}
 
 	/**
