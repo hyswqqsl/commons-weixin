@@ -8,6 +8,7 @@ import org.junit.Test;
 import com.ironside.weixin.response.entity.ImageResponse;
 import com.ironside.weixin.response.entity.ResponseEnum;
 import com.ironside.weixin.response.entity.TextResponse;
+import com.ironside.weixin.response.entity.VoiceResponse;
 
 /**
  * 回复实体管理测试
@@ -41,7 +42,7 @@ public class ResponseManagerTest {
 	 * 测试取得文本回复消息
 	 */
 	@Test
-	public void testGetTextResponse() {
+	public void testTextResponse() {
 		// *** 测试取得默认消息 ***
 		TextResponse textResponse = this.responseManager.getTextResponse();
 		// 验证消息
@@ -62,11 +63,13 @@ public class ResponseManagerTest {
 		Assert.assertEquals(textResponse.getFromUserName(), "fromUser");
 		Assert.assertEquals(textResponse.getToUserName(), "toUser");
 		Assert.assertEquals(textResponse.getMsgtype(), ResponseEnum.TEXT.getMsgType());
+		Assert.assertNull(this.responseManager.getTextXmlFile());
 		// *** 测试有问题的实体xml文件
 		this.responseManager.setTextXmlFile(WRONG_XMLFILE);
 		try {
 			textResponse = this.responseManager.getTextResponse();
 		} catch(IllegalArgumentException e) {
+			Assert.assertNull(this.responseManager.getTextXmlFile());
 			return;
 		}
 		Assert.fail("测试有问题的实体xml文件出错");
@@ -109,7 +112,34 @@ public class ResponseManagerTest {
 		this.responseManager.setImageXmlFile("testImageResponse.xml");
 		response = this.responseManager.getImageResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.IMAGE.getMsgType());
-		Assert.assertEquals(response.getMediaId(), "test_media_id");		
+		Assert.assertEquals(response.getMediaId(), "test_media_id");
+		Assert.assertNull(this.responseManager.getImageXmlFile());
+	}
+	
+	@Test
+	public void testVoiceResponse() {
+		// *** 测试取得默认消息 ***
+		VoiceResponse response = this.responseManager.getVoiceResponse();
+		Assert.assertEquals(response.getMsgtype(), ResponseEnum.VOICE.getMsgType());
+		Assert.assertEquals(response.getMediaId(), "media_id");
+		// *** 测试根据回复实体xml文件取得图片回复实体 ***
+		this.responseManager.setVoiceXmlFile("testVoiceResponse.xml");
+		response = this.responseManager.getVoiceResponse();
+		Assert.assertEquals(response.getMsgtype(), ResponseEnum.VOICE.getMsgType());
+		Assert.assertEquals(response.getMediaId(), "test_media_id");
+		Assert.assertNull(this.responseManager.getVoiceXmlFile());
+		// *** 测试有问题的实体xml文件
+		this.responseManager.setVoiceXmlFile(WRONG_XMLFILE);
+		try {
+			response = this.responseManager.getVoiceResponse();
+		} catch(IllegalArgumentException e) {
+			Assert.assertNull(this.responseManager.getVoiceXmlFile());
+			response = this.responseManager.getVoiceResponse();
+			Assert.assertEquals(response.getMsgtype(), ResponseEnum.VOICE.getMsgType());
+			Assert.assertEquals(response.getMediaId(), "media_id");
+			return;
+		}
+		Assert.fail("测试有问题的实体xml文件出错");		
 	}
 
 }
