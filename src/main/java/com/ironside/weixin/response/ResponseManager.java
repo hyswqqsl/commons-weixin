@@ -11,6 +11,7 @@ import com.ironside.weixin.response.entity.AbstractBaseResponse;
 import com.ironside.weixin.response.entity.ImageResponse;
 import com.ironside.weixin.response.entity.ResponseEnum;
 import com.ironside.weixin.response.entity.TextResponse;
+import com.ironside.weixin.response.entity.VideoResponse;
 import com.ironside.weixin.response.entity.VoiceResponse;
 
 /**
@@ -64,12 +65,32 @@ public class ResponseManager {
 	private final String DEFAULT_VOICE_XML_STRING = "<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName>" +
 			"<CreateTime>12345678</CreateTime><MsgType><![CDATA[voice]]></MsgType><Voice><MediaId><![CDATA[media_id]]></MediaId></Voice></xml>";
 
+	/** 默认视频类型回复字符串 */
+	/*
+	 * <xml>
+	 * <ToUserName><![CDATA[toUser]]></ToUserName>
+	 * <FromUserName><![CDATA[fromUser]]></FromUserName>
+	 * <CreateTime>12345678</CreateTime>
+	 * <MsgType><![CDATA[video]]></MsgType>
+	 * <Video>
+	 * <MediaId><![CDATA[media_id]]></MediaId>
+	 * <Title><![CDATA[title]]></Title>
+	 * <Description><![CDATA[description]]></Description>
+	 * </Video> 
+	 * </xml>
+	 */
+	private final String DEFAULT_VIDEO_XML_STRING = "<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName>" +
+			"<CreateTime>12345678</CreateTime><MsgType><![CDATA[video]]></MsgType><Video><MediaId><![CDATA[media_id]]></MediaId><Title><![CDATA[title]]></Title>" +
+			"<Description><![CDATA[description]]></Description></Video></xml>";
+	
 	/** 文本类型回复xml文件 */
 	private String textXmlFile;
 	/** 图片类型回复xml文件 */
 	private String imageXmlFile;
 	/** 语音类型回复xml文件 */
 	private String voiceXmlFile;
+	/** 视频类型回复xml文件 */
+	private String videoXmlFile;	
 
 	/** xml解析对象 */
 	private XmlParse xmlParse;
@@ -80,6 +101,8 @@ public class ResponseManager {
 	ImageResponse imageResponse;
 	/** 语音回复消息缓冲 */
 	VoiceResponse voiceResponse;
+	/** 视频回复消息缓冲 */
+	VideoResponse videoResponse;
 
 	/**
 	 * 取得文本类型回复xml文件
@@ -133,6 +156,7 @@ public class ResponseManager {
 		return voiceXmlFile;
 	}
 
+	
 	/**
 	 * 设置语音类型回复xml文件
 	 * @param voiceXmlFile 语音类型回复xml文件
@@ -144,6 +168,25 @@ public class ResponseManager {
 		this.voiceResponse = null;		
 	}
 
+	/**
+	 * 取得视频类型回复xml文件
+	 * @return 视频类型回复xml文件
+	 */
+	public String getVideoXmlFile() {
+		return videoXmlFile;
+	}
+
+	/**
+	 * 设置视频类型回复xml文件
+	 * @param videoXmlFile 视频类型回复xml文件
+	 */
+	public void setVideoXmlFile(String videoXmlFile) {
+		Assert.hasText(videoXmlFile);
+		this.videoXmlFile = videoXmlFile;
+		// 清空缓存
+		this.videoResponse = null;
+	}
+	
 	/**
 	 * 取得xml解析对象
 	 * 
@@ -370,8 +413,68 @@ public class ResponseManager {
 		return entity;
 	}
 	
-	/** 取得视频回复实体 */
-	// public VideoResponse getVideoResponse();
+	/**
+	 * 取得视频回复实体
+	 * @return 视频回复实体
+	 */
+	public VideoResponse getVideoResponse() {
+		if (this.videoResponse == null) {
+			this.videoResponse = doGetVideoResponse();
+		}
+		return this.videoResponse;
+	}
+
+	/**
+	 * 从xml文件中解析实体</br> 
+	 * 如果设置了xml文件，从xml文件中解析；否则从默认xml文件中解析
+	 * 
+	 * @return 视频回复实体
+	 */
+	private VideoResponse doGetVideoResponse() {
+		Properties properties;
+		if (StringUtils.isEmpty(this.videoXmlFile)) {
+			properties = xmlParse.parseString(DEFAULT_VIDEO_XML_STRING);
+			return doVideoResponse(properties);
+		}
+		URL url = ClassLoader.getSystemResource(this.videoXmlFile);
+		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
+		if (url == null) {
+			this.videoXmlFile= null;
+			properties = xmlParse.parseString(DEFAULT_VIDEO_XML_STRING);
+			return doVideoResponse(properties);
+		}
+		// 取得名字和值信息
+		properties = xmlParse.parseXmlFile(this.videoXmlFile);
+		// 用完清楚xml文件，防止再次解析
+		this.videoXmlFile = null;
+		// 根据名字和值对应生成对象
+		return doVideoResponse(properties);
+	}
+
+	/**
+	 * 根据名字和值对应生成对象
+	 * 
+	 * @param properties
+	 *            xml名字和值对应
+	 * @return 视频回复实体
+	 */
+	private VideoResponse doVideoResponse(Properties properties) {
+		VideoResponse entity = new VideoResponse();
+		doBaseAnalyze(properties, entity);
+		String msgType = properties.getProperty(AbstractBaseResponse.MSG_TYPE);
+		Assert.hasText(msgType);
+		Assert.isTrue(msgType.equals(ResponseEnum.VIDEO.getMsgType()),
+				String.format("文本回复xml中MsgType有误： %s", msgType));
+		String mediaId = properties.getProperty(VideoResponse.MEDIA_ID);
+		Assert.hasText(mediaId);
+		String title = properties.getProperty(VideoResponse.TITLE);
+		String description = properties.getProperty(VideoResponse.DESCRIPTION);
+		
+		entity.setMediaId(mediaId);
+		entity.setTitle(title);
+		entity.setDescription(description);
+		return entity;
+	}
 
 	/** 取得音乐回复实体 */
 	// public MusicResponse getMusicResponse();

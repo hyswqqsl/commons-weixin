@@ -8,6 +8,7 @@ import org.junit.Test;
 import com.ironside.weixin.response.entity.ImageResponse;
 import com.ironside.weixin.response.entity.ResponseEnum;
 import com.ironside.weixin.response.entity.TextResponse;
+import com.ironside.weixin.response.entity.VideoResponse;
 import com.ironside.weixin.response.entity.VoiceResponse;
 
 /**
@@ -140,6 +141,37 @@ public class ResponseManagerTest {
 			return;
 		}
 		Assert.fail("测试有问题的实体xml文件出错");		
+	}
+	
+	@Test
+	public void testVideoResponse() {
+		// *** 测试取得默认消息 ***
+		VideoResponse response = this.responseManager.getVideoResponse();
+		Assert.assertEquals(response.getMsgtype(), ResponseEnum.VIDEO.getMsgType());
+		Assert.assertEquals(response.getMediaId(), "media_id");
+		Assert.assertEquals(response.getTitle(), "title");
+		Assert.assertEquals(response.getDescription(), "description");
+		// *** 测试根据回复实体xml文件取得图片回复实体 ***
+		this.responseManager.setVideoXmlFile("testVideoResponse.xml");
+		response = this.responseManager.getVideoResponse();
+		Assert.assertEquals(response.getMsgtype(), ResponseEnum.VIDEO.getMsgType());
+		Assert.assertEquals(response.getMediaId(), "test_media_id");
+		Assert.assertNull(response.getTitle());
+		Assert.assertEquals(response.getDescription(), "test_description");
+		Assert.assertNull(this.responseManager.getVideoXmlFile());
+		// *** 测试有问题的实体xml文件
+		this.responseManager.setVideoXmlFile(WRONG_XMLFILE);
+		
+		try {
+			response = this.responseManager.getVideoResponse();
+		} catch(IllegalArgumentException e) {
+			Assert.assertNull(this.responseManager.getVideoXmlFile());
+			response = this.responseManager.getVideoResponse();
+			Assert.assertEquals(response.getMsgtype(), ResponseEnum.VIDEO.getMsgType());
+			Assert.assertEquals(response.getMediaId(), "media_id");
+			return;
+		}
+		Assert.fail("测试有问题的实体xml文件出错");				
 	}
 
 }
