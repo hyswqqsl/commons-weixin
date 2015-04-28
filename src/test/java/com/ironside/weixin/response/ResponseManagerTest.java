@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ironside.weixin.response.entity.ImageResponse;
+import com.ironside.weixin.response.entity.MusicResponse;
 import com.ironside.weixin.response.entity.ResponseEnum;
 import com.ironside.weixin.response.entity.TextResponse;
 import com.ironside.weixin.response.entity.VideoResponse;
@@ -169,6 +170,40 @@ public class ResponseManagerTest {
 			response = this.responseManager.getVideoResponse();
 			Assert.assertEquals(response.getMsgtype(), ResponseEnum.VIDEO.getMsgType());
 			Assert.assertEquals(response.getMediaId(), "media_id");
+			return;
+		}
+		Assert.fail("测试有问题的实体xml文件出错");				
+	}
+	
+	@Test
+	public void testMusicResponse() {
+		// *** 测试取得默认消息 ***
+		MusicResponse response = this.responseManager.getMusicResponse();
+		Assert.assertEquals(response.getMsgtype(), ResponseEnum.MUSIC.getMsgType());
+		Assert.assertEquals(response.getTitle(), "title");
+		Assert.assertEquals(response.getDescription(), "description");
+		Assert.assertEquals(response.getMusicUrl(), "music_url");
+		Assert.assertEquals(response.getHQMusicUrl(), "hq_music_url");
+		Assert.assertEquals(response.getThumbMediaId(), "thumb_media_id");
+		// *** 测试根据回复实体xml文件取得图片回复实体 ***
+		this.responseManager.setMusicXmlFile("testMusicResponse.xml");
+		response = this.responseManager.getMusicResponse();
+		Assert.assertEquals(response.getMsgtype(), ResponseEnum.MUSIC.getMsgType());
+		Assert.assertEquals(response.getThumbMediaId(), "test_thumb_media_id");
+		Assert.assertNull(response.getTitle());
+		Assert.assertEquals(response.getDescription(), "test_description");
+		Assert.assertEquals(response.getMusicUrl(), "test_music_url");
+		Assert.assertNull(this.responseManager.musicXmlFile);
+		// *** 测试有问题的实体xml文件
+		this.responseManager.setMusicXmlFile(WRONG_XMLFILE);
+		
+		try {
+			response = this.responseManager.getMusicResponse();
+		} catch(IllegalArgumentException e) {
+			Assert.assertNull(this.responseManager.musicXmlFile);
+			response = this.responseManager.getMusicResponse();
+			Assert.assertEquals(response.getMsgtype(), ResponseEnum.MUSIC.getMsgType());
+			Assert.assertEquals(response.getThumbMediaId(), "thumb_media_id");
 			return;
 		}
 		Assert.fail("测试有问题的实体xml文件出错");				

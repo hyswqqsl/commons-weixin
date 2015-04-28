@@ -91,17 +91,17 @@ public class ResponseManager {
      * <CreateTime>12345678</CreateTime>
      * <MsgType><![CDATA[music]]></MsgType>
      * <Music>
-     * <Title><![CDATA[TITLE]]></Title>
-     * <Description><![CDATA[DESCRIPTION]]></Description>
-     * <MusicUrl><![CDATA[MUSIC_Url]]></MusicUrl>
-     * <HQMusicUrl><![CDATA[HQ_MUSIC_Url]]></HQMusicUrl>
-     * <ThumbMediaId><![CDATA[media_id]]></ThumbMediaId>
+     * <Title><![CDATA[title]]></Title>
+     * <Description><![CDATA[description]]></Description>
+     * <MusicUrl><![CDATA[music_url]]></MusicUrl>
+     * <HQMusicUrl><![CDATA[hq_music_url]]></HQMusicUrl>
+     * <ThumbMediaId><![CDATA[thumb_media_id]]></ThumbMediaId>
      * </Music>
      * </xml>
 	 */
 	private final String DEFAULT_MUSIC_XML_STRING = "<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName>" +
-			"<CreateTime>12345678</CreateTime><MsgType><![CDATA[music]]></MsgType><Music><Title><![CDATA[TITLE]]></Title><Description><![CDATA[DESCRIPTION]]></Description>" +
-			"<MusicUrl><![CDATA[MUSIC_Url]]></MusicUrl><HQMusicUrl><![CDATA[HQ_MUSIC_Url]]></HQMusicUrl><ThumbMediaId><![CDATA[media_id]]></ThumbMediaId></Music></xml>";
+			"<CreateTime>12345678</CreateTime><MsgType><![CDATA[music]]></MsgType><Music><Title><![CDATA[title]]></Title><Description><![CDATA[description]]></Description>" +
+			"<MusicUrl><![CDATA[music_url]]></MusicUrl><HQMusicUrl><![CDATA[hq_music_url]]></HQMusicUrl><ThumbMediaId><![CDATA[thumb_media_id]]></ThumbMediaId></Music></xml>";
 	
 	/** 文本类型回复xml文件 */
 	String textXmlFile;
@@ -476,8 +476,74 @@ public class ResponseManager {
 		return entity;
 	}
 
-	/** 取得音乐回复实体 */
-	// public MusicResponse getMusicResponse();
+	/**
+	 * 取得音乐回复实体
+	 * @return 音乐回复实体
+	 */
+	public MusicResponse getMusicResponse() {
+		if (this.musicResponse == null) {
+			this.musicResponse = doGetMusicResponse();
+		}
+		return this.musicResponse;		
+	}
+
+	/**
+	 * 从xml文件中解析实体</br> 
+	 * 如果设置了xml文件，从xml文件中解析；否则从默认xml文件中解析
+	 * 
+	 * @return 音乐回复实体
+	 */
+	private MusicResponse doGetMusicResponse() {
+		Properties properties;
+		if (StringUtils.isEmpty(this.musicXmlFile)) {
+			properties = xmlParse.parseString(DEFAULT_MUSIC_XML_STRING);
+			return doMusicResponse(properties);
+		}
+		URL url = ClassLoader.getSystemResource(this.musicXmlFile);
+		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
+		if (url == null) {
+			this.musicXmlFile= null;
+			properties = xmlParse.parseString(DEFAULT_MUSIC_XML_STRING);
+			return doMusicResponse(properties);
+		}
+		// 取得名字和值信息
+		properties = xmlParse.parseXmlFile(this.musicXmlFile);
+		// 用完清除xml文件，防止再次解析
+		this.musicXmlFile = null;
+		// 根据名字和值对应生成对象
+		return doMusicResponse(properties);
+	}
+
+	/**
+	 * 根据名字和值对应生成对象
+	 * 
+	 * @param properties
+	 *            xml名字和值对应
+	 * @return 音乐回复实体
+	 */
+	private MusicResponse doMusicResponse(Properties properties) {
+		MusicResponse entity = new MusicResponse();
+		doBaseAnalyze(properties, entity);
+		String msgType = properties.getProperty(AbstractBaseResponse.MSG_TYPE);
+		Assert.hasText(msgType);
+		Assert.isTrue(msgType.equals(ResponseEnum.MUSIC.getMsgType()),
+				String.format("文本回复xml中MsgType有误： %s", msgType));
+		String thumbMediaId = properties.getProperty(MusicResponse.THUMB_MEDIA_ID);
+		Assert.hasText(thumbMediaId);
+		String title = properties.getProperty(MusicResponse.TITLE);
+		String description = properties.getProperty(MusicResponse.DESCRIPTION);
+		String musicUrl = properties.getProperty(MusicResponse.MUSIC_URL);
+		String hQMusicUrl = properties.getProperty(MusicResponse.H_Q_MUSIC_URL);
+		
+		entity.setThumbMediaId(thumbMediaId);
+		entity.setTitle(title);
+		entity.setDescription(description);
+		entity.setMusicUrl(musicUrl);
+		entity.setHQMusicUrl(hQMusicUrl);
+		return entity;
+	}
+	
+	
 
 	/** 取得图文回复实体 */
 	// public NewsResponse getNewsResponse();
