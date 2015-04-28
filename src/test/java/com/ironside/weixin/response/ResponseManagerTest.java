@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ironside.weixin.XmlParse;
 import com.ironside.weixin.response.entity.ImageResponse;
 import com.ironside.weixin.response.entity.MusicResponse;
 import com.ironside.weixin.response.entity.ResponseEnum;

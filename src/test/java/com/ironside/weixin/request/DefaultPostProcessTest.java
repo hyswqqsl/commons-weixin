@@ -7,13 +7,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ironside.weixin.XmlParse;
 import com.ironside.weixin.request.DefaultPostProcess;
 import com.ironside.weixin.request.entity.AbstractBaseEntity;
 import com.ironside.weixin.request.entity.EntityEnum;
 import com.ironside.weixin.request.entity.EventScanSubscribeEntity;
 import com.ironside.weixin.request.entity.EventSubscribeEntity;
 import com.ironside.weixin.request.entity.ImageEntity;
-import com.ironside.weixin.response.XmlParse;
 
 /**
  * POST方式推送给微信公众账号的消息处理测试

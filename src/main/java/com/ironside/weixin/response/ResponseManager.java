@@ -7,6 +7,7 @@ import java.util.Properties;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import com.ironside.weixin.XmlParse;
 import com.ironside.weixin.response.entity.AbstractBaseResponse;
 import com.ironside.weixin.response.entity.ImageResponse;
 import com.ironside.weixin.response.entity.MusicResponse;

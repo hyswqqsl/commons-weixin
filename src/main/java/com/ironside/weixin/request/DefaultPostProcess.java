@@ -11,6 +11,7 @@ import org.dom4j.Element;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import com.ironside.weixin.XmlParse;
 import com.ironside.weixin.request.entity.AbstractBaseEntity;
 import com.ironside.weixin.request.entity.EntityEnum;
 import com.ironside.weixin.request.entity.EventClickEntity;
@@ -27,7 +28,6 @@ import com.ironside.weixin.request.entity.ShortVideoEntity;
 import com.ironside.weixin.request.entity.TextEntity;
 import com.ironside.weixin.request.entity.VideoEntity;
 import com.ironside.weixin.request.entity.VoiceEntity;
-import com.ironside.weixin.response.XmlParse;
 
 /**
  * POST方式推送给微信公众账号的消息处理，具体实现消息解析、处理实体。
