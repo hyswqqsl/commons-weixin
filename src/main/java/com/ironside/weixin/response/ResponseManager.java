@@ -2,7 +2,6 @@ package com.ironside.weixin.response;
 
 import java.net.URL;
 import java.util.Date;
-import java.util.Properties;
 
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -10,11 +9,13 @@ import org.springframework.util.StringUtils;
 import com.ironside.weixin.XmlParse;
 import com.ironside.weixin.response.entity.AbstractBaseResponse;
 import com.ironside.weixin.response.entity.ImageResponse;
+import com.ironside.weixin.response.entity.ImageResponse.Image;
 import com.ironside.weixin.response.entity.MusicResponse;
 import com.ironside.weixin.response.entity.ResponseEnum;
 import com.ironside.weixin.response.entity.TextResponse;
 import com.ironside.weixin.response.entity.VideoResponse;
 import com.ironside.weixin.response.entity.VoiceResponse;
+import com.ironside.weixin.response.entity.VoiceResponse.Voice;
 
 /**
  * 回复实体管理
@@ -227,42 +228,40 @@ public class ResponseManager {
 	 * @return 文本回复实体
 	 */
 	private TextResponse doGetTextResponse() {
-		Properties properties;
+		AbstractXmlProperty xmlProperty;
 		if (StringUtils.isEmpty(this.textXmlFile)) {
-			properties = xmlParse.parseString(DEFAULT_TEXT_XML_STRING);
-			return doTextResponse(properties);
+			xmlProperty = xmlParse.parseString(DEFAULT_TEXT_XML_STRING);
+			return doTextResponse(xmlProperty);
 		}
 		URL url = ClassLoader.getSystemResource(this.textXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
 			this.textXmlFile = null;
-			properties = xmlParse.parseString(DEFAULT_TEXT_XML_STRING);
-			return doTextResponse(properties);
+			xmlProperty = xmlParse.parseString(DEFAULT_TEXT_XML_STRING);
+			return doTextResponse(xmlProperty);
 		}
 		// 取得名字和值信息
-		properties = xmlParse.parseXmlFile(this.textXmlFile);
+		xmlProperty = xmlParse.parseXmlFile(this.textXmlFile);
 		// 用完清除xml文件，防止再次解析
 		this.textXmlFile = null;
 		// 根据名字和值对应生成对象
-		return doTextResponse(properties);
+		return doTextResponse(xmlProperty);
 	}
 
 	/**
 	 * 基础解析
 	 * 
-	 * @param properties
-	 *            解析后的properties
+	 * @param xmlProperty
+	 *            解析后的xmlProperty
 	 * @param entity
 	 *            用于基础解析的实体
 	 */
-	private void doBaseAnalyze(Properties properties,
-			AbstractBaseResponse entity) {
-		String toUserName = properties.getProperty(TextResponse.TO_USER_NAME);
+	private void doBaseAnalyze(AbstractXmlProperty xmlProperty, AbstractBaseResponse entity) {
+		String toUserName = xmlProperty.getProperty(TextResponse.TO_USER_NAME);
 		Assert.hasText(toUserName);
-		String fromUserName = properties
-				.getProperty(TextResponse.FORM_USER_NAME);
+		String fromUserName = xmlProperty.getProperty(TextResponse.FORM_USER_NAME);
 		Assert.hasText(fromUserName);
-		String createTimeStr = properties.getProperty(TextResponse.CREATE_TIME);
+		String createTimeStr = xmlProperty.getProperty(TextResponse.CREATE_TIME);
 		Assert.hasText(createTimeStr);
 		// 将时间整形转换为对象
 		Date createTime = new Date(Long.parseLong(createTimeStr));
@@ -276,16 +275,16 @@ public class ResponseManager {
 	/**
 	 * 根据名字和值对应生成对象
 	 * 
-	 * @param properties
+	 * @param xmlProperty
 	 *            xml名字和值对应
 	 * @return 文本回复实体
 	 */
-	private TextResponse doTextResponse(Properties properties) {
+	private TextResponse doTextResponse(AbstractXmlProperty xmlProperty) {
 		TextResponse entity = new TextResponse();
-		doBaseAnalyze(properties, entity);
-		String content = properties.getProperty(TextResponse.CONTENT);
+		doBaseAnalyze(xmlProperty, entity);
+		String content = xmlProperty.getProperty(TextResponse.CONTENT);
 		Assert.hasText(content);
-		String msgType = properties.getProperty(AbstractBaseResponse.MSG_TYPE);
+		String msgType = xmlProperty.getProperty(AbstractBaseResponse.MSG_TYPE);
 		Assert.hasText(msgType);
 		Assert.isTrue(msgType.equals(ResponseEnum.TEXT.getMsgType()),
 				String.format("文本回复xml中MsgType有误： %s", msgType));
@@ -313,44 +312,47 @@ public class ResponseManager {
 	 * @return 图片回复实体
 	 */	
 	private ImageResponse doGetImageResponse() {
-		Properties properties;
+		AbstractXmlProperty xmlProperty;
 		if (StringUtils.isEmpty(this.imageXmlFile)) {
-			properties = xmlParse.parseString(DEFAULT_IMAGE_XML_STRING);
-			return doImageResponse(properties);
+			xmlProperty = xmlParse.parseString(DEFAULT_IMAGE_XML_STRING);
+			return doImageResponse(xmlProperty);
 		}
 		URL url = ClassLoader.getSystemResource(this.imageXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
 			this.imageXmlFile = null;
-			properties = xmlParse.parseString(DEFAULT_IMAGE_XML_STRING);
-			return doImageResponse(properties);
+			xmlProperty = xmlParse.parseString(DEFAULT_IMAGE_XML_STRING);
+			return doImageResponse(xmlProperty);
 		}
 		// 取得名字和值信息
-		properties = xmlParse.parseXmlFile(this.imageXmlFile);
+		xmlProperty = xmlParse.parseXmlFile(this.imageXmlFile);
 		// 用完清除xml文件，防止再次解析
 		this.imageXmlFile = null;		
 		// 根据名字和值对应生成对象
-		return doImageResponse(properties);
+		return doImageResponse(xmlProperty);
 	}
 
 	/**
 	 * 根据名字和值对应生成对象
 	 * 
-	 * @param properties
+	 * @param xmlProperty
 	 *            xml名字和值对应
 	 * @return 图片回复实体
 	 */
-	private ImageResponse doImageResponse(Properties properties) {
+	private ImageResponse doImageResponse(AbstractXmlProperty xmlProperty) {
 		ImageResponse entity = new ImageResponse();
-		doBaseAnalyze(properties, entity);
-		String msgType = properties.getProperty(AbstractBaseResponse.MSG_TYPE);
+		doBaseAnalyze(xmlProperty, entity);
+		String msgType = xmlProperty.getProperty(AbstractBaseResponse.MSG_TYPE);
 		Assert.hasText(msgType);
 		Assert.isTrue(msgType.equals(ResponseEnum.IMAGE.getMsgType()),
 				String.format("文本回复xml中MsgType有误： %s", msgType));
-		String mediaId = properties.getProperty(ImageResponse.MEDIA_ID);
+		
+		String mediaId = xmlProperty.getChild(0).getProperty(ImageResponse.MEDIA_ID);
 		Assert.hasText(mediaId);
+		ImageResponse.Image image = entity.new Image();
+		image.setMediaId(mediaId);
 
-		entity.setMediaId(mediaId);
+		entity.addObject(image);
 		return entity;
 	}
 
@@ -373,44 +375,47 @@ public class ResponseManager {
 	 * @return 语音回复实体
 	 */
 	private VoiceResponse doGetVoiceResponse() {
-		Properties properties;
+		AbstractXmlProperty xmlProperty;
 		if (StringUtils.isEmpty(this.voiceXmlFile)) {
-			properties = xmlParse.parseString(DEFAULT_VOICE_XML_STRING);
-			return doVoiceResponse(properties);
+			xmlProperty = xmlParse.parseString(DEFAULT_VOICE_XML_STRING);
+			return doVoiceResponse(xmlProperty);
 		}
 		URL url = ClassLoader.getSystemResource(this.voiceXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
 			this.voiceXmlFile= null;
-			properties = xmlParse.parseString(DEFAULT_VOICE_XML_STRING);
-			return doVoiceResponse(properties);
+			xmlProperty = xmlParse.parseString(DEFAULT_VOICE_XML_STRING);
+			return doVoiceResponse(xmlProperty);
 		}
 		// 取得名字和值信息
-		properties = xmlParse.parseXmlFile(this.voiceXmlFile);
+		xmlProperty = xmlParse.parseXmlFile(this.voiceXmlFile);
 		// 用完清除xml文件，防止再次解析
 		this.voiceXmlFile = null;
 		// 根据名字和值对应生成对象
-		return doVoiceResponse(properties);
+		return doVoiceResponse(xmlProperty);
 	}
 	
 	/**
 	 * 根据名字和值对应生成对象
 	 * 
-	 * @param properties
+	 * @param xmlProperty
 	 *            xml名字和值对应
 	 * @return 语音回复实体
 	 */
-	private VoiceResponse doVoiceResponse(Properties properties) {
+	private VoiceResponse doVoiceResponse(AbstractXmlProperty xmlProperty) {
 		VoiceResponse entity = new VoiceResponse();
-		doBaseAnalyze(properties, entity);
-		String msgType = properties.getProperty(AbstractBaseResponse.MSG_TYPE);
+		doBaseAnalyze(xmlProperty, entity);
+		String msgType = xmlProperty.getProperty(AbstractBaseResponse.MSG_TYPE);
 		Assert.hasText(msgType);
 		Assert.isTrue(msgType.equals(ResponseEnum.VOICE.getMsgType()),
 				String.format("文本回复xml中MsgType有误： %s", msgType));
-		String mediaId = properties.getProperty(VoiceResponse.MEDIA_ID);
+		
+		String mediaId = xmlProperty.getChild(0).getProperty(VoiceResponse.MEDIA_ID);
 		Assert.hasText(mediaId);
+		VoiceResponse.Voice voice = entity.new Voice();
+		voice.setMediaId(mediaId);
 
-		entity.setMediaId(mediaId);
+		entity.addObject(voice);
 		return entity;
 	}
 	
@@ -432,48 +437,53 @@ public class ResponseManager {
 	 * @return 视频回复实体
 	 */
 	private VideoResponse doGetVideoResponse() {
-		Properties properties;
+		AbstractXmlProperty xmlProperty;
 		if (StringUtils.isEmpty(this.videoXmlFile)) {
-			properties = xmlParse.parseString(DEFAULT_VIDEO_XML_STRING);
-			return doVideoResponse(properties);
+			xmlProperty = xmlParse.parseString(DEFAULT_VIDEO_XML_STRING);
+			return doVideoResponse(xmlProperty);
 		}
 		URL url = ClassLoader.getSystemResource(this.videoXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
 			this.videoXmlFile= null;
-			properties = xmlParse.parseString(DEFAULT_VIDEO_XML_STRING);
-			return doVideoResponse(properties);
+			xmlProperty = xmlParse.parseString(DEFAULT_VIDEO_XML_STRING);
+			return doVideoResponse(xmlProperty);
 		}
 		// 取得名字和值信息
-		properties = xmlParse.parseXmlFile(this.videoXmlFile);
+		xmlProperty = xmlParse.parseXmlFile(this.videoXmlFile);
 		// 用完清除xml文件，防止再次解析
 		this.videoXmlFile = null;
 		// 根据名字和值对应生成对象
-		return doVideoResponse(properties);
+		return doVideoResponse(xmlProperty);
 	}
 
 	/**
 	 * 根据名字和值对应生成对象
 	 * 
-	 * @param properties
+	 * @param xmlProperty
 	 *            xml名字和值对应
 	 * @return 视频回复实体
 	 */
-	private VideoResponse doVideoResponse(Properties properties) {
+	private VideoResponse doVideoResponse(AbstractXmlProperty xmlProperty) {
 		VideoResponse entity = new VideoResponse();
-		doBaseAnalyze(properties, entity);
-		String msgType = properties.getProperty(AbstractBaseResponse.MSG_TYPE);
+		doBaseAnalyze(xmlProperty, entity);
+		String msgType = xmlProperty.getProperty(AbstractBaseResponse.MSG_TYPE);
 		Assert.hasText(msgType);
 		Assert.isTrue(msgType.equals(ResponseEnum.VIDEO.getMsgType()),
 				String.format("文本回复xml中MsgType有误： %s", msgType));
-		String mediaId = properties.getProperty(VideoResponse.MEDIA_ID);
-		Assert.hasText(mediaId);
-		String title = properties.getProperty(VideoResponse.TITLE);
-		String description = properties.getProperty(VideoResponse.DESCRIPTION);
 		
-		entity.setMediaId(mediaId);
-		entity.setTitle(title);
-		entity.setDescription(description);
+		// 取得子节点
+		AbstractXmlProperty childXmlProperty = xmlProperty.getChild(0);
+		String mediaId = childXmlProperty.getProperty(VideoResponse.MEDIA_ID);
+		Assert.hasText(mediaId);
+		String title = childXmlProperty.getProperty(VideoResponse.TITLE);
+		String description = childXmlProperty.getProperty(VideoResponse.DESCRIPTION);
+		VideoResponse.Video video = entity.new Video();
+		video.setMediaId(mediaId);
+		video.setTitle(title);
+		video.setDescription(description);
+		
+		entity.addObject(video);
 		return entity;
 	}
 
@@ -495,52 +505,57 @@ public class ResponseManager {
 	 * @return 音乐回复实体
 	 */
 	private MusicResponse doGetMusicResponse() {
-		Properties properties;
+		AbstractXmlProperty xmlProperty;
 		if (StringUtils.isEmpty(this.musicXmlFile)) {
-			properties = xmlParse.parseString(DEFAULT_MUSIC_XML_STRING);
-			return doMusicResponse(properties);
+			xmlProperty = xmlParse.parseString(DEFAULT_MUSIC_XML_STRING);
+			return doMusicResponse(xmlProperty);
 		}
 		URL url = ClassLoader.getSystemResource(this.musicXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
 			this.musicXmlFile= null;
-			properties = xmlParse.parseString(DEFAULT_MUSIC_XML_STRING);
-			return doMusicResponse(properties);
+			xmlProperty = xmlParse.parseString(DEFAULT_MUSIC_XML_STRING);
+			return doMusicResponse(xmlProperty);
 		}
 		// 取得名字和值信息
-		properties = xmlParse.parseXmlFile(this.musicXmlFile);
+		xmlProperty = xmlParse.parseXmlFile(this.musicXmlFile);
 		// 用完清除xml文件，防止再次解析
 		this.musicXmlFile = null;
 		// 根据名字和值对应生成对象
-		return doMusicResponse(properties);
+		return doMusicResponse(xmlProperty);
 	}
 
 	/**
 	 * 根据名字和值对应生成对象
 	 * 
-	 * @param properties
+	 * @param xmlProperty
 	 *            xml名字和值对应
 	 * @return 音乐回复实体
 	 */
-	private MusicResponse doMusicResponse(Properties properties) {
+	private MusicResponse doMusicResponse(AbstractXmlProperty xmlProperty) {
 		MusicResponse entity = new MusicResponse();
-		doBaseAnalyze(properties, entity);
-		String msgType = properties.getProperty(AbstractBaseResponse.MSG_TYPE);
+		doBaseAnalyze(xmlProperty, entity);
+		String msgType = xmlProperty.getProperty(AbstractBaseResponse.MSG_TYPE);
 		Assert.hasText(msgType);
 		Assert.isTrue(msgType.equals(ResponseEnum.MUSIC.getMsgType()),
 				String.format("文本回复xml中MsgType有误： %s", msgType));
-		String thumbMediaId = properties.getProperty(MusicResponse.THUMB_MEDIA_ID);
-		Assert.hasText(thumbMediaId);
-		String title = properties.getProperty(MusicResponse.TITLE);
-		String description = properties.getProperty(MusicResponse.DESCRIPTION);
-		String musicUrl = properties.getProperty(MusicResponse.MUSIC_URL);
-		String hQMusicUrl = properties.getProperty(MusicResponse.H_Q_MUSIC_URL);
 		
-		entity.setThumbMediaId(thumbMediaId);
-		entity.setTitle(title);
-		entity.setDescription(description);
-		entity.setMusicUrl(musicUrl);
-		entity.setHQMusicUrl(hQMusicUrl);
+		// 取得子节点
+		AbstractXmlProperty childXmlProperty = xmlProperty.getChild(0);
+		String thumbMediaId = childXmlProperty.getProperty(MusicResponse.THUMB_MEDIA_ID);
+		Assert.hasText(thumbMediaId);
+		String title = childXmlProperty.getProperty(MusicResponse.TITLE);
+		String description = childXmlProperty.getProperty(MusicResponse.DESCRIPTION);
+		String musicUrl = childXmlProperty.getProperty(MusicResponse.MUSIC_URL);
+		String hQMusicUrl = childXmlProperty.getProperty(MusicResponse.H_Q_MUSIC_URL);
+		MusicResponse.Music music = entity.new Music();
+		music.setThumbMediaId(thumbMediaId);
+		music.setTitle(title);
+		music.setDescription(description);
+		music.setMusicUrl(musicUrl);
+		music.setHQMusicUrl(hQMusicUrl);
+		
+		entity.addObject(music);
 		return entity;
 	}
 	

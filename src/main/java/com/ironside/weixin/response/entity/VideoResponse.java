@@ -1,5 +1,7 @@
 package com.ironside.weixin.response.entity;
 
+import org.springframework.util.Assert;
+
 /**
  * 视频回复实体类
  * @author ZXJ
@@ -19,53 +21,21 @@ public class VideoResponse extends AbstractBaseResponse {
 		this.setMsgEnum(ResponseEnum.VIDEO);
 	}
 	
-	/**
-	 * 取得通过上传多媒体文件，得到的id
-	 * @return 通过上传多媒体文件，得到的id
-	 */
-	public String getMediaId() {
-		return this.video.getMediaId();
+	@Override
+	public Object getObject(int index) {
+		return this.video;
 	}
-	
-	/**
-	 * 设置通过上传多媒体文件，得到的id
-	 * @param mediaId 通过上传多媒体文件，得到的id
-	 */
-	public void setMediaId(String mediaId) {
-		this.video.setMediaId(mediaId);
+
+	@Override
+	public void addObject(Object obj) {
+		Assert.isTrue(obj instanceof Video);
+		this.video = (Video)obj;
 	}
-	
-	/**
-	 * 取得视频消息的标题
-	 * @return 视频消息的标题
-	 */
-	public String getTitle() {
-		return this.video.getTitle();
-	}
-	
-	/**
-	 * 设置视频消息的标题
-	 * @param title 视频消息的标题
-	 */
-	public void setTitle(String title) {
-		this.video.setTitle(title);
-	}
-	
-	/**
-	 * 取得视频消息的描述
-	 * @return 视频消息的描述
-	 */
-	public String getDescription() {
-		return this.video.getDescription();
-	}
-	
-	/**
-	 * 设置视频消息的描述
-	 * @param description 视频消息的描述
-	 */
-	public void setDescription(String description) {
-		this.video.setDescription(description);
-	}
+
+	@Override
+	public int getObjectCount() {
+		return 1;
+	}	
 	
 	public class Video {
 		
@@ -123,4 +93,5 @@ public class VideoResponse extends AbstractBaseResponse {
 		
 		
 	}
+
 }

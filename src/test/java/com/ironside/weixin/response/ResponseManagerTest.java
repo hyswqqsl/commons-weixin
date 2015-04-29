@@ -110,12 +110,12 @@ public class ResponseManagerTest {
 		// *** 测试取得默认消息 ***
 		ImageResponse response = this.responseManager.getImageResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.IMAGE.getMsgType());
-		Assert.assertEquals(response.getMediaId(), "media_id");
+		Assert.assertEquals(((ImageResponse.Image)response.getObject(0)).getMediaId(), "media_id");
 		// *** 测试根据回复实体xml文件取得图片回复实体 ***
 		this.responseManager.setImageXmlFile("testImageResponse.xml");
 		response = this.responseManager.getImageResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.IMAGE.getMsgType());
-		Assert.assertEquals(response.getMediaId(), "test_media_id");
+		Assert.assertEquals(((ImageResponse.Image)response.getObject(0)).getMediaId(), "test_media_id");
 		Assert.assertNull(this.responseManager.imageXmlFile);
 	}
 	
@@ -124,12 +124,12 @@ public class ResponseManagerTest {
 		// *** 测试取得默认消息 ***
 		VoiceResponse response = this.responseManager.getVoiceResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.VOICE.getMsgType());
-		Assert.assertEquals(response.getMediaId(), "media_id");
+		Assert.assertEquals(((VoiceResponse.Voice)response.getObject(0)).getMediaId(), "media_id");
 		// *** 测试根据回复实体xml文件取得图片回复实体 ***
 		this.responseManager.setVoiceXmlFile("testVoiceResponse.xml");
 		response = this.responseManager.getVoiceResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.VOICE.getMsgType());
-		Assert.assertEquals(response.getMediaId(), "test_media_id");
+		Assert.assertEquals(((VoiceResponse.Voice)response.getObject(0)).getMediaId(), "test_media_id");
 		Assert.assertNull(this.responseManager.voiceXmlFile);
 		// *** 测试有问题的实体xml文件
 		this.responseManager.setVoiceXmlFile(WRONG_XMLFILE);
@@ -139,7 +139,7 @@ public class ResponseManagerTest {
 			Assert.assertNull(this.responseManager.voiceXmlFile);
 			response = this.responseManager.getVoiceResponse();
 			Assert.assertEquals(response.getMsgtype(), ResponseEnum.VOICE.getMsgType());
-			Assert.assertEquals(response.getMediaId(), "media_id");
+			Assert.assertEquals(((VoiceResponse.Voice)response.getObject(0)).getMediaId(), "media_id");
 			return;
 		}
 		Assert.fail("测试有问题的实体xml文件出错");		
@@ -150,16 +150,20 @@ public class ResponseManagerTest {
 		// *** 测试取得默认消息 ***
 		VideoResponse response = this.responseManager.getVideoResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.VIDEO.getMsgType());
-		Assert.assertEquals(response.getMediaId(), "media_id");
-		Assert.assertEquals(response.getTitle(), "title");
-		Assert.assertEquals(response.getDescription(), "description");
+		// 子对象
+		VideoResponse.Video video = (VideoResponse.Video)response.getObject(0);
+		Assert.assertEquals(video.getMediaId(), "media_id");
+		Assert.assertEquals(video.getTitle(), "title");
+		Assert.assertEquals(video.getDescription(), "description");
 		// *** 测试根据回复实体xml文件取得图片回复实体 ***
 		this.responseManager.setVideoXmlFile("testVideoResponse.xml");
 		response = this.responseManager.getVideoResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.VIDEO.getMsgType());
-		Assert.assertEquals(response.getMediaId(), "test_media_id");
-		Assert.assertNull(response.getTitle());
-		Assert.assertEquals(response.getDescription(), "test_description");
+		// 子对象
+		video = (VideoResponse.Video)response.getObject(0);
+		Assert.assertEquals(video.getMediaId(), "test_media_id");
+		Assert.assertNull(video.getTitle());
+		Assert.assertEquals(video.getDescription(), "test_description");
 		Assert.assertNull(this.responseManager.videoXmlFile);
 		// *** 测试有问题的实体xml文件
 		this.responseManager.setVideoXmlFile(WRONG_XMLFILE);
@@ -170,7 +174,9 @@ public class ResponseManagerTest {
 			Assert.assertNull(this.responseManager.videoXmlFile);
 			response = this.responseManager.getVideoResponse();
 			Assert.assertEquals(response.getMsgtype(), ResponseEnum.VIDEO.getMsgType());
-			Assert.assertEquals(response.getMediaId(), "media_id");
+			// 子对象
+			video = (VideoResponse.Video)response.getObject(0);			
+			Assert.assertEquals(video.getMediaId(), "media_id");
 			return;
 		}
 		Assert.fail("测试有问题的实体xml文件出错");				
@@ -181,19 +187,23 @@ public class ResponseManagerTest {
 		// *** 测试取得默认消息 ***
 		MusicResponse response = this.responseManager.getMusicResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.MUSIC.getMsgType());
-		Assert.assertEquals(response.getTitle(), "title");
-		Assert.assertEquals(response.getDescription(), "description");
-		Assert.assertEquals(response.getMusicUrl(), "music_url");
-		Assert.assertEquals(response.getHQMusicUrl(), "hq_music_url");
-		Assert.assertEquals(response.getThumbMediaId(), "thumb_media_id");
+		// 子对象
+		MusicResponse.Music music = (MusicResponse.Music)response.getObject(0);
+		Assert.assertEquals(music.getTitle(), "title");
+		Assert.assertEquals(music.getDescription(), "description");
+		Assert.assertEquals(music.getMusicUrl(), "music_url");
+		Assert.assertEquals(music.getHQMusicUrl(), "hq_music_url");
+		Assert.assertEquals(music.getThumbMediaId(), "thumb_media_id");
 		// *** 测试根据回复实体xml文件取得图片回复实体 ***
 		this.responseManager.setMusicXmlFile("testMusicResponse.xml");
 		response = this.responseManager.getMusicResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.MUSIC.getMsgType());
-		Assert.assertEquals(response.getThumbMediaId(), "test_thumb_media_id");
-		Assert.assertNull(response.getTitle());
-		Assert.assertEquals(response.getDescription(), "test_description");
-		Assert.assertEquals(response.getMusicUrl(), "test_music_url");
+		// 子对象
+		music = (MusicResponse.Music)response.getObject(0);
+		Assert.assertEquals(music.getThumbMediaId(), "test_thumb_media_id");
+		Assert.assertNull(music.getTitle());
+		Assert.assertEquals(music.getDescription(), "test_description");
+		Assert.assertEquals(music.getMusicUrl(), "test_music_url");
 		Assert.assertNull(this.responseManager.musicXmlFile);
 		// *** 测试有问题的实体xml文件
 		this.responseManager.setMusicXmlFile(WRONG_XMLFILE);
@@ -204,7 +214,9 @@ public class ResponseManagerTest {
 			Assert.assertNull(this.responseManager.musicXmlFile);
 			response = this.responseManager.getMusicResponse();
 			Assert.assertEquals(response.getMsgtype(), ResponseEnum.MUSIC.getMsgType());
-			Assert.assertEquals(response.getThumbMediaId(), "thumb_media_id");
+			// 子对象
+			music = (MusicResponse.Music)response.getObject(0);
+			Assert.assertEquals(music.getThumbMediaId(), "thumb_media_id");
 			return;
 		}
 		Assert.fail("测试有问题的实体xml文件出错");				

@@ -63,7 +63,7 @@ public class XmlParse {
 	 *            xml字符串
 	 * @return 解析后的properties对象
 	 */
-	public AbstractXmlProperty sparseString(String xmlStr) {
+	public AbstractXmlProperty parseString(String xmlStr) {
 		Document document = null;
 		try {
 			document = DocumentHelper.parseText(xmlStr);

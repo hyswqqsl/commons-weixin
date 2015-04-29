@@ -19,6 +19,21 @@ public class TextResponse extends AbstractBaseResponse {
 	public TextResponse() {
 		this.setMsgEnum(ResponseEnum.TEXT);
 	}
+	
+	@Override
+	public Object getObject(int index) {
+		return null;
+	}
+
+	@Override
+	public void addObject(Object obj) {
+
+	}
+
+	@Override
+	public int getObjectCount() {
+		return 0;
+	}	
 
 	/**
 	 * 取得文本消息内容
@@ -35,5 +50,5 @@ public class TextResponse extends AbstractBaseResponse {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	
+
 }

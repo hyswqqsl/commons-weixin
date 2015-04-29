@@ -1,5 +1,7 @@
 package com.ironside.weixin.response.entity;
 
+import org.springframework.util.Assert;
+
 /**
  * 音乐回复实体类
  * @author 雪庭
@@ -23,86 +25,22 @@ public class MusicResponse extends AbstractBaseResponse {
 		this.setMsgEnum(ResponseEnum.MUSIC);
 	}
 	
-	/**
-	 * 取得音乐标题
-	 * @return 音乐标题
-	 */
-	public String getTitle() {
-		return this.music.getTitle();
-	}
-	
-	/**
-	 * 设置音乐标题
-	 * @param title 音乐标题
-	 */
-	public void setTitle(String title) {
-		this.music.setTitle(title);
-	}
-	
-	/**
-	 * 取得音乐描述
-	 * @return 音乐描述
-	 */		
-	public String getDescription() {
-		return this.music.getDescription();
+	@Override
+	public Object getObject(int index) {
+		return this.music;
 	}
 
-	/**
-	 * 设置音乐描述
-	 * @param title 音乐描述
-	 */		
-	public void setDescription(String description) {
-		this.music.setDescription(description);
+	@Override
+	public void addObject(Object obj) {
+		Assert.isTrue(obj instanceof Music);
+		this.music = (Music)obj;
 	}
-	
-	/**
-	 * 取得音乐链接
-	 * @return 音乐链接
-	 */		
-	public String getMusicUrl() {
-		return this.music.getMusicUrl();
-	}
-	
-	/**
-	 * 设置音乐链接
-	 * @param title 音乐链接
-	 */		
-	public void setMusicUrl(String musicUrl) {
-		this.music.setMusicUrl(musicUrl);
-	}
-	
-	/**
-	 * 取得高质量音乐链接，WIFI环境优先使用该链接播放音乐
-	 * @return 高质量音乐链接，WIFI环境优先使用该链接播放音乐
-	 */		
-	public String getHQMusicUrl() {
-		return this.music.getHQMusicUrl();
-	}
-	
-	/**
-	 * 设置高质量音乐链接，WIFI环境优先使用该链接播放音乐
-	 * @param title 高质量音乐链接，WIFI环境优先使用该链接播放音乐
-	 */		
-	public void setHQMusicUrl(String hQMusicUrl) {
-		this.music.setHQMusicUrl(hQMusicUrl);
-	}
-	
-	/**
-	 * 取得缩略图的媒体id，通过上传多媒体文件，得到的id
-	 * @return 缩略图的媒体id，通过上传多媒体文件，得到的id	
-    */			
-	public String getThumbMediaId() {
-		return this.music.getThumbMediaId();
-	}
-	
-	/**
-	 * 设置缩略图的媒体id，通过上传多媒体文件，得到的id
-	 * @param title 缩略图的媒体id，通过上传多媒体文件，得到的id
-	 */		
-	public void setThumbMediaId(String thumbMediaId) {
-		this.music.setThumbMediaId(thumbMediaId);
+
+	@Override
+	public int getObjectCount() {
+		return 1;
 	}	
-
+	
 	public class Music {
 		/** 音乐标题 */
 		private String title;
@@ -195,4 +133,5 @@ public class MusicResponse extends AbstractBaseResponse {
 			this.thumbMediaId = thumbMediaId;
 		}
 	}
+
 }

@@ -1,13 +1,7 @@
 package com.ironside.weixin.request;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Properties;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -28,6 +22,7 @@ import com.ironside.weixin.request.entity.ShortVideoEntity;
 import com.ironside.weixin.request.entity.TextEntity;
 import com.ironside.weixin.request.entity.VideoEntity;
 import com.ironside.weixin.request.entity.VoiceEntity;
+import com.ironside.weixin.response.AbstractXmlProperty;
 
 /**
  * POST方式推送给微信公众账号的消息处理，具体实现消息解析、处理实体。
@@ -59,9 +54,9 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	AbstractBaseEntity analyze(String postData) {
 		Assert.hasText(postData, "postData 参数不能为空");
 		// 将postData解析成properties对象
-		Properties properties = xmlParse.parseString(postData);
+		AbstractXmlProperty xmlProperty= xmlParse.parseString(postData);
 		// 解析properties对象，建立entity对象
-		AbstractBaseEntity entry = doAnalyze(properties);
+		AbstractBaseEntity entry = doAnalyze(xmlProperty);
 		return entry; 
 	}
 
@@ -70,16 +65,16 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体对象
 	 */
-	AbstractBaseEntity doAnalyze(Properties properties) {
-		Assert.notNull(properties);
-		String msgType = properties.getProperty(AbstractBaseEntity.MSG_TYPE);
+	AbstractBaseEntity doAnalyze(AbstractXmlProperty xmlProperty) {
+		Assert.notNull(xmlProperty);
+		String msgType = xmlProperty.getProperty(AbstractBaseEntity.MSG_TYPE);
 		
 		// 解析事件消息
 		if (msgType.equals(EntityEnum.EVENT_CLICK.getMsgType())) {
-			return doEventAnalyze(properties); 
+			return doEventAnalyze(xmlProperty); 
 		}
 		// 解析普通消息
-		return doMessageAnalyze(properties);
+		return doMessageAnalyze(xmlProperty);
 	}
 	
 	/**
@@ -87,7 +82,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体对象
 	 */
-	private AbstractBaseEntity doEventAnalyze(Properties properties) {
+	private AbstractBaseEntity doEventAnalyze(AbstractXmlProperty properties) {
 		String event = properties.getProperty(AbstractBaseEntity.EVENT);
 		String eventKey = properties.getProperty(AbstractBaseEntity.EVENT_KEY);
 		if (event.equals(EntityEnum.EVENT_SUBSCRIBE.getEvent()) && StringUtils.isEmpty(eventKey)) {
@@ -119,7 +114,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doEventSubscribeAnalyze(Properties properties) {
+	private AbstractBaseEntity doEventSubscribeAnalyze(AbstractXmlProperty properties) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -140,7 +135,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doEventUnSubscribeAnalyze(Properties properties) {
+	private AbstractBaseEntity doEventUnSubscribeAnalyze(AbstractXmlProperty properties) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -161,7 +156,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doEventScanSubscribeAnalyze(Properties properties) {
+	private AbstractBaseEntity doEventScanSubscribeAnalyze(AbstractXmlProperty properties) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -191,7 +186,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */	
-	private AbstractBaseEntity doEventScanAnalyze(Properties properties) {
+	private AbstractBaseEntity doEventScanAnalyze(AbstractXmlProperty properties) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -221,7 +216,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */		
-	private AbstractBaseEntity doEventLocationAnalyze(Properties properties) {
+	private AbstractBaseEntity doEventLocationAnalyze(AbstractXmlProperty properties) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -255,7 +250,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doEventClickAnalyze(Properties properties) {
+	private AbstractBaseEntity doEventClickAnalyze(AbstractXmlProperty properties) {
 		/*
 	  	 <xml>
 	 	 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -281,7 +276,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doEventViewAnalyze(Properties properties) {
+	private AbstractBaseEntity doEventViewAnalyze(AbstractXmlProperty properties) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -307,7 +302,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体对象
 	 */
-	private AbstractBaseEntity doMessageAnalyze(Properties properties) {
+	private AbstractBaseEntity doMessageAnalyze(AbstractXmlProperty properties) {
 		String msgType = properties.getProperty(AbstractBaseEntity.MSG_TYPE);
 		if (msgType.equals(EntityEnum.TEXT.getMsgType())) {
 			return doTextAnalyze(properties);
@@ -338,7 +333,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @param entity 用于基础解析的实体
 	 */
-	private void doBaseAnalyze(Properties properties, AbstractBaseEntity entity) {
+	private void doBaseAnalyze(AbstractXmlProperty properties, AbstractBaseEntity entity) {
 		String toUserName = properties.getProperty(TextEntity.TO_USER_NAME);
 		Assert.hasText(toUserName);
 		String fromUserName = properties.getProperty(TextEntity.FORM_USER_NAME);
@@ -359,7 +354,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doTextAnalyze(Properties properties) {
+	private AbstractBaseEntity doTextAnalyze(AbstractXmlProperty properties) {
 		/*
 	 	 <xml>
 	     <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -388,7 +383,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doImageAnalyze(Properties properties) {
+	private AbstractBaseEntity doImageAnalyze(AbstractXmlProperty properties) {
 		/*
 		 <xml>
  		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -421,7 +416,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doVoiceAnalyze(Properties properties) {
+	private AbstractBaseEntity doVoiceAnalyze(AbstractXmlProperty properties) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -454,7 +449,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doVideoAnalyze(Properties properties) {
+	private AbstractBaseEntity doVideoAnalyze(AbstractXmlProperty properties) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -487,7 +482,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doShortVideoAnalyze(Properties properties) {
+	private AbstractBaseEntity doShortVideoAnalyze(AbstractXmlProperty properties) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -520,7 +515,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doLocationAnalyze(Properties properties) {
+	private AbstractBaseEntity doLocationAnalyze(AbstractXmlProperty properties) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -561,7 +556,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @param properties POST推送数据解析后的properties
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doLinkAnalyze(Properties properties) {
+	private AbstractBaseEntity doLinkAnalyze(AbstractXmlProperty properties) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>

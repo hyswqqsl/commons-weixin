@@ -7,7 +7,7 @@ import java.util.Date;
  * @author ZXJ
  * @sine 1.0 at 2015年4月9日
  */
-public class AbstractBaseResponse {
+public abstract class AbstractBaseResponse {
 	
 	/** 对应xml中定义的'开发者微信号'标识 */
 	public final static String TO_USER_NAME = "ToUserName";
@@ -31,7 +31,26 @@ public class AbstractBaseResponse {
 	private Date createTime;
 	/** 消息类型对象 */
 	private ResponseEnum msgEnum;
-
+	
+	/**
+	 * 取得内部对象
+	 * @param index 对象集合下标
+	 * @return 内部对象
+	 */
+	public abstract Object getObject(int index);
+	
+	/**
+	 * 添加内部对象
+	 * @param obj 内部对象
+	 */
+	public abstract void addObject(Object obj);
+	
+	/**
+	 * 取得内部对象数量
+	 * @return 内部对象数量
+	 */
+	public abstract int getObjectCount();
+	
 	/**
 	 * 取得开发者微信号
 	 * @return 开发者微信号
