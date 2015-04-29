@@ -53,16 +53,16 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	@Override
 	AbstractBaseEntity analyze(String postData) {
 		Assert.hasText(postData, "postData 参数不能为空");
-		// 将postData解析成properties对象
+		// 将postData解析成xmlProperty对象
 		AbstractXmlProperty xmlProperty= xmlParse.parseString(postData);
-		// 解析properties对象，建立entity对象
+		// 解析xmlProperty对象，建立entity对象
 		AbstractBaseEntity entry = doAnalyze(xmlProperty);
 		return entry; 
 	}
 
 	/**
-	 * 解析properties对象，建立entity对象
-	 * @param properties POST推送数据解析后的properties
+	 * 解析xmlProperty对象，建立entity对象
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体对象
 	 */
 	AbstractBaseEntity doAnalyze(AbstractXmlProperty xmlProperty) {
@@ -79,42 +79,42 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	
 	/**
 	 * 解析事件消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体对象
 	 */
-	private AbstractBaseEntity doEventAnalyze(AbstractXmlProperty properties) {
-		String event = properties.getProperty(AbstractBaseEntity.EVENT);
-		String eventKey = properties.getProperty(AbstractBaseEntity.EVENT_KEY);
+	private AbstractBaseEntity doEventAnalyze(AbstractXmlProperty xmlProperty) {
+		String event = xmlProperty.getProperty(AbstractBaseEntity.EVENT);
+		String eventKey = xmlProperty.getProperty(AbstractBaseEntity.EVENT_KEY);
 		if (event.equals(EntityEnum.EVENT_SUBSCRIBE.getEvent()) && StringUtils.isEmpty(eventKey)) {
-			return doEventSubscribeAnalyze(properties);
+			return doEventSubscribeAnalyze(xmlProperty);
 		}
 		if (event.equals(EntityEnum.EVENT_UNSUBSCRIBE.getEvent()) && StringUtils.isEmpty(eventKey)) {
-			return doEventUnSubscribeAnalyze(properties);
+			return doEventUnSubscribeAnalyze(xmlProperty);
 		}
 		if (event.equals(EntityEnum.EVENT_SCAN_SUBSCRIBE.getEvent()) && StringUtils.isEmpty(eventKey)==false) {
-			return doEventScanSubscribeAnalyze(properties);
+			return doEventScanSubscribeAnalyze(xmlProperty);
 		}
 		if (event.equals(EntityEnum.EVENT_SCAN.getEvent())) {
-			return doEventScanAnalyze(properties);
+			return doEventScanAnalyze(xmlProperty);
 		}
 		if (event.equals(EntityEnum.EVENT_LOCATION.getEvent())) {
-			return doEventLocationAnalyze(properties);
+			return doEventLocationAnalyze(xmlProperty);
 		}
 		if (event.equals(EntityEnum.EVENT_CLICK.getEvent())) {
-			return doEventClickAnalyze(properties);
+			return doEventClickAnalyze(xmlProperty);
 		}
 		if (event.equals(EntityEnum.EVENT_VIEW.getEvent())) {
-			return doEventViewAnalyze(properties);
+			return doEventViewAnalyze(xmlProperty);
 		}
 		throw new IllegalStateException(String.format("解析事件消息出错:(%s)事件类型未知", event));
 	}
 
 	/**
 	 * 解析关注/取消关注-订阅事件消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doEventSubscribeAnalyze(AbstractXmlProperty properties) {
+	private AbstractBaseEntity doEventSubscribeAnalyze(AbstractXmlProperty xmlProperty) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -125,17 +125,17 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		 </xml>
 		 */
 		EventSubscribeEntity entity = new EventSubscribeEntity();
-		doBaseAnalyze(properties, entity);
+		doBaseAnalyze(xmlProperty, entity);
 		
 		return entity;
 	}
 	
 	/**
 	 * 解析关注/取消关注-取消订阅事件消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doEventUnSubscribeAnalyze(AbstractXmlProperty properties) {
+	private AbstractBaseEntity doEventUnSubscribeAnalyze(AbstractXmlProperty xmlProperty) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -146,17 +146,17 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		 </xml>
 		 */
 		EventUnSubscribeEntity entity = new EventUnSubscribeEntity();
-		doBaseAnalyze(properties, entity);
+		doBaseAnalyze(xmlProperty, entity);
 		
 		return entity;
 	}
 
 	/**
 	 * 解析扫描带参数二维码-用户未关注时，进行关注后的事件消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doEventScanSubscribeAnalyze(AbstractXmlProperty properties) {
+	private AbstractBaseEntity doEventScanSubscribeAnalyze(AbstractXmlProperty xmlProperty) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -169,10 +169,10 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		 </xml>
 		 */
 		EventScanSubscribeEntity entity = new EventScanSubscribeEntity();
-		doBaseAnalyze(properties, entity);
-		String eventKey = properties.getProperty(AbstractBaseEntity.EVENT_KEY);
+		doBaseAnalyze(xmlProperty, entity);
+		String eventKey = xmlProperty.getProperty(AbstractBaseEntity.EVENT_KEY);
 		Assert.hasText(eventKey);
-		String ticket = properties.getProperty(EventScanSubscribeEntity.TICKET);
+		String ticket = xmlProperty.getProperty(EventScanSubscribeEntity.TICKET);
 		Assert.hasText(ticket);
 		
 		entity.setEventKey(eventKey);
@@ -183,10 +183,10 @@ public class DefaultPostProcess extends AbstractPostProcess {
 
 	/**
 	 * 解析扫描带参数二维码-用户已关注时的事件消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体
 	 */	
-	private AbstractBaseEntity doEventScanAnalyze(AbstractXmlProperty properties) {
+	private AbstractBaseEntity doEventScanAnalyze(AbstractXmlProperty xmlProperty) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -199,10 +199,10 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		 </xml>
 		 */
 		EventScanEntity entity = new EventScanEntity();
-		doBaseAnalyze(properties, entity);
-		String eventKey = properties.getProperty(AbstractBaseEntity.EVENT_KEY);
+		doBaseAnalyze(xmlProperty, entity);
+		String eventKey = xmlProperty.getProperty(AbstractBaseEntity.EVENT_KEY);
 		Assert.hasText(eventKey);
-		String ticket = properties.getProperty(EventScanEntity.TICKET);
+		String ticket = xmlProperty.getProperty(EventScanEntity.TICKET);
 		Assert.hasText(ticket);
 		
 		entity.setEventKey(eventKey);
@@ -213,10 +213,10 @@ public class DefaultPostProcess extends AbstractPostProcess {
 
 	/**
 	 * 解析上报地理位置事件消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体
 	 */		
-	private AbstractBaseEntity doEventLocationAnalyze(AbstractXmlProperty properties) {
+	private AbstractBaseEntity doEventLocationAnalyze(AbstractXmlProperty xmlProperty) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -230,12 +230,12 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		 </xml>
 		 */
 		EventLocationEntity entity = new EventLocationEntity();
-		doBaseAnalyze(properties, entity);
-		String latitude = properties.getProperty(EventLocationEntity.LATITUDE);
+		doBaseAnalyze(xmlProperty, entity);
+		String latitude = xmlProperty.getProperty(EventLocationEntity.LATITUDE);
 		Assert.hasText(latitude);
-		String longitude = properties.getProperty(EventLocationEntity.LONGITUDE);
+		String longitude = xmlProperty.getProperty(EventLocationEntity.LONGITUDE);
 		Assert.hasText(longitude);
-		String precision = properties.getProperty(EventLocationEntity.PRECISION);
+		String precision = xmlProperty.getProperty(EventLocationEntity.PRECISION);
 		Assert.hasText(precision);
 		
 		entity.setLatitude(latitude);
@@ -247,10 +247,10 @@ public class DefaultPostProcess extends AbstractPostProcess {
 
 	/**
 	 * 解析自定义菜单-点击菜单拉取消息时的事件消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doEventClickAnalyze(AbstractXmlProperty properties) {
+	private AbstractBaseEntity doEventClickAnalyze(AbstractXmlProperty xmlProperty) {
 		/*
 	  	 <xml>
 	 	 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -262,8 +262,8 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		 </xml>
 		 */
 		EventClickEntity entity = new EventClickEntity();
-		doBaseAnalyze(properties, entity);
-		String eventKey = properties.getProperty(AbstractBaseEntity.EVENT_KEY);
+		doBaseAnalyze(xmlProperty, entity);
+		String eventKey = xmlProperty.getProperty(AbstractBaseEntity.EVENT_KEY);
 		Assert.hasText(eventKey);
 		
 		entity.setEventKey(eventKey);
@@ -273,10 +273,10 @@ public class DefaultPostProcess extends AbstractPostProcess {
 
 	/**
 	 * 解析自定义菜单-点击菜单跳转链接时的事件消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doEventViewAnalyze(AbstractXmlProperty properties) {
+	private AbstractBaseEntity doEventViewAnalyze(AbstractXmlProperty xmlProperty) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -288,8 +288,8 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		 </xml>
 		 */
 		EventViewEntity entity = new EventViewEntity();
-		doBaseAnalyze(properties, entity);
-		String eventKey = properties.getProperty(AbstractBaseEntity.EVENT_KEY);
+		doBaseAnalyze(xmlProperty, entity);
+		String eventKey = xmlProperty.getProperty(AbstractBaseEntity.EVENT_KEY);
 		Assert.hasText(eventKey);
 		
 		entity.setEventKey(eventKey);
@@ -299,46 +299,46 @@ public class DefaultPostProcess extends AbstractPostProcess {
 
 	/**
 	 * 解析普通消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体对象
 	 */
-	private AbstractBaseEntity doMessageAnalyze(AbstractXmlProperty properties) {
-		String msgType = properties.getProperty(AbstractBaseEntity.MSG_TYPE);
+	private AbstractBaseEntity doMessageAnalyze(AbstractXmlProperty xmlProperty) {
+		String msgType = xmlProperty.getProperty(AbstractBaseEntity.MSG_TYPE);
 		if (msgType.equals(EntityEnum.TEXT.getMsgType())) {
-			return doTextAnalyze(properties);
+			return doTextAnalyze(xmlProperty);
 		}
 		if (msgType.equals(EntityEnum.IMAGE.getMsgType())) {
-			return doImageAnalyze(properties);
+			return doImageAnalyze(xmlProperty);
 		}
 		if (msgType.equals(EntityEnum.VOICE.getMsgType())) {
-			return doVoiceAnalyze(properties);
+			return doVoiceAnalyze(xmlProperty);
 		}
 		if (msgType.equals(EntityEnum.VIDEO.getMsgType())) {
-			return doVideoAnalyze(properties);
+			return doVideoAnalyze(xmlProperty);
 		}
 		if (msgType.equals(EntityEnum.SHORTVIDEO.getMsgType())) {
-			return doShortVideoAnalyze(properties);
+			return doShortVideoAnalyze(xmlProperty);
 		}
 		if (msgType.equals(EntityEnum.LOCATION.getMsgType())) {
-			return doLocationAnalyze(properties);
+			return doLocationAnalyze(xmlProperty);
 		}		
 		if (msgType.equals(EntityEnum.LINK.getMsgType())) {
-			return doLinkAnalyze(properties);
+			return doLinkAnalyze(xmlProperty);
 		}
 		throw new IllegalStateException(String.format("解析普通消息出错:(%s)消息类型未知", msgType));
 	}
 	
 	/**
 	 * 基础解析
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @param entity 用于基础解析的实体
 	 */
-	private void doBaseAnalyze(AbstractXmlProperty properties, AbstractBaseEntity entity) {
-		String toUserName = properties.getProperty(TextEntity.TO_USER_NAME);
+	private void doBaseAnalyze(AbstractXmlProperty xmlProperty, AbstractBaseEntity entity) {
+		String toUserName = xmlProperty.getProperty(TextEntity.TO_USER_NAME);
 		Assert.hasText(toUserName);
-		String fromUserName = properties.getProperty(TextEntity.FORM_USER_NAME);
+		String fromUserName = xmlProperty.getProperty(TextEntity.FORM_USER_NAME);
 		Assert.hasText(fromUserName);
-		String createTimeStr = properties.getProperty(TextEntity.CREATE_TIME);
+		String createTimeStr = xmlProperty.getProperty(TextEntity.CREATE_TIME);
 		Assert.hasText(createTimeStr);
 		// 将时间整形转换为对象
 		Date createTime = new Date(Long.parseLong(createTimeStr));
@@ -351,10 +351,10 @@ public class DefaultPostProcess extends AbstractPostProcess {
 
 	/**
 	 * 解析普通文本消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doTextAnalyze(AbstractXmlProperty properties) {
+	private AbstractBaseEntity doTextAnalyze(AbstractXmlProperty xmlProperty) {
 		/*
 	 	 <xml>
 	     <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -366,10 +366,10 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 	 </xml>
 	 	 */ 
 		TextEntity entity = new TextEntity();
-		doBaseAnalyze(properties, entity);
-		String content = properties.getProperty(TextEntity.CONTENT);
+		doBaseAnalyze(xmlProperty, entity);
+		String content = xmlProperty.getProperty(TextEntity.CONTENT);
 		Assert.hasText(content);
-		String msgId = properties.getProperty(TextEntity.MSG_ID);
+		String msgId = xmlProperty.getProperty(TextEntity.MSG_ID);
 		Assert.hasText(msgId);		
 
 		entity.setContent(content);
@@ -380,10 +380,10 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	
 	/**
 	 * 解析普通图片消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doImageAnalyze(AbstractXmlProperty properties) {
+	private AbstractBaseEntity doImageAnalyze(AbstractXmlProperty xmlProperty) {
 		/*
 		 <xml>
  		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -396,12 +396,12 @@ public class DefaultPostProcess extends AbstractPostProcess {
  		 </xml>
 		 */
 		ImageEntity entity = new ImageEntity();
-		doBaseAnalyze(properties, entity);
-		String picUrl = properties.getProperty(ImageEntity.PIC_URL);
+		doBaseAnalyze(xmlProperty, entity);
+		String picUrl = xmlProperty.getProperty(ImageEntity.PIC_URL);
 		Assert.hasText(picUrl);
-		String mediaId = properties.getProperty(ImageEntity.MEDIA_ID);
+		String mediaId = xmlProperty.getProperty(ImageEntity.MEDIA_ID);
 		Assert.hasText(mediaId);
-		String msgId = properties.getProperty(TextEntity.MSG_ID);
+		String msgId = xmlProperty.getProperty(TextEntity.MSG_ID);
 		Assert.hasText(msgId);				
 
 		entity.setPicUrl(picUrl);
@@ -413,10 +413,10 @@ public class DefaultPostProcess extends AbstractPostProcess {
 
 	/**
 	 * 解析普通语音消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doVoiceAnalyze(AbstractXmlProperty properties) {
+	private AbstractBaseEntity doVoiceAnalyze(AbstractXmlProperty xmlProperty) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -429,12 +429,12 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		 </xml>
 		 */
 		VoiceEntity entity = new VoiceEntity();
-		doBaseAnalyze(properties, entity);
-		String mediaId = properties.getProperty(VoiceEntity.MEDIA_ID);
+		doBaseAnalyze(xmlProperty, entity);
+		String mediaId = xmlProperty.getProperty(VoiceEntity.MEDIA_ID);
 		Assert.hasText(mediaId);
-		String format = properties.getProperty(VoiceEntity.FORMAT);
+		String format = xmlProperty.getProperty(VoiceEntity.FORMAT);
 		Assert.hasText(format);
-		String msgId = properties.getProperty(TextEntity.MSG_ID);
+		String msgId = xmlProperty.getProperty(TextEntity.MSG_ID);
 		Assert.hasText(msgId);				
 		
 		entity.setMediaId(mediaId);
@@ -446,10 +446,10 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	
 	/**
 	 * 解析普通视频消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doVideoAnalyze(AbstractXmlProperty properties) {
+	private AbstractBaseEntity doVideoAnalyze(AbstractXmlProperty xmlProperty) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -462,12 +462,12 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		 </xml>
 		 */
 		VideoEntity entity = new VideoEntity();
-		doBaseAnalyze(properties, entity);
-		String mediaId = properties.getProperty(VideoEntity.MEDIA_ID);
+		doBaseAnalyze(xmlProperty, entity);
+		String mediaId = xmlProperty.getProperty(VideoEntity.MEDIA_ID);
 		Assert.hasText(mediaId);
-		String thumbMediaId = properties.getProperty(VideoEntity.THUMB_MEDIA_ID);
+		String thumbMediaId = xmlProperty.getProperty(VideoEntity.THUMB_MEDIA_ID);
 		Assert.hasText(thumbMediaId);
-		String msgId = properties.getProperty(VideoEntity.MSG_ID);
+		String msgId = xmlProperty.getProperty(VideoEntity.MSG_ID);
 		Assert.hasText(msgId);				
 		
 		entity.setMediaId(mediaId);
@@ -479,10 +479,10 @@ public class DefaultPostProcess extends AbstractPostProcess {
 
 	/**
 	 * 解析普通小视频消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doShortVideoAnalyze(AbstractXmlProperty properties) {
+	private AbstractBaseEntity doShortVideoAnalyze(AbstractXmlProperty xmlProperty) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -495,12 +495,12 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		 </xml>
 		 */
 		ShortVideoEntity entity = new ShortVideoEntity();
-		doBaseAnalyze(properties, entity);
-		String mediaId = properties.getProperty(VideoEntity.MEDIA_ID);
+		doBaseAnalyze(xmlProperty, entity);
+		String mediaId = xmlProperty.getProperty(VideoEntity.MEDIA_ID);
 		Assert.hasText(mediaId);
-		String thumbMediaId = properties.getProperty(VideoEntity.THUMB_MEDIA_ID);
+		String thumbMediaId = xmlProperty.getProperty(VideoEntity.THUMB_MEDIA_ID);
 		Assert.hasText(thumbMediaId);
-		String msgId = properties.getProperty(VideoEntity.MSG_ID);
+		String msgId = xmlProperty.getProperty(VideoEntity.MSG_ID);
 		Assert.hasText(msgId);				
 		
 		entity.setMediaId(mediaId);
@@ -512,10 +512,10 @@ public class DefaultPostProcess extends AbstractPostProcess {
 
 	/**
 	 * 解析普通位置消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doLocationAnalyze(AbstractXmlProperty properties) {
+	private AbstractBaseEntity doLocationAnalyze(AbstractXmlProperty xmlProperty) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -530,16 +530,16 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		 </xml> 		
 		 */
 		LocationEntity entity = new LocationEntity();
-		doBaseAnalyze(properties, entity);
-		String locationX = properties.getProperty(LocationEntity.LOCATION_X);
+		doBaseAnalyze(xmlProperty, entity);
+		String locationX = xmlProperty.getProperty(LocationEntity.LOCATION_X);
 		Assert.hasText(locationX);
-		String locationY = properties.getProperty(LocationEntity.LOCATION_Y);
+		String locationY = xmlProperty.getProperty(LocationEntity.LOCATION_Y);
 		Assert.hasText(locationY);
-		String scale = properties.getProperty(LocationEntity.SCALE);
+		String scale = xmlProperty.getProperty(LocationEntity.SCALE);
 		Assert.hasText(scale);
-		String label = properties.getProperty(LocationEntity.LABEL);
+		String label = xmlProperty.getProperty(LocationEntity.LABEL);
 		Assert.hasText(label);
-		String msgId = properties.getProperty(TextEntity.MSG_ID);
+		String msgId = xmlProperty.getProperty(TextEntity.MSG_ID);
 		Assert.hasText(msgId);
 		
 		entity.setLocationX(locationX);
@@ -553,10 +553,10 @@ public class DefaultPostProcess extends AbstractPostProcess {
 
 	/**
 	 * 解析普通链接消息
-	 * @param properties POST推送数据解析后的properties
+	 * @param xmlProperty POST推送数据解析后的xmlProperty
 	 * @return 解析后的实体
 	 */
-	private AbstractBaseEntity doLinkAnalyze(AbstractXmlProperty properties) {
+	private AbstractBaseEntity doLinkAnalyze(AbstractXmlProperty xmlProperty) {
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -570,14 +570,14 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		 </xml> 
 		 */
 		LinkEntity entity = new LinkEntity();
-		doBaseAnalyze(properties, entity);
-		String title = properties.getProperty(LinkEntity.TITLE);
+		doBaseAnalyze(xmlProperty, entity);
+		String title = xmlProperty.getProperty(LinkEntity.TITLE);
 		Assert.hasText(title);
-		String description = properties.getProperty(LinkEntity.DESCRIPTION);
+		String description = xmlProperty.getProperty(LinkEntity.DESCRIPTION);
 		Assert.hasText(description);
-		String url = properties.getProperty(LinkEntity.URL);
+		String url = xmlProperty.getProperty(LinkEntity.URL);
 		Assert.hasText(url);
-		String msgId = properties.getProperty(TextEntity.MSG_ID);
+		String msgId = xmlProperty.getProperty(TextEntity.MSG_ID);
 		Assert.hasText(msgId);
 		
 		entity.setTitle(title);
