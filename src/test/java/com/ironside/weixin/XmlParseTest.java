@@ -21,10 +21,10 @@ public class XmlParseTest {
 	
 	public final String XML_STR_CHILDS = "<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName>" +
 			"<CreateTime>12345678</CreateTime><MsgType><![CDATA[news]]></MsgType><ArticleCount>2</ArticleCount>" +
-			"<Articles><item><Title><![CDATA[title]]></Title><Description><![CDATA[description1]]></Description>" +
-			"<PicUrl><![CDATA[picurl]]></PicUrl><Url><![CDATA[url]]></Url></item><item><Title><![CDATA[title]]></Title>" +
-			"<Description><![CDATA[description]]></Description><PicUrl><![CDATA[picurl]]></PicUrl><Url><![CDATA[url]]></Url></item>" +
-			"<item><Title><![CDATA[title]]></Title><Description><![CDATA[description]]></Description><PicUrl><![CDATA[picurl]]></PicUrl><Url><![CDATA[url]]></Url></item>" +
+			"<Articles><item><Title><![CDATA[title]]></Title><Description><![CDATA[description]]></Description>" +
+			"<PicUrl><![CDATA[picUrl]]></PicUrl><Url><![CDATA[url]]></Url></item><item><Title><![CDATA[title]]></Title>" +
+			"<Description><![CDATA[description]]></Description><PicUrl><![CDATA[picUrl]]></PicUrl><Url><![CDATA[url]]></Url></item>" +
+			"<item><Title><![CDATA[title]]></Title><Description><![CDATA[description]]></Description><PicUrl><![CDATA[picUrl]]></PicUrl><Url><![CDATA[url]]></Url></item>" +
 			"</Articles></xml>";
 	
 	@Before
@@ -57,7 +57,8 @@ public class XmlParseTest {
 		for (int i=0; i<xmlProperty.getChildSize(); i++) {
 			Assert.assertEquals(xmlProperty.getChild(i).getName(), "item");
 			Assert.assertEquals(xmlProperty.getChild(i).getProperty(AbstractBaseResponse.TITLE), "title");
-			Assert.assertEquals(xmlProperty.getChild(i).getProperty("PicUrl"), "picurl");			
+			Assert.assertEquals(xmlProperty.getChild(i).getProperty("PicUrl"), "picUrl");
+			Assert.assertEquals(xmlProperty.getChild(i).getProperty("Description"), "description");			
 		}
 	}
 

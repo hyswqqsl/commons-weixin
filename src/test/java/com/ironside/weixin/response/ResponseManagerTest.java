@@ -8,6 +8,7 @@ import org.junit.Test;
 import com.ironside.weixin.XmlParse;
 import com.ironside.weixin.response.entity.ImageResponse;
 import com.ironside.weixin.response.entity.MusicResponse;
+import com.ironside.weixin.response.entity.NewsResponse;
 import com.ironside.weixin.response.entity.ResponseEnum;
 import com.ironside.weixin.response.entity.TextResponse;
 import com.ironside.weixin.response.entity.VideoResponse;
@@ -52,7 +53,7 @@ public class ResponseManagerTest {
 		Assert.assertEquals(textResponse.getFromUserName(), "fromUser");
 		Assert.assertEquals(textResponse.getToUserName(), "toUser");
 		Assert.assertEquals(textResponse.getMsgtype(), ResponseEnum.TEXT.getMsgType());
-		// *** 测试根据回复实体xml文件取得文本回复实体 ***
+		// *** 测试根据回复实体xml文件取得回复实体 ***
 		this.responseManager.setTextXmlFile(TEST_TEXT_XMLFILE);
 		textResponse = this.responseManager.getTextResponse();
 		// 验证取得的是根据xml文件解析消息
@@ -85,7 +86,7 @@ public class ResponseManagerTest {
 	public void testTextResponseCache() {
 		String cacheContent = "cacheContent";
 		
-		// *** 测试以缓冲方式取得文本回复消息 ***
+		// *** 测试以缓冲方式取得回复消息 ***
 		// 根据xml文件解析消息
 		this.responseManager.setTextXmlFile(TEST_TEXT_XMLFILE);
 		TextResponse textResponse = this.responseManager.getTextResponse(); 
@@ -111,7 +112,7 @@ public class ResponseManagerTest {
 		ImageResponse response = this.responseManager.getImageResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.IMAGE.getMsgType());
 		Assert.assertEquals(((ImageResponse.Image)response.getObject(0)).getMediaId(), "media_id");
-		// *** 测试根据回复实体xml文件取得图片回复实体 ***
+		// *** 测试根据回复实体xml文件取得回复实体 ***
 		this.responseManager.setImageXmlFile("testImageResponse.xml");
 		response = this.responseManager.getImageResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.IMAGE.getMsgType());
@@ -125,7 +126,7 @@ public class ResponseManagerTest {
 		VoiceResponse response = this.responseManager.getVoiceResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.VOICE.getMsgType());
 		Assert.assertEquals(((VoiceResponse.Voice)response.getObject(0)).getMediaId(), "media_id");
-		// *** 测试根据回复实体xml文件取得图片回复实体 ***
+		// *** 测试根据回复实体xml文件取得回复实体 ***
 		this.responseManager.setVoiceXmlFile("testVoiceResponse.xml");
 		response = this.responseManager.getVoiceResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.VOICE.getMsgType());
@@ -155,7 +156,7 @@ public class ResponseManagerTest {
 		Assert.assertEquals(video.getMediaId(), "media_id");
 		Assert.assertEquals(video.getTitle(), "title");
 		Assert.assertEquals(video.getDescription(), "description");
-		// *** 测试根据回复实体xml文件取得图片回复实体 ***
+		// *** 测试根据回复实体xml文件取得回复实体 ***
 		this.responseManager.setVideoXmlFile("testVideoResponse.xml");
 		response = this.responseManager.getVideoResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.VIDEO.getMsgType());
@@ -194,7 +195,7 @@ public class ResponseManagerTest {
 		Assert.assertEquals(music.getMusicUrl(), "music_url");
 		Assert.assertEquals(music.getHQMusicUrl(), "hq_music_url");
 		Assert.assertEquals(music.getThumbMediaId(), "thumb_media_id");
-		// *** 测试根据回复实体xml文件取得图片回复实体 ***
+		// *** 测试根据回复实体xml文件取得回复实体 ***
 		this.responseManager.setMusicXmlFile("testMusicResponse.xml");
 		response = this.responseManager.getMusicResponse();
 		Assert.assertEquals(response.getMsgtype(), ResponseEnum.MUSIC.getMsgType());
@@ -222,4 +223,49 @@ public class ResponseManagerTest {
 		Assert.fail("测试有问题的实体xml文件出错");				
 	}
 
+	@Test
+	public void testNewsResponse() {
+		// *** 测试取得默认消息 ***
+		NewsResponse response = this.responseManager.getNewsResponse();
+		Assert.assertEquals(response.getMsgtype(), ResponseEnum.NEWS.getMsgType());
+		Assert.assertEquals(response.getArticleCount(), 2);
+		NewsResponse.News news;
+		for(int i=0;i<response.getArticleCount();i++) {
+			news=(NewsResponse.News)response.getObject(i);
+			Assert.assertEquals(news.getTitle(), "title");
+			Assert.assertEquals(news.getDescription(), "description");
+			Assert.assertEquals(news.getPicUrl(), "picUrl");
+			Assert.assertEquals(news.getUrl(), "url");
+		}
+		// *** 测试根据回复实体xml文件取得回复实体 ***
+		this.responseManager.setNewsXmlFile("testNewsResponse.xml");
+		response = this.responseManager.getNewsResponse();
+		Assert.assertEquals(response.getMsgtype(), ResponseEnum.NEWS.getMsgType());
+		Assert.assertEquals(response.getArticleCount(), 3);		
+		for(int i=0;i<response.getArticleCount();i++) {
+			news=(NewsResponse.News)response.getObject(i);
+			Assert.assertNull(news.getTitle());
+			Assert.assertEquals(news.getDescription(), "description");
+			Assert.assertEquals(news.getPicUrl(), "picUrl");
+			Assert.assertEquals(news.getUrl(), "url");
+		}
+		// *** 测试如果图文数超过限制，节点数将是最大值
+		this.responseManager.setNewsXmlFile("testNewsMaxResponse.xml");
+		response = this.responseManager.getNewsResponse();
+		Assert.assertEquals(response.getArticleCount(), NewsResponse.NEWS_CHILD_MAX_SIZE);
+		// *** 测试有问题的实体xml文件
+		this.responseManager.setNewsXmlFile(WRONG_XMLFILE);
+		try {
+			response = this.responseManager.getNewsResponse();
+		} catch(IllegalArgumentException e) {
+			Assert.assertNull(this.responseManager.newsXmlFile);
+			response = this.responseManager.getNewsResponse();
+			Assert.assertEquals(response.getMsgtype(), ResponseEnum.NEWS.getMsgType());
+			// 子对象
+			news = (NewsResponse.News)response.getObject(0);
+			Assert.assertEquals(news.getTitle(), "title");
+			return;
+		}
+		Assert.fail("测试有问题的实体xml文件出错");
+	}
 }
