@@ -11,36 +11,14 @@ public class TextResponse extends AbstractBaseResponse {
 	public final static String CONTENT = "Content";
 
 	/** 文本消息内容 */
-	private String content;	
-
-	/**
-	 * 构造函数，设置类型
-	 */
-	public TextResponse() {
-		this.setMsgEnum(ResponseEnum.TEXT);
-	}
-	
-	@Override
-	public Object getObject(int index) {
-		return null;
-	}
-
-	@Override
-	public void addObject(Object obj) {
-
-	}
-
-	@Override
-	public int getObjectCount() {
-		return 0;
-	}	
+	private String Content;	
 
 	/**
 	 * 取得文本消息内容
 	 * @return 文本消息内容
 	 */
 	public String getContent() {
-		return content;
+		return Content;
 	}
 	
 	/**
@@ -48,7 +26,7 @@ public class TextResponse extends AbstractBaseResponse {
 	 * @param content 文本消息内容
 	 */
 	public void setContent(String content) {
-		this.content = content;
+		this.Content = content;
 	}
 
 }

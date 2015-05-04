@@ -1,6 +1,5 @@
 package com.ironside.weixin.response.entity;
 
-import org.springframework.util.Assert;
 
 /**
  * 图片回复实体类
@@ -13,39 +12,30 @@ public class ImageResponse extends AbstractBaseResponse {
 	public final static String IMAGE = "Image";
 	
 	/** 内部图片对象 */
-	private Image image;
+	private Image Image;
 	
 	public ImageResponse() {
-		image = new Image();
-		this.setMsgEnum(ResponseEnum.IMAGE);
+		Image = new Image();
 	}
 	
-	@Override
-	public Object getObject(int index) {
-		return image;
+	public Image getImage() {
+		return Image;
 	}
 
-	@Override
-	public void addObject(Object obj) {
-		Assert.isTrue(obj instanceof Image);
-		this.image = (Image)obj;
+	public void setImage(Image image) {
+		Image = image;
 	}
 
-	@Override
-	public int getObjectCount() {
-		return 1;
-	}	
-	
 	public class Image {
 		
-		String mediaId;
+		String MediaId;
 
 		/**
 		 * 取得通过上传多媒体文件，得到的id
 		 * @return 通过上传多媒体文件，得到的id
 		 */
 		public String getMediaId() {
-			return mediaId;
+			return MediaId;
 		}
 
 		/**
@@ -53,7 +43,7 @@ public class ImageResponse extends AbstractBaseResponse {
 		 * @param mediaId 通过上传多媒体文件，得到的id
 		 */		
 		public void setMediaId(String mediaId) {
-			this.mediaId = mediaId;
+			this.MediaId = mediaId;
 		}
 	}
 

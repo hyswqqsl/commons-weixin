@@ -13,39 +13,30 @@ public class VoiceResponse extends AbstractBaseResponse {
 	public final static String VOICE = "Voice";
 	
 	/** 内部语音对象 */
-	private Voice voice;
+	private Voice Voice;
 	
 	public VoiceResponse() {
-		voice = new Voice();
-		this.setMsgEnum(ResponseEnum.VOICE);
-	}
-	
-	@Override
-	public Object getObject(int index) {
-		return this.voice;
-	}
-
-	@Override
-	public void addObject(Object obj) {
-		Assert.isTrue(obj instanceof Voice);
-		this.voice = (Voice)obj;
-	}
-
-	@Override
-	public int getObjectCount() {
-		return 1;
+		Voice = new Voice();
 	}	
 	
+	public Voice getVoice() {
+		return Voice;
+	}
+
+	public void setVoice(Voice voice) {
+		Voice = voice;
+	}
+
 	public class Voice {
 		
-		private String mediaId;
+		private String MediaId;
 
 		/**
 		 * 取得通过上传多媒体文件，得到的id
 		 * @return 通过上传多媒体文件，得到的id
 		 */	
 		public String getMediaId() {
-			return mediaId;
+			return MediaId;
 		}
 
 		/**
@@ -53,7 +44,7 @@ public class VoiceResponse extends AbstractBaseResponse {
 		 * @param mediaId 通过上传多媒体文件，得到的id
 		 */
 		public void setMediaId(String mediaId) {
-			this.mediaId = mediaId;
+			this.MediaId = mediaId;
 		}
 	}
 

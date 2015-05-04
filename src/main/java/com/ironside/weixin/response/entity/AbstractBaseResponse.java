@@ -24,39 +24,20 @@ public abstract class AbstractBaseResponse {
 	public final static String DESCRIPTION = "Description";	
 		
 	/** 开发者微信号  */
-	private String toUserName;
+	private String ToUserName;
 	/** 发送方帐号（一个OpenID） */
-	private String fromUserName;
+	private String FromUserName;
 	/** 消息创建时间  */
-	private Date createTime;
-	/** 消息类型对象 */
-	private ResponseEnum msgEnum;
-	
-	/**
-	 * 取得内部对象
-	 * @param index 对象集合下标
-	 * @return 内部对象
-	 */
-	public abstract Object getObject(int index);
-	
-	/**
-	 * 添加内部对象
-	 * @param obj 内部对象
-	 */
-	public abstract void addObject(Object obj);
-	
-	/**
-	 * 取得内部对象数量
-	 * @return 内部对象数量
-	 */
-	public abstract int getObjectCount();
+	private String CreateTime;
+	/** 消息类型 */
+	private String MsgType;
 	
 	/**
 	 * 取得开发者微信号
 	 * @return 开发者微信号
 	 */
 	public String getToUserName() {
-		return toUserName;
+		return ToUserName;
 	}
 	
 	/**
@@ -64,7 +45,7 @@ public abstract class AbstractBaseResponse {
 	 * @param toUserName 开发者微信号
 	 */
 	public void setToUserName(String toUserName) {
-		this.toUserName = toUserName;
+		this.ToUserName = toUserName;
 	}
 	
 	/**
@@ -72,7 +53,7 @@ public abstract class AbstractBaseResponse {
 	 * @return 发送方帐号
 	 */
 	public String getFromUserName() {
-		return fromUserName;
+		return FromUserName;
 	}
 	
 	/**
@@ -80,47 +61,39 @@ public abstract class AbstractBaseResponse {
 	 * @param fromUserName 发送方帐号
 	 */
 	public void setFromUserName(String fromUserName) {
-		this.fromUserName = fromUserName;
+		this.FromUserName = fromUserName;
 	}
 	
 	/**
 	 * 取得消息创建时间
 	 * @return 消息创建时间
 	 */
-	public Date getCreateTime() {
-		return createTime;
+	public String getCreateTime() {
+		return CreateTime;
 	}
 	
 	/**
 	 * 设置消息创建时间
 	 * @param createTime 消息创建时间
 	 */
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-	
-	/**
-	 * 取得消息类型对象
-	 * @return 消息类型对象
-	 */	
-	public ResponseEnum getMsgEnum() {
-		return msgEnum;
+	public void setCreateTime(String createTime) {
+		this.CreateTime = createTime;
 	}
 
-	/**
-	 * 设置消息类型对象
-	 * @param msgType 消息类型对象
-	 */	
-	public void setMsgEnum(ResponseEnum msgEnum) {
-		this.msgEnum = msgEnum;
-	}
-	
 	/**
 	 * 取得消息类型
 	 * @return 消息类型
 	 */
-	public String getMsgtype() {
-		return msgEnum.getMsgType();
+	public String getMsgType() {
+		return MsgType;
 	}
+
+	/**
+	 * 设置消息类型
+	 * @param msgType 消息类型
+	 */
+	public void setMsgType(String msgType) {
+		MsgType = msgType;
+ 	}
 
 }

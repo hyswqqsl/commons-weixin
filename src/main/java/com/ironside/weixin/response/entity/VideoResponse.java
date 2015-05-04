@@ -1,6 +1,5 @@
 package com.ironside.weixin.response.entity;
 
-import org.springframework.util.Assert;
 
 /**
  * 视频回复实体类
@@ -14,41 +13,32 @@ public class VideoResponse extends AbstractBaseResponse {
 	/** 对应xml中定义的'视频消息标题'标识 */
 	
 	/** 内部视频对象 */
-	private Video video;
+	private Video Video;
 	
 	public VideoResponse() {
-		video = new Video();
-		this.setMsgEnum(ResponseEnum.VIDEO);
+		Video = new Video();
 	}
 	
-	@Override
-	public Object getObject(int index) {
-		return this.video;
+	public Video getVideo() {
+		return Video;
 	}
 
-	@Override
-	public void addObject(Object obj) {
-		Assert.isTrue(obj instanceof Video);
-		this.video = (Video)obj;
+	public void setVideo(Video video) {
+		Video = video;
 	}
 
-	@Override
-	public int getObjectCount() {
-		return 1;
-	}	
-	
 	public class Video {
 		
-		private String mediaId;
-		private String title;
-		private String description;		
+		private String MediaId;
+		private String Title;
+		private String Description;		
 		
 		/**
 		 * 取得通过上传多媒体文件，得到的id
 		 * @return 通过上传多媒体文件，得到的id
 		 */
 		public String getMediaId() {
-			return mediaId;
+			return MediaId;
 		}
 		
 		/**
@@ -56,7 +46,7 @@ public class VideoResponse extends AbstractBaseResponse {
 		 * @param mediaId 通过上传多媒体文件，得到的id
 		 */
 		public void setMediaId(String mediaId) {
-			this.mediaId = mediaId;
+			this.MediaId = mediaId;
 		}
 		
 		/**
@@ -64,7 +54,7 @@ public class VideoResponse extends AbstractBaseResponse {
 		 * @return 视频消息的标题
 		 */
 		public String getTitle() {
-			return title;
+			return Title;
 		}
 		
 		/**
@@ -72,7 +62,7 @@ public class VideoResponse extends AbstractBaseResponse {
 		 * @param title 视频消息的标题
 		 */
 		public void setTitle(String title) {
-			this.title = title;
+			this.Title = title;
 		}
 		
 		/**
@@ -80,7 +70,7 @@ public class VideoResponse extends AbstractBaseResponse {
 		 * @return 视频消息的描述
 		 */
 		public String getDescription() {
-			return description;
+			return Description;
 		}
 		
 		/**
@@ -88,7 +78,7 @@ public class VideoResponse extends AbstractBaseResponse {
 		 * @param description 视频消息的描述
 		 */
 		public void setDescription(String description) {
-			this.description = description;
+			this.Description = description;
 		}
 		
 		
