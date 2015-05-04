@@ -8,57 +8,39 @@ import org.springframework.util.Assert;
  * @sine 1.0 at 2015年4月27日
  */
 public class MusicResponse extends AbstractBaseResponse {
-	
-	/** 对应xml中定义的'音乐消息内容'标识 */
-	public final static String MUSIC = "Music";
-	/** 对应xml中定义的'音乐链接'标识 */
-	public final static String MUSIC_URL = "MusicUrl";
-	/** 对应xml中定义的'高质量音乐链接，WIFI环境优先使用该链接播放音乐'标识 */
-	public final static String H_Q_MUSIC_URL = "HQMusicUrl";
-	/** 对应xml中定义的'缩略图的媒体id，通过上传多媒体文件，得到的id'标识 */
-	public final static String THUMB_MEDIA_ID = "ThumbMediaId";
-	
-	private Music music;
+		
+	private Music Music;
 	
 	public MusicResponse() {
-		this.music = new Music();
-		this.setMsgEnum(ResponseEnum.MUSIC);
+		this.Music = new Music();
 	}
-	
-	@Override
-	public Object getObject(int index) {
-		return this.music;
+		
+	public Music getMusic() {
+		return Music;
 	}
 
-	@Override
-	public void addObject(Object obj) {
-		Assert.isTrue(obj instanceof Music);
-		this.music = (Music)obj;
+	public void setMusic(Music music) {
+		Music = music;
 	}
 
-	@Override
-	public int getObjectCount() {
-		return 1;
-	}	
-	
 	public class Music {
 		/** 音乐标题 */
-		private String title;
+		private String Title;
 		/** 音乐描述 */
-		private String description;
+		private String Description;
 		/** 音乐链接 */
-		private String musicUrl;
+		private String MusicUrl;
 		/** 高质量音乐链接，WIFI环境优先使用该链接播放音乐 */
-		private String hQMusicUrl;
+		private String HQMusicUrl;
 		/** 缩略图的媒体id，通过上传多媒体文件，得到的id */
-		private String thumbMediaId;
+		private String ThumbMediaId;
 		
 		/**
 		 * 取得音乐标题
 		 * @return 音乐标题
 		 */
 		public String getTitle() {
-			return title;
+			return Title;
 		}
 		
 		/**
@@ -66,7 +48,7 @@ public class MusicResponse extends AbstractBaseResponse {
 		 * @param title 音乐标题
 		 */
 		public void setTitle(String title) {
-			this.title = title;
+			this.Title = title;
 		}
 		
 		/**
@@ -74,15 +56,15 @@ public class MusicResponse extends AbstractBaseResponse {
 		 * @return 音乐描述
 		 */		
 		public String getDescription() {
-			return description;
+			return Description;
 		}
 
 		/**
 		 * 设置音乐描述
-		 * @param title 音乐描述
+		 * @param Title 音乐描述
 		 */		
 		public void setDescription(String description) {
-			this.description = description;
+			this.Description = description;
 		}
 		
 		/**
@@ -90,15 +72,15 @@ public class MusicResponse extends AbstractBaseResponse {
 		 * @return 音乐链接
 		 */		
 		public String getMusicUrl() {
-			return musicUrl;
+			return MusicUrl;
 		}
 		
 		/**
 		 * 设置音乐链接
-		 * @param title 音乐链接
+		 * @param Title 音乐链接
 		 */		
 		public void setMusicUrl(String musicUrl) {
-			this.musicUrl = musicUrl;
+			this.MusicUrl = musicUrl;
 		}
 		
 		/**
@@ -106,15 +88,15 @@ public class MusicResponse extends AbstractBaseResponse {
 		 * @return 高质量音乐链接，WIFI环境优先使用该链接播放音乐
 		 */		
 		public String getHQMusicUrl() {
-			return hQMusicUrl;
+			return HQMusicUrl;
 		}
 		
 		/**
 		 * 设置高质量音乐链接，WIFI环境优先使用该链接播放音乐
-		 * @param title 高质量音乐链接，WIFI环境优先使用该链接播放音乐
+		 * @param Title 高质量音乐链接，WIFI环境优先使用该链接播放音乐
 		 */		
 		public void setHQMusicUrl(String hQMusicUrl) {
-			this.hQMusicUrl = hQMusicUrl;
+			this.HQMusicUrl = hQMusicUrl;
 		}
 		
 		/**
@@ -122,15 +104,15 @@ public class MusicResponse extends AbstractBaseResponse {
 		 * @return 缩略图的媒体id，通过上传多媒体文件，得到的id
 		*/		
 		public String getThumbMediaId() {
-			return thumbMediaId;
+			return ThumbMediaId;
 		}
 		
 		/**
 		 * 设置缩略图的媒体id，通过上传多媒体文件，得到的id
-		 * @param title 缩略图的媒体id，通过上传多媒体文件，得到的id
+		 * @param Title 缩略图的媒体id，通过上传多媒体文件，得到的id
 		 */		
 		public void setThumbMediaId(String thumbMediaId) {
-			this.thumbMediaId = thumbMediaId;
+			this.ThumbMediaId = thumbMediaId;
 		}
 	}
 

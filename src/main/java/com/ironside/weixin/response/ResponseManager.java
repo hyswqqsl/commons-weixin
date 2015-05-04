@@ -13,6 +13,7 @@ import com.ironside.weixin.response.entity.ImageResponse;
 import com.ironside.weixin.response.entity.ImageResponse.Image;
 import com.ironside.weixin.response.entity.MusicResponse;
 import com.ironside.weixin.response.entity.NewsResponse;
+import com.ironside.weixin.response.entity.NewsResponse.News;
 import com.ironside.weixin.response.entity.ResponseEnum;
 import com.ironside.weixin.response.entity.TextResponse;
 import com.ironside.weixin.response.entity.VideoResponse;
@@ -257,13 +258,13 @@ public class ResponseManager {
 	private TextResponse doGetTextResponse() {
 		xStream.alias("xml", TextResponse.class);
 		if (StringUtils.isEmpty(this.textXmlFile)) {
-			return doTextResponse(DEFAULT_TEXT_XML_STRING);
+			return (TextResponse) xStream.fromXML(DEFAULT_TEXT_XML_STRING);
 		}
 		URL url = ClassLoader.getSystemResource(this.textXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
 			this.textXmlFile = null;
-			return doTextResponse(DEFAULT_TEXT_XML_STRING);
+			return (TextResponse) xStream.fromXML(DEFAULT_TEXT_XML_STRING);
 		}
 		// 取得文件绝对路径
 		String xmlFilePath = ClassLoader.getSystemResource(textXmlFile).getPath();
@@ -272,46 +273,11 @@ public class ResponseManager {
 		// 用完清除xml文件，防止再次解析
 		this.textXmlFile = null;
 		// 根据名字和值对应生成对象
-		TextResponse textResponse =  doTextResponse(file);
+		TextResponse textResponse =  (TextResponse) xStream.fromXML(file);
 		Assert.isTrue(textResponse.getMsgType().equals(ResponseEnum.TEXT.getMsgType()),
 				String.format("文本回复xml中MsgType有误： %s", textResponse.getMsgType()));
 		return textResponse;		
-	}
-
-	private TextResponse doTextResponse(String xmlStr) {
-		return (TextResponse) xStream.fromXML(xmlStr);
-	}
-
-	private TextResponse doTextResponse(File file) {
-		return (TextResponse) xStream.fromXML(file);
-	}
-
-	/**
-	 * 基础解析
-	 * 
-	 * @param xmlProperty
-	 *            解析后的xmlProperty
-	 * @param entity
-	 *            用于基础解析的实体
-	 */
-	private void doBaseAnalyze(AbstractXmlProperty xmlProperty,
-			AbstractBaseResponse entity) {
-		String toUserName = xmlProperty.getProperty(TextResponse.TO_USER_NAME);
-		Assert.hasText(toUserName);
-		String fromUserName = xmlProperty
-				.getProperty(TextResponse.FORM_USER_NAME);
-		Assert.hasText(fromUserName);
-		String createTimeStr = xmlProperty
-				.getProperty(TextResponse.CREATE_TIME);
-		Assert.hasText(createTimeStr);
-		// 将时间整形转换为对象
-		//Date createTime = new Date(Long.parseLong(createTimeStr));
-		//Assert.notNull(createTime);
-
-		entity.setToUserName(toUserName);
-		entity.setFromUserName(fromUserName);
-		//entity.setCreateTime(createTime);
-	}
+	}		
 
 	/*
 	 * 取得图片回复实体
@@ -333,13 +299,13 @@ public class ResponseManager {
 	private ImageResponse doGetImageResponse() {
 		xStream.alias("xml", ImageResponse.class);
 		if (StringUtils.isEmpty(this.imageXmlFile)) {
-			return doImageResponse(DEFAULT_IMAGE_XML_STRING);
+			return (ImageResponse)xStream.fromXML(DEFAULT_IMAGE_XML_STRING);
 		}
 		URL url = ClassLoader.getSystemResource(this.imageXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
 			this.imageXmlFile = null;
-			return doImageResponse(DEFAULT_IMAGE_XML_STRING);
+			return (ImageResponse)xStream.fromXML(DEFAULT_IMAGE_XML_STRING);
 		}
 		// 取得文件绝对路径
 		String xmlFilePath = ClassLoader.getSystemResource(imageXmlFile).getPath();
@@ -348,20 +314,10 @@ public class ResponseManager {
 		// 用完清除xml文件，防止再次解析
 		this.imageXmlFile= null;
 		// 根据名字和值对应生成对象
-		ImageResponse imageResponse =  doImageResponse(file);
+		ImageResponse imageResponse =  (ImageResponse)xStream.fromXML(file);
 		Assert.isTrue(imageResponse.getMsgType().equals(ResponseEnum.IMAGE.getMsgType()),
 				String.format("文本回复xml中MsgType有误： %s", imageResponse.getMsgType()));
 		return imageResponse;		
-	}
-
-
-
-	private ImageResponse doImageResponse(String xmlStr) {
-		return (ImageResponse)xStream.fromXML(xmlStr);
-	}
-
-	private ImageResponse doImageResponse(File file) {
-		return (ImageResponse)xStream.fromXML(file);
 	}
 
 	/**
@@ -384,13 +340,13 @@ public class ResponseManager {
 	private VoiceResponse doGetVoiceResponse() {
 		xStream.alias("xml", VoiceResponse.class);
 		if (StringUtils.isEmpty(this.voiceXmlFile)) {
-			return doVoiceResponse(DEFAULT_VOICE_XML_STRING);
+			return (VoiceResponse)xStream.fromXML(DEFAULT_VOICE_XML_STRING);
 		}
 		URL url = ClassLoader.getSystemResource(this.voiceXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
 			this.voiceXmlFile = null;
-			return doVoiceResponse(DEFAULT_VOICE_XML_STRING);
+			return (VoiceResponse)xStream.fromXML(DEFAULT_VOICE_XML_STRING);
 		}
 		// 取得文件绝对路径
 		String xmlFilePath = ClassLoader.getSystemResource(voiceXmlFile).getPath();
@@ -399,21 +355,12 @@ public class ResponseManager {
 		// 用完清除xml文件，防止再次解析
 		this.voiceXmlFile= null;
 		// 根据名字和值对应生成对象
-		VoiceResponse voiceResponse =  doVoiceResponse(file);
+		VoiceResponse voiceResponse =  (VoiceResponse)xStream.fromXML(file);
 		Assert.isTrue(voiceResponse.getMsgType().equals(ResponseEnum.VOICE.getMsgType()),
 				String.format("文本回复xml中MsgType有误： %s", voiceResponse.getMsgType()));
 		return voiceResponse;	
 	}
-
-
-	private VoiceResponse doVoiceResponse(String xmlStr) {
-		return (VoiceResponse)xStream.fromXML(xmlStr);
-	}
-
-	private VoiceResponse doVoiceResponse(File file) {
-		return (VoiceResponse)xStream.fromXML(file);
-	}
-
+	
 	/**
 	 * 取得视频回复实体
 	 * 
@@ -473,63 +420,30 @@ public class ResponseManager {
 	 * @return 音乐回复实体
 	 */
 	private MusicResponse doGetMusicResponse() {
-		AbstractXmlProperty xmlProperty;
+		xStream.alias("xml", MusicResponse.class);
 		if (StringUtils.isEmpty(this.musicXmlFile)) {
-			xmlProperty = xmlParse.parseString(DEFAULT_MUSIC_XML_STRING);
-			return doMusicResponse(xmlProperty);
+			return (MusicResponse)xStream.fromXML(DEFAULT_MUSIC_XML_STRING);
 		}
 		URL url = ClassLoader.getSystemResource(this.musicXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
 			this.musicXmlFile = null;
-			xmlProperty = xmlParse.parseString(DEFAULT_MUSIC_XML_STRING);
-			return doMusicResponse(xmlProperty);
+			return (MusicResponse)xStream.fromXML(DEFAULT_MUSIC_XML_STRING);
 		}
-		// 取得名字和值信息
-		xmlProperty = xmlParse.parseXmlFile(this.musicXmlFile);
+		// 取得文件绝对路径
+		String xmlFilePath = ClassLoader.getSystemResource(musicXmlFile).getPath();
+		File file = new File(xmlFilePath);
+		
 		// 用完清除xml文件，防止再次解析
-		this.musicXmlFile = null;
+		this.musicXmlFile= null;
 		// 根据名字和值对应生成对象
-		return doMusicResponse(xmlProperty);
+		MusicResponse musicResponse =  (MusicResponse)xStream.fromXML(file);
+		Assert.isTrue(musicResponse.getMsgType().equals(ResponseEnum.MUSIC.getMsgType()),
+				String.format("文本回复xml中MsgType有误： %s", musicResponse.getMsgType()));
+		return musicResponse;	
 	}
 
-	/**
-	 * 根据名字和值对应生成对象
-	 * 
-	 * @param xmlProperty
-	 *            xml名字和值对应
-	 * @return 音乐回复实体
-	 */
-	private MusicResponse doMusicResponse(AbstractXmlProperty xmlProperty) {
-		MusicResponse entity = new MusicResponse();
-		doBaseAnalyze(xmlProperty, entity);
-		String msgType = xmlProperty.getProperty(AbstractBaseResponse.MSG_TYPE);
-		Assert.hasText(msgType);
-		Assert.isTrue(msgType.equals(ResponseEnum.MUSIC.getMsgType()),
-				String.format("文本回复xml中MsgType有误： %s", msgType));
-
-		// 取得子节点
-		AbstractXmlProperty childXmlProperty = xmlProperty.getChild(0);
-		String thumbMediaId = childXmlProperty
-				.getProperty(MusicResponse.THUMB_MEDIA_ID);
-		Assert.hasText(thumbMediaId);
-		String title = childXmlProperty.getProperty(MusicResponse.TITLE);
-		String description = childXmlProperty
-				.getProperty(MusicResponse.DESCRIPTION);
-		String musicUrl = childXmlProperty.getProperty(MusicResponse.MUSIC_URL);
-		String hQMusicUrl = childXmlProperty
-				.getProperty(MusicResponse.H_Q_MUSIC_URL);
-		MusicResponse.Music music = entity.new Music();
-		music.setThumbMediaId(thumbMediaId);
-		music.setTitle(title);
-		music.setDescription(description);
-		music.setMusicUrl(musicUrl);
-		music.setHQMusicUrl(hQMusicUrl);
-
-		entity.addObject(music);
-		return entity;
-	}
-
+	
 	/**
 	 * 取得图文回复实体
 	 * 
@@ -548,74 +462,48 @@ public class ResponseManager {
 	 * @return 图文回复实体
 	 */
 	private NewsResponse doGetNewsResponse() {
-		AbstractXmlProperty xmlProperty;
+		xStream.alias("xml", NewsResponse.class);
+		xStream.alias("item", News.class);
 		if (StringUtils.isEmpty(this.newsXmlFile)) {
-			xmlProperty = xmlParse.parseString(DEFAULT_NEWS_XML_STRING);
-			return doNewsResponse(xmlProperty);
+			return (NewsResponse)xStream.fromXML(DEFAULT_NEWS_XML_STRING);
 		}
 		URL url = ClassLoader.getSystemResource(this.newsXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
 			this.newsXmlFile = null;
-			xmlProperty = xmlParse.parseString(DEFAULT_NEWS_XML_STRING);
-			return doNewsResponse(xmlProperty);
+			return (NewsResponse)xStream.fromXML(DEFAULT_NEWS_XML_STRING);
 		}
-		// 取得名字和值信息
-		xmlProperty = xmlParse.parseXmlFile(this.newsXmlFile);
+		// 取得文件绝对路径
+		String xmlFilePath = ClassLoader.getSystemResource(newsXmlFile).getPath();
+		File file = new File(xmlFilePath);
+		
 		// 用完清除xml文件，防止再次解析
-		this.newsXmlFile = null;
+		this.newsXmlFile= null;
 		// 根据名字和值对应生成对象
-		return doNewsResponse(xmlProperty);
+		NewsResponse newsResponse =  (NewsResponse)xStream.fromXML(file);
+		Assert.isTrue(newsResponse.getMsgType().equals(ResponseEnum.NEWS.getMsgType()),
+				String.format("文本回复xml中MsgType有误： %s", newsResponse.getMsgType()));	
+		
+		//整理图文消息个数
+		doRepairNewsCount(newsResponse);
+		return newsResponse;	
 	}
-
+	
 	/**
-	 * 根据名字和值对应生成对象
-	 * 
-	 * @param xmlProperty
-	 *            xml名字和值对应
-	 * @return 图文回复实体
+	 * 整理图文消息个数
 	 */
-	private NewsResponse doNewsResponse(AbstractXmlProperty xmlProperty) {
-		NewsResponse entity = new NewsResponse();
-		doBaseAnalyze(xmlProperty, entity);
-		String articleCount = xmlProperty
-				.getProperty(NewsResponse.ARTICLE_COUNT);
-		Assert.hasText(articleCount);
-		// 以子节点数量作为articleCount
-		// 如果子节点数量超过限制，将数量设为最大值
-		int childSize = xmlProperty.getChildSize();
-		if (xmlProperty.getChildSize() > NewsResponse.NEWS_CHILD_MAX_SIZE) {
-			childSize = NewsResponse.NEWS_CHILD_MAX_SIZE;
+	private void doRepairNewsCount(NewsResponse newsResponse) {
+		if (newsResponse.getArticles().size()>NewsResponse.NEWS_CHILD_MAX_SIZE) {
+			int max = newsResponse.getArticles().size();
+			int diff = max -NewsResponse.NEWS_CHILD_MAX_SIZE;
+			newsResponse.setArticleCount(NewsResponse.NEWS_CHILD_MAX_SIZE);
+			for(int i=0; i<diff; i++) {
+				newsResponse.getArticles().remove(newsResponse.getArticles().size()-1);
+			}
 		}
-		entity.setArticleCount(childSize);
-		String msgType = xmlProperty.getProperty(AbstractBaseResponse.MSG_TYPE);
-		Assert.hasText(msgType);
-		Assert.isTrue(msgType.equals(ResponseEnum.NEWS.getMsgType()),
-				String.format("文本回复xml中MsgType有误： %s", msgType));
-
-		// 取得子节点
-		AbstractXmlProperty childXmlProperty;
-		NewsResponse.News news;
-		String title;
-		String description;
-		String picUrl;
-		String url;
-		for (int i = 0; i < childSize; i++) {
-			childXmlProperty = xmlProperty.getChild(i);
-			news = entity.new News();
-			title = childXmlProperty.getProperty(NewsResponse.TITLE);
-			description = childXmlProperty
-					.getProperty(NewsResponse.DESCRIPTION);
-			picUrl = childXmlProperty.getProperty(NewsResponse.PIC_URL);
-			url = childXmlProperty.getProperty(NewsResponse.URL);
-			news.setTitle(title);
-			news.setDescription(description);
-			news.setPicUrl(picUrl);
-			news.setUrl(url);
-			entity.addObject(news);
+		if (newsResponse.getArticleCount()!=newsResponse.getArticles().size()) {
+			newsResponse.setArticleCount(newsResponse.getArticles().size());
 		}
-
-		return entity;
 	}
 
 }

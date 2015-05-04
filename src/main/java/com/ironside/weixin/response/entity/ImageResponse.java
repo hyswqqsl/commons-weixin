@@ -7,9 +7,6 @@ package com.ironside.weixin.response.entity;
  * @sine 1.0 at 2015年4月20日
  */
 public class ImageResponse extends AbstractBaseResponse {
-
-	/** 对应xml中定义的'图片消息内容'标识 */
-	public final static String IMAGE = "Image";
 	
 	/** 内部图片对象 */
 	private Image Image;

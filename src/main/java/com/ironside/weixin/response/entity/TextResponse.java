@@ -6,10 +6,7 @@ package com.ironside.weixin.response.entity;
  * @sine 1.0 at 2015年4月9日
  */
 public class TextResponse extends AbstractBaseResponse {
-	 
-	/** 对应xml中定义的'文本消息内容'标识 */
-	public final static String CONTENT = "Content";
-
+	
 	/** 文本消息内容 */
 	private String Content;	
 

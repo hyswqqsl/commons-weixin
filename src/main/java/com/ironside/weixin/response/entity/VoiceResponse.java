@@ -9,9 +9,6 @@ import org.springframework.util.Assert;
  */
 public class VoiceResponse extends AbstractBaseResponse {
 
-	/** 对应xml中定义的'语音消息内容'标识 */
-	public final static String VOICE = "Voice";
-	
 	/** 内部语音对象 */
 	private Voice Voice;
 	

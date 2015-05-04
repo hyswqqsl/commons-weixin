@@ -6,11 +6,7 @@ package com.ironside.weixin.response.entity;
  * @author ZXJ
  * @sine 1.0 at 2015年4月27日
  */
-public class VideoResponse extends AbstractBaseResponse {
-
-	/** 对应xml中定义的'视频消息内容'标识 */
-	public final static String VIDEO = "Video";	
-	/** 对应xml中定义的'视频消息标题'标识 */
+public class VideoResponse extends AbstractBaseResponse {	
 	
 	/** 内部视频对象 */
 	private Video Video;

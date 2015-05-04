@@ -10,48 +10,24 @@ import org.springframework.util.Assert;
  * @author ZXJ
  * @sine 1.0 at 2015年4月29日
  */
-public class NewsResponse extends AbstractBaseResponse {
-	
-	/** 对应xml中定义的'图文消息内容'标识 */
-	public final static String NEWS = "News";
-	/** 对应xml中定义的'图文消息个数消息内容'标识 */
-	public final static String ARTICLE_COUNT = "ArticleCount";
-	/** 对应xml中定义的'图片链接消息内容'标识 */
-	public final static String PIC_URL = "PicUrl";
-	/** 对应xml中定义的'点击图文消息跳转链接消息内容'标识 */
-	public final static String URL = "Url";
+public class NewsResponse extends AbstractBaseResponse {	
 	
 	/** 图文子节点最大值 */
 	public final static int NEWS_CHILD_MAX_SIZE = 10; 	
 	
-	private List<News> articles;
-	private int articleCount;
+	private List<News> Articles;
+	private int ArticleCount;
 		
 	public NewsResponse() {
-		this.articles = new ArrayList<NewsResponse.News>();
-		this.setMsgEnum(ResponseEnum.NEWS);
-	}
-	@Override
-	public Object getObject(int index) {
-		if (index >= articles.size()) {
-			return null;
-		}
-		return articles.get(index);
+		this.Articles = new ArrayList<NewsResponse.News>();
+	}	
+	
+	public List<News> getArticles() {
+		return Articles;
 	}
 
-	@Override
-	public void addObject(Object obj) {
-		Assert.isTrue(obj instanceof News);
-		//图文消息个数，限制为10条以内
-		if (this.articles.size()>=10) {
-			return;
-		}
-		articles.add((News)obj);
-	}
-
-	@Override
-	public int getObjectCount() {
-		return articles.size();
+	public void setArticles(List<News> articles) {
+		Articles = articles;
 	}
 
 	/**
@@ -59,7 +35,7 @@ public class NewsResponse extends AbstractBaseResponse {
 	 * @return 图文消息个数
 	 */
 	public int getArticleCount() {
-		return articleCount;
+		return ArticleCount;
 	}
 
 	/**
@@ -67,22 +43,22 @@ public class NewsResponse extends AbstractBaseResponse {
 	 * @param articleCount 图文消息个数
 	 */
 	public void setArticleCount(int articleCount) {
-		this.articleCount = articleCount;
+		this.ArticleCount = articleCount;
 	}
 
 	public class News {
 		
-		private String title;
-		private String description;
-		private String picUrl;
-		private String url;
+		private String Title;
+		private String Description;
+		private String PicUrl;
+		private String Url;
 		
 		/**
 		 * 取得图文消息标题
 		 * @return 图文消息标题
 		 */
 		public String getTitle() {
-			return title;
+			return Title;
 		}
 		
 		/**
@@ -90,7 +66,7 @@ public class NewsResponse extends AbstractBaseResponse {
 		 * @param title 图文消息标题
 		 */
 		public void setTitle(String title) {
-			this.title = title;
+			this.Title = title;
 		}
 		
 		/**
@@ -98,7 +74,7 @@ public class NewsResponse extends AbstractBaseResponse {
 		 * @return 图文消息描述
 		 */
 		public String getDescription() {
-			return description;
+			return Description;
 		}
 		
 		/**
@@ -106,7 +82,7 @@ public class NewsResponse extends AbstractBaseResponse {
 		 * @param description 图文消息描述
 		 */
 		public void setDescription(String description) {
-			this.description = description;
+			this.Description = description;
 		}
 		
 		/**
@@ -114,7 +90,7 @@ public class NewsResponse extends AbstractBaseResponse {
 		 * @return 图片链接
 		 */
 		public String getPicUrl() {
-			return picUrl;
+			return PicUrl;
 		}
 		
 		/**
@@ -122,7 +98,7 @@ public class NewsResponse extends AbstractBaseResponse {
 		 * @param picUrl 图片链接
 		 */
 		public void setPicUrl(String picUrl) {
-			this.picUrl = picUrl;
+			this.PicUrl = picUrl;
 		}
 		
 		/**
@@ -130,7 +106,7 @@ public class NewsResponse extends AbstractBaseResponse {
 		 * @return 点击图文消息跳转链接 
 		 */
 		public String getUrl() {
-			return url;
+			return Url;
 		}
 		
 		/**
@@ -138,7 +114,7 @@ public class NewsResponse extends AbstractBaseResponse {
 		 * @param url 点击图文消息跳转链接 
 		 */
 		public void setUrl(String url) {
-			this.url = url;
+			this.Url = url;
 		}	
 		
 	}

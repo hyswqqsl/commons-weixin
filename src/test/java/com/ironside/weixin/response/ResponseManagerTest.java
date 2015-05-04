@@ -202,7 +202,7 @@ public class ResponseManagerTest {
 		MusicResponse response = this.responseManager.getMusicResponse();
 		Assert.assertEquals(response.getMsgType(), ResponseEnum.MUSIC.getMsgType());
 		// 子对象
-		MusicResponse.Music music = (MusicResponse.Music)response.getObject(0);
+		MusicResponse.Music music = (MusicResponse.Music)response.getMusic();
 		Assert.assertEquals(music.getTitle(), "title");
 		Assert.assertEquals(music.getDescription(), "description");
 		Assert.assertEquals(music.getMusicUrl(), "music_url");
@@ -213,7 +213,7 @@ public class ResponseManagerTest {
 		response = this.responseManager.getMusicResponse();
 		Assert.assertEquals(response.getMsgType(), ResponseEnum.MUSIC.getMsgType());
 		// 子对象
-		music = (MusicResponse.Music)response.getObject(0);
+		music = (MusicResponse.Music)response.getMusic();
 		Assert.assertEquals(music.getThumbMediaId(), "test_thumb_media_id");
 		Assert.assertNull(music.getTitle());
 		Assert.assertEquals(music.getDescription(), "test_description");
@@ -224,12 +224,12 @@ public class ResponseManagerTest {
 		
 		try {
 			response = this.responseManager.getMusicResponse();
-		} catch(IllegalArgumentException e) {
+		} catch(UnknownFieldException e) {
 			Assert.assertNull(this.responseManager.musicXmlFile);
 			response = this.responseManager.getMusicResponse();
 			Assert.assertEquals(response.getMsgType(), ResponseEnum.MUSIC.getMsgType());
 			// 子对象
-			music = (MusicResponse.Music)response.getObject(0);
+			music = (MusicResponse.Music)response.getMusic();
 			Assert.assertEquals(music.getThumbMediaId(), "thumb_media_id");
 			return;
 		}
@@ -244,7 +244,7 @@ public class ResponseManagerTest {
 		Assert.assertEquals(response.getArticleCount(), 2);
 		NewsResponse.News news;
 		for(int i=0;i<response.getArticleCount();i++) {
-			news=(NewsResponse.News)response.getObject(i);
+			news=(NewsResponse.News)response.getArticles().get(i);
 			Assert.assertEquals(news.getTitle(), "title");
 			Assert.assertEquals(news.getDescription(), "description");
 			Assert.assertEquals(news.getPicUrl(), "picUrl");
@@ -256,7 +256,7 @@ public class ResponseManagerTest {
 		Assert.assertEquals(response.getMsgType(), ResponseEnum.NEWS.getMsgType());
 		Assert.assertEquals(response.getArticleCount(), 3);		
 		for(int i=0;i<response.getArticleCount();i++) {
-			news=(NewsResponse.News)response.getObject(i);
+			news=(NewsResponse.News)response.getArticles().get(i);
 			Assert.assertNull(news.getTitle());
 			Assert.assertEquals(news.getDescription(), "description");
 			Assert.assertEquals(news.getPicUrl(), "picUrl");
@@ -270,12 +270,12 @@ public class ResponseManagerTest {
 		this.responseManager.setNewsXmlFile(WRONG_XMLFILE);
 		try {
 			response = this.responseManager.getNewsResponse();
-		} catch(IllegalArgumentException e) {
+		} catch(UnknownFieldException e) {
 			Assert.assertNull(this.responseManager.newsXmlFile);
 			response = this.responseManager.getNewsResponse();
 			Assert.assertEquals(response.getMsgType(), ResponseEnum.NEWS.getMsgType());
 			// 子对象
-			news = (NewsResponse.News)response.getObject(0);
+			news = (NewsResponse.News)response.getArticles().get(0);
 			Assert.assertEquals(news.getTitle(), "title");
 			return;
 		}
