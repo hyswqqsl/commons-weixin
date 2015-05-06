@@ -2,23 +2,18 @@ package com.ironside.weixin.response;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Date;
 
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import com.ironside.weixin.XmlParse;
-import com.ironside.weixin.response.entity.AbstractBaseResponse;
 import com.ironside.weixin.response.entity.ImageResponse;
-import com.ironside.weixin.response.entity.ImageResponse.Image;
 import com.ironside.weixin.response.entity.MusicResponse;
 import com.ironside.weixin.response.entity.NewsResponse;
 import com.ironside.weixin.response.entity.NewsResponse.News;
-import com.ironside.weixin.response.entity.ResponseEnum;
+import com.ironside.weixin.response.entity.ResponseType;
 import com.ironside.weixin.response.entity.TextResponse;
 import com.ironside.weixin.response.entity.VideoResponse;
 import com.ironside.weixin.response.entity.VoiceResponse;
-import com.sun.org.apache.xml.internal.security.keys.content.RetrievalMethod;
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -133,7 +128,6 @@ public class ResponseManager {
 	NewsResponse newsResponse;
 
 	/** xml解析对象 */
-	private XmlParse xmlParse;
 	private XStream xStream;
 
 	public ResponseManager() {
@@ -219,26 +213,6 @@ public class ResponseManager {
 	}
 
 	/**
-	 * 取得xml解析对象
-	 * 
-	 * @return xml解析对象
-	 */
-	public XmlParse getXmlParse() {
-		return xmlParse;
-	}
-
-	/**
-	 * 设置xml解析对象
-	 * 
-	 * @param xmlParse
-	 *            xml解析对象
-	 */
-	public void setXmlParse(XmlParse xmlParse) {
-		Assert.notNull(xmlParse);
-		this.xmlParse = xmlParse;
-	}
-
-	/**
 	 * 取得文本回复实体</br> 如果缓冲中有实体，直接返回；否则从xml文件中解析实体
 	 * 
 	 * @return 文本回复实体
@@ -273,10 +247,10 @@ public class ResponseManager {
 		// 用完清除xml文件，防止再次解析
 		this.textXmlFile = null;
 		// 根据名字和值对应生成对象
-		TextResponse textResponse =  (TextResponse) xStream.fromXML(file);
-		Assert.isTrue(textResponse.getMsgType().equals(ResponseEnum.TEXT.getMsgType()),
-				String.format("文本回复xml中MsgType有误： %s", textResponse.getMsgType()));
-		return textResponse;		
+		TextResponse response =  (TextResponse) xStream.fromXML(file);
+		Assert.isTrue(response.getMsgType().equals(ResponseType.TEXT),
+				String.format("text回复xml中MsgType有误： %s", response.getMsgType()));
+		return response;		
 	}		
 
 	/*
@@ -314,10 +288,10 @@ public class ResponseManager {
 		// 用完清除xml文件，防止再次解析
 		this.imageXmlFile= null;
 		// 根据名字和值对应生成对象
-		ImageResponse imageResponse =  (ImageResponse)xStream.fromXML(file);
-		Assert.isTrue(imageResponse.getMsgType().equals(ResponseEnum.IMAGE.getMsgType()),
-				String.format("文本回复xml中MsgType有误： %s", imageResponse.getMsgType()));
-		return imageResponse;		
+		ImageResponse response =  (ImageResponse)xStream.fromXML(file);
+		Assert.isTrue(response.getMsgType().equals(ResponseType.IMAGE),
+				String.format("image回复xml中MsgType有误： %s", response.getMsgType()));
+		return response;		
 	}
 
 	/**
@@ -355,10 +329,10 @@ public class ResponseManager {
 		// 用完清除xml文件，防止再次解析
 		this.voiceXmlFile= null;
 		// 根据名字和值对应生成对象
-		VoiceResponse voiceResponse =  (VoiceResponse)xStream.fromXML(file);
-		Assert.isTrue(voiceResponse.getMsgType().equals(ResponseEnum.VOICE.getMsgType()),
-				String.format("文本回复xml中MsgType有误： %s", voiceResponse.getMsgType()));
-		return voiceResponse;	
+		VoiceResponse response =  (VoiceResponse)xStream.fromXML(file);
+		Assert.isTrue(response.getMsgType().equals(ResponseType.VOICE),
+				String.format("voice回复xml中MsgType有误： %s", response.getMsgType()));
+		return response;	
 	}
 	
 	/**
@@ -396,10 +370,10 @@ public class ResponseManager {
 		// 用完清除xml文件，防止再次解析
 		this.videoXmlFile= null;
 		// 根据名字和值对应生成对象
-		VideoResponse videoResponse =  (VideoResponse)xStream.fromXML(file);
-		Assert.isTrue(videoResponse.getMsgType().equals(ResponseEnum.VIDEO.getMsgType()),
-				String.format("文本回复xml中MsgType有误： %s", videoResponse.getMsgType()));
-		return videoResponse;			
+		VideoResponse response =  (VideoResponse)xStream.fromXML(file);
+		Assert.isTrue(response.getMsgType().equals(ResponseType.VIDEO),
+				String.format("video回复xml中MsgType有误： %s", response.getMsgType()));
+		return response;			
 	}
 
 	/**
@@ -437,10 +411,10 @@ public class ResponseManager {
 		// 用完清除xml文件，防止再次解析
 		this.musicXmlFile= null;
 		// 根据名字和值对应生成对象
-		MusicResponse musicResponse =  (MusicResponse)xStream.fromXML(file);
-		Assert.isTrue(musicResponse.getMsgType().equals(ResponseEnum.MUSIC.getMsgType()),
-				String.format("文本回复xml中MsgType有误： %s", musicResponse.getMsgType()));
-		return musicResponse;	
+		MusicResponse response =  (MusicResponse)xStream.fromXML(file);
+		Assert.isTrue(response.getMsgType().equals(ResponseType.MUSIC),
+				String.format("music回复xml中MsgType有误： %s", response.getMsgType()));
+		return response;	
 	}
 
 	
@@ -480,29 +454,29 @@ public class ResponseManager {
 		// 用完清除xml文件，防止再次解析
 		this.newsXmlFile= null;
 		// 根据名字和值对应生成对象
-		NewsResponse newsResponse =  (NewsResponse)xStream.fromXML(file);
-		Assert.isTrue(newsResponse.getMsgType().equals(ResponseEnum.NEWS.getMsgType()),
-				String.format("文本回复xml中MsgType有误： %s", newsResponse.getMsgType()));	
+		NewsResponse response =  (NewsResponse)xStream.fromXML(file);
+		Assert.isTrue(response.getMsgType().equals(ResponseType.NEWS),
+				String.format("news回复xml中MsgType有误： %s", response.getMsgType()));
 		
 		//整理图文消息个数
-		doRepairNewsCount(newsResponse);
-		return newsResponse;	
+		doRepairNewsCount(response);
+		return response;	
 	}
 	
 	/**
 	 * 整理图文消息个数
 	 */
-	private void doRepairNewsCount(NewsResponse newsResponse) {
-		if (newsResponse.getArticles().size()>NewsResponse.NEWS_CHILD_MAX_SIZE) {
-			int max = newsResponse.getArticles().size();
+	private void doRepairNewsCount(NewsResponse response) {
+		if (response.getArticles().size()>NewsResponse.NEWS_CHILD_MAX_SIZE) {
+			int max = response.getArticles().size();
 			int diff = max -NewsResponse.NEWS_CHILD_MAX_SIZE;
-			newsResponse.setArticleCount(NewsResponse.NEWS_CHILD_MAX_SIZE);
+			response.setArticleCount(NewsResponse.NEWS_CHILD_MAX_SIZE);
 			for(int i=0; i<diff; i++) {
-				newsResponse.getArticles().remove(newsResponse.getArticles().size()-1);
+				response.getArticles().remove(response.getArticles().size()-1);
 			}
 		}
-		if (newsResponse.getArticleCount()!=newsResponse.getArticles().size()) {
-			newsResponse.setArticleCount(newsResponse.getArticles().size());
+		if (response.getArticleCount()!=response.getArticles().size()) {
+			response.setArticleCount(response.getArticles().size());
 		}
 	}
 

@@ -5,11 +5,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ironside.weixin.XmlParse;
 import com.ironside.weixin.response.entity.ImageResponse;
 import com.ironside.weixin.response.entity.MusicResponse;
 import com.ironside.weixin.response.entity.NewsResponse;
-import com.ironside.weixin.response.entity.ResponseEnum;
+import com.ironside.weixin.response.entity.ResponseType;
 import com.ironside.weixin.response.entity.TextResponse;
 import com.ironside.weixin.response.entity.VideoResponse;
 import com.ironside.weixin.response.entity.VoiceResponse;
@@ -35,8 +34,6 @@ public class ResponseManagerTest {
 	@Before
 	public void setUp() throws Exception {
 		responseManager = new ResponseManager();
-		XmlParse xmlParse = new XmlParse();
-		responseManager.setXmlParse(xmlParse);
 	}
 
 	@After
@@ -53,21 +50,21 @@ public class ResponseManagerTest {
 		// 验证消息
 		Assert.assertEquals(textResponse.getFromUserName(), "fromUser");
 		Assert.assertEquals(textResponse.getToUserName(), "toUser");
-		Assert.assertEquals(textResponse.getMsgType(), ResponseEnum.TEXT.getMsgType());
+		Assert.assertEquals(textResponse.getMsgType(), ResponseType.TEXT);
 		// *** 测试根据回复实体xml文件取得回复实体 ***
 		this.responseManager.setTextXmlFile(TEST_TEXT_XMLFILE);
 		textResponse = this.responseManager.getTextResponse();
 		// 验证取得的是根据xml文件解析消息
 		Assert.assertEquals(textResponse.getFromUserName(), "testFromUser");
 		Assert.assertEquals(textResponse.getToUserName(), "testToUser");
-		Assert.assertEquals(textResponse.getMsgType(), ResponseEnum.TEXT.getMsgType());
+		Assert.assertEquals(textResponse.getMsgType(), ResponseType.TEXT);
 		// *** 测试不存在的xml文件 ***
 		this.responseManager.setTextXmlFile(NOEXISTING_TEST_XMLFILE);
 		textResponse = this.responseManager.getTextResponse();
 		// 验证取得的是默认消息
 		Assert.assertEquals(textResponse.getFromUserName(), "fromUser");
 		Assert.assertEquals(textResponse.getToUserName(), "toUser");
-		Assert.assertEquals(textResponse.getMsgType(), ResponseEnum.TEXT.getMsgType());
+		Assert.assertEquals(textResponse.getMsgType(), ResponseType.TEXT);
 		Assert.assertNull(this.responseManager.textXmlFile);
 		// *** 测试有问题的实体xml文件
 		this.responseManager.setTextXmlFile(WRONG_XMLFILE);
@@ -111,12 +108,12 @@ public class ResponseManagerTest {
 	public void testImageResponse() {
 		// *** 测试取得默认消息 ***
 		ImageResponse response = this.responseManager.getImageResponse();
-		Assert.assertEquals(response.getMsgType(), ResponseEnum.IMAGE.getMsgType());
+		Assert.assertEquals(response.getMsgType(), ResponseType.IMAGE);
 		Assert.assertEquals(((ImageResponse.Image)response.getImage()).getMediaId(), "media_id");
 		// *** 测试根据回复实体xml文件取得回复实体 ***
 		this.responseManager.setImageXmlFile("testImageResponse.xml");
 		response = this.responseManager.getImageResponse();
-		Assert.assertEquals(response.getMsgType(), ResponseEnum.IMAGE.getMsgType());
+		Assert.assertEquals(response.getMsgType(), ResponseType.IMAGE);
 		Assert.assertEquals(((ImageResponse.Image)response.getImage()).getMediaId(), "test_media_id");
 		Assert.assertNull(this.responseManager.imageXmlFile);
 		// *** 测试有问题的实体xml文件
@@ -126,7 +123,7 @@ public class ResponseManagerTest {
 		} catch(UnknownFieldException e) {
 			Assert.assertNull(this.responseManager.imageXmlFile);
 			response = this.responseManager.getImageResponse();
-			Assert.assertEquals(response.getMsgType(), ResponseEnum.IMAGE.getMsgType());
+			Assert.assertEquals(response.getMsgType(), ResponseType.IMAGE);
 			Assert.assertEquals(((ImageResponse.Image)response.getImage()).getMediaId(), "media_id");
 			return;
 		}
@@ -137,12 +134,12 @@ public class ResponseManagerTest {
 	public void testVoiceResponse() {
 		// *** 测试取得默认消息 ***
 		VoiceResponse response = this.responseManager.getVoiceResponse();
-		Assert.assertEquals(response.getMsgType(), ResponseEnum.VOICE.getMsgType());
+		Assert.assertEquals(response.getMsgType(), ResponseType.VOICE);
 		Assert.assertEquals(((VoiceResponse.Voice)response.getVoice()).getMediaId(), "media_id");
 		// *** 测试根据回复实体xml文件取得回复实体 ***
 		this.responseManager.setVoiceXmlFile("testVoiceResponse.xml");
 		response = this.responseManager.getVoiceResponse();
-		Assert.assertEquals(response.getMsgType(), ResponseEnum.VOICE.getMsgType());
+		Assert.assertEquals(response.getMsgType(), ResponseType.VOICE);
 		Assert.assertEquals(((VoiceResponse.Voice)response.getVoice()).getMediaId(), "test_media_id");
 		Assert.assertNull(this.responseManager.voiceXmlFile);
 		// *** 测试有问题的实体xml文件
@@ -152,7 +149,7 @@ public class ResponseManagerTest {
 		} catch(UnknownFieldException e) {
 			Assert.assertNull(this.responseManager.voiceXmlFile);
 			response = this.responseManager.getVoiceResponse();
-			Assert.assertEquals(response.getMsgType(), ResponseEnum.VOICE.getMsgType());
+			Assert.assertEquals(response.getMsgType(), ResponseType.VOICE);
 			Assert.assertEquals(((VoiceResponse.Voice)response.getVoice()).getMediaId(), "media_id");
 			return;
 		}
@@ -163,7 +160,7 @@ public class ResponseManagerTest {
 	public void testVideoResponse() {
 		// *** 测试取得默认消息 ***
 		VideoResponse response = this.responseManager.getVideoResponse();
-		Assert.assertEquals(response.getMsgType(), ResponseEnum.VIDEO.getMsgType());
+		Assert.assertEquals(response.getMsgType(), ResponseType.VIDEO);
 		// 子对象
 		VideoResponse.Video video = (VideoResponse.Video)response.getVideo();
 		Assert.assertEquals(video.getMediaId(), "media_id");
@@ -172,7 +169,7 @@ public class ResponseManagerTest {
 		// *** 测试根据回复实体xml文件取得回复实体 ***
 		this.responseManager.setVideoXmlFile("testVideoResponse.xml");
 		response = this.responseManager.getVideoResponse();
-		Assert.assertEquals(response.getMsgType(), ResponseEnum.VIDEO.getMsgType());
+		Assert.assertEquals(response.getMsgType(), ResponseType.VIDEO);
 		// 子对象
 		video = (VideoResponse.Video)response.getVideo();
 		Assert.assertEquals(video.getMediaId(), "test_media_id");
@@ -187,7 +184,7 @@ public class ResponseManagerTest {
 		} catch(UnknownFieldException e) {
 			Assert.assertNull(this.responseManager.videoXmlFile);
 			response = this.responseManager.getVideoResponse();
-			Assert.assertEquals(response.getMsgType(), ResponseEnum.VIDEO.getMsgType());
+			Assert.assertEquals(response.getMsgType(), ResponseType.VIDEO);
 			// 子对象
 			video = (VideoResponse.Video)response.getVideo();
 			Assert.assertEquals(video.getMediaId(), "media_id");
@@ -200,7 +197,7 @@ public class ResponseManagerTest {
 	public void testMusicResponse() {
 		// *** 测试取得默认消息 ***
 		MusicResponse response = this.responseManager.getMusicResponse();
-		Assert.assertEquals(response.getMsgType(), ResponseEnum.MUSIC.getMsgType());
+		Assert.assertEquals(response.getMsgType(), ResponseType.MUSIC);
 		// 子对象
 		MusicResponse.Music music = (MusicResponse.Music)response.getMusic();
 		Assert.assertEquals(music.getTitle(), "title");
@@ -211,7 +208,7 @@ public class ResponseManagerTest {
 		// *** 测试根据回复实体xml文件取得回复实体 ***
 		this.responseManager.setMusicXmlFile("testMusicResponse.xml");
 		response = this.responseManager.getMusicResponse();
-		Assert.assertEquals(response.getMsgType(), ResponseEnum.MUSIC.getMsgType());
+		Assert.assertEquals(response.getMsgType(), ResponseType.MUSIC);
 		// 子对象
 		music = (MusicResponse.Music)response.getMusic();
 		Assert.assertEquals(music.getThumbMediaId(), "test_thumb_media_id");
@@ -227,7 +224,7 @@ public class ResponseManagerTest {
 		} catch(UnknownFieldException e) {
 			Assert.assertNull(this.responseManager.musicXmlFile);
 			response = this.responseManager.getMusicResponse();
-			Assert.assertEquals(response.getMsgType(), ResponseEnum.MUSIC.getMsgType());
+			Assert.assertEquals(response.getMsgType(), ResponseType.MUSIC);
 			// 子对象
 			music = (MusicResponse.Music)response.getMusic();
 			Assert.assertEquals(music.getThumbMediaId(), "thumb_media_id");
@@ -240,7 +237,7 @@ public class ResponseManagerTest {
 	public void testNewsResponse() {
 		// *** 测试取得默认消息 ***
 		NewsResponse response = this.responseManager.getNewsResponse();
-		Assert.assertEquals(response.getMsgType(), ResponseEnum.NEWS.getMsgType());
+		Assert.assertEquals(response.getMsgType(), ResponseType.NEWS);
 		Assert.assertEquals(response.getArticleCount(), 2);
 		NewsResponse.News news;
 		for(int i=0;i<response.getArticleCount();i++) {
@@ -253,7 +250,7 @@ public class ResponseManagerTest {
 		// *** 测试根据回复实体xml文件取得回复实体 ***
 		this.responseManager.setNewsXmlFile("testNewsResponse.xml");
 		response = this.responseManager.getNewsResponse();
-		Assert.assertEquals(response.getMsgType(), ResponseEnum.NEWS.getMsgType());
+		Assert.assertEquals(response.getMsgType(), ResponseType.NEWS);
 		Assert.assertEquals(response.getArticleCount(), 3);		
 		for(int i=0;i<response.getArticleCount();i++) {
 			news=(NewsResponse.News)response.getArticles().get(i);
@@ -273,7 +270,7 @@ public class ResponseManagerTest {
 		} catch(UnknownFieldException e) {
 			Assert.assertNull(this.responseManager.newsXmlFile);
 			response = this.responseManager.getNewsResponse();
-			Assert.assertEquals(response.getMsgType(), ResponseEnum.NEWS.getMsgType());
+			Assert.assertEquals(response.getMsgType(), ResponseType.NEWS);
 			// 子对象
 			news = (NewsResponse.News)response.getArticles().get(0);
 			Assert.assertEquals(news.getTitle(), "title");
