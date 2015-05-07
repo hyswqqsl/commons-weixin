@@ -17,7 +17,7 @@ import com.thoughtworks.xstream.converters.reflection.AbstractReflectionConverte
 /**
  * 回复实体管理测试
  * @author 雪庭
- * @sine at 2015年4月14日
+ * @sine 1.0 at 2015年4月14日
  */
 public class ResponseManagerTest {
 	
@@ -30,6 +30,20 @@ public class ResponseManagerTest {
 	private final String WRONG_XMLFILE = "wrongTextResponse.xml";
 	/** 不存在的回复实体xml文件 */
 	private final String NOEXISTING_TEST_XMLFILE = "noexistingTestResponse.xml";
+	
+	/** testResponse转换后的xml */
+	private final String TEXT_RESPONSE_TO_XML = "<xml><ToUserName><![CDATA[toUser]]></ToUserName>" +
+			"<FromUserName><![CDATA[fromUser]]></FromUserName><CreateTime><![CDATA[12345678]]></CreateTime>" +
+			"<MsgType><![CDATA[text]]></MsgType><Content><![CDATA[你好]]></Content></xml>";
+	
+	/** newsResponse转换后的xml */
+	private final String NEWS_RESPONSE_TO_XML = "<xml><ToUserName><![CDATA[toUser]]></ToUserName>" +
+			"<FromUserName><![CDATA[fromUser]]></FromUserName><CreateTime><![CDATA[12345678]]></CreateTime>" +
+			"<MsgType><![CDATA[news]]></MsgType><ArticleCount><![CDATA[2]]></ArticleCount>" +
+			"<Articles><item><Title><![CDATA[title]]></Title><Description><![CDATA[description]]></Description>" +
+			"<PicUrl><![CDATA[picUrl]]></PicUrl><Url><![CDATA[url]]></Url></item><item><Title><![CDATA[title]]></Title>" +
+			"<Description><![CDATA[description]]></Description><PicUrl><![CDATA[picUrl]]></PicUrl><Url><![CDATA[url]]></Url>" +
+			"</item></Articles></xml>";
 
 	@Before
 	public void setUp() throws Exception {
@@ -107,6 +121,9 @@ public class ResponseManagerTest {
 		Assert.assertTrue((textResponse.getContent().equals(cacheContent)==false));		
 	}
 	
+	/**
+	 * 测试取得image回复消息
+	 */
 	@Test
 	public void testImageResponse() {
 		// *** 测试取得默认消息 ***
@@ -133,6 +150,9 @@ public class ResponseManagerTest {
 		Assert.fail("测试有问题的实体xml文件出错");				
 	}
 	
+	/**
+	 * 测试取得voice回复消息
+	 */	
 	@Test
 	public void testVoiceResponse() {
 		// *** 测试取得默认消息 ***
@@ -159,6 +179,9 @@ public class ResponseManagerTest {
 		Assert.fail("测试有问题的实体xml文件出错");		
 	}
 	
+	/**
+	 * 测试取得video回复消息
+	 */		
 	@Test
 	public void testVideoResponse() {
 		// *** 测试取得默认消息 ***
@@ -196,6 +219,9 @@ public class ResponseManagerTest {
 		Assert.fail("测试有问题的实体xml文件出错");				
 	}
 	
+	/**
+	 * 测试取得music回复消息
+	 */	
 	@Test
 	public void testMusicResponse() {
 		// *** 测试取得默认消息 ***
@@ -236,6 +262,9 @@ public class ResponseManagerTest {
 		Assert.fail("测试有问题的实体xml文件出错");				
 	}
 
+	/**
+	 * 测试取得news回复消息
+	 */	
 	@Test
 	public void testNewsResponse() {
 		// *** 测试取得默认消息 ***
@@ -280,5 +309,26 @@ public class ResponseManagerTest {
 			return;
 		}
 		Assert.fail("测试有问题的实体xml文件出错");
+	}
+
+	/**
+	 * 测试回复消息循环换为xml
+	 */		
+	@Test
+	public void testResponseToXml() {
+		// *** 测试转换text消息 ***
+		TextResponse textResponse = this.responseManager.getTextResponse();
+		// 验证消息
+		Assert.assertEquals(textResponse.getMsgType(), ResponseType.TEXT);
+		String xmlStr = this.responseManager.responseToXml(textResponse);
+		xmlStr = xmlStr.trim().replaceAll(" ", "").replaceAll("\r","").replaceAll("\n","");
+		Assert.assertEquals(xmlStr, TEXT_RESPONSE_TO_XML);
+		// *** 测试转换news消息 ***
+		NewsResponse newsResponse = this.responseManager.getNewsResponse();
+		// 验证消息
+		Assert.assertEquals(newsResponse.getMsgType(), ResponseType.NEWS);
+		xmlStr = this.responseManager.responseToXml(newsResponse);
+		xmlStr = xmlStr.trim().replaceAll(" ", "").replaceAll("\r","").replaceAll("\n","");
+		Assert.assertEquals(xmlStr, NEWS_RESPONSE_TO_XML);
 	}
 }

@@ -15,8 +15,8 @@ public class NewsResponse extends AbstractBaseResponse {
 	/** 图文子节点最大值 */
 	public final static int NEWS_CHILD_MAX_SIZE = 10; 	
 	
-	private List<News> Articles;
 	private int ArticleCount;
+	private List<News> Articles;
 		
 	public NewsResponse() {
 		this.Articles = new ArrayList<NewsResponse.News>();

@@ -6,6 +6,7 @@ import java.net.URL;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import com.ironside.weixin.response.entity.AbstractBaseResponse;
 import com.ironside.weixin.response.entity.ImageResponse;
 import com.ironside.weixin.response.entity.MusicResponse;
 import com.ironside.weixin.response.entity.NewsResponse;
@@ -481,6 +482,54 @@ public class ResponseManager {
 		if (response.getArticleCount()!=response.getArticles().size()) {
 			response.setArticleCount(response.getArticles().size());
 		}
+	}
+	
+	/**
+	 * 回复实体转换为xml字符串
+	 * @param response 回复实体
+	 * @return xml字符串
+	 */
+	public String responseToXml(AbstractBaseResponse response) {
+		String msgType = response.getMsgType();
+		// 转换属性加上CDATA[[]]
+		XStream xStream = new XStream(new CdataXppDriver());
+		String xmlStr;
+		switch(msgType) {
+		case ResponseType.TEXT:
+			xStream.alias("xml", TextResponse.class);
+			TextResponse textResponse = (TextResponse)response;
+			xmlStr = xStream.toXML(textResponse);
+			break;
+		case ResponseType.IMAGE:
+			xStream.alias("xml", ImageResponse.class);
+			ImageResponse imageResponse = (ImageResponse)response;
+			xmlStr = xStream.toXML(imageResponse);
+			break;
+		case ResponseType.VOICE:
+			xStream.alias("xml", VoiceResponse.class);
+			VoiceResponse voiceResponse = (VoiceResponse)response;
+			xmlStr = xStream.toXML(voiceResponse);
+			break;
+		case ResponseType.VIDEO:
+			xStream.alias("xml", VideoResponse.class);
+			VideoResponse videoResponse = (VideoResponse)response;
+			xmlStr = xStream.toXML(videoResponse);
+			break;
+		case ResponseType.MUSIC:
+			xStream.alias("xml", MusicResponse.class);
+			MusicResponse musicResponse = (MusicResponse)response;
+			xmlStr = xStream.toXML(musicResponse);
+			break;
+		case ResponseType.NEWS:
+			xStream.alias("xml", NewsResponse.class);
+			xStream.alias("item", News.class);
+			NewsResponse newsResponse = (NewsResponse)response;
+			xmlStr = xStream.toXML(newsResponse);
+			break;	
+		default:
+			throw new IllegalStateException(String.format("response消息类型错误，无法转换成xml: %s", msgType));
+		}
+		return xmlStr;
 	}
 
 }
