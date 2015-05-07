@@ -8,7 +8,7 @@ package com.ironside.weixin.request.entity;
 public class EventClickEntity extends AbstractBaseEvent {
 
 	/** 事件KEY值 */
-	protected String EventKey;
+	private String EventKey;
 
 	/**
 	 * 取得事件KEY值

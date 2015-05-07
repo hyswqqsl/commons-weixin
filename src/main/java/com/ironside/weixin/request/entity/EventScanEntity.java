@@ -8,7 +8,7 @@ package com.ironside.weixin.request.entity;
 public class EventScanEntity extends EventClickEntity {
 	
 	/** 二维码的ticket，可用来换取二维码图片 */
-	protected String Ticket;
+	private String Ticket;
 	
 	/**
 	 * 取得二维码的ticket
