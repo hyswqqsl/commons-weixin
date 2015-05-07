@@ -7,10 +7,4 @@ package com.ironside.weixin.request.entity;
  */
 public class EventViewEntity extends EventClickEntity {
 
-	/**
-	 * 构造函数，设置类型
-	 */
-	public EventViewEntity() {
-		this.setMsgEnum(EntityEnum.EVENT_VIEW);
-	}
 }

@@ -1,13 +1,12 @@
 package com.ironside.weixin.request;
 
-import java.util.Date;
 import java.util.Properties;
 
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.ironside.weixin.request.entity.AbstractBaseEntity;
-import com.ironside.weixin.request.entity.EntityEnum;
+import com.ironside.weixin.request.entity.EntityType;
 import com.ironside.weixin.request.entity.EventClickEntity;
 import com.ironside.weixin.request.entity.EventLocationEntity;
 import com.ironside.weixin.request.entity.EventScanEntity;
@@ -34,15 +33,12 @@ public class DefaultPostProcess extends AbstractPostProcess {
 
 	/** 消息处理器 */
 	private IPostProcessor processor;
-	/** xml解析对象 */
-	private XStream xStream;
 
 	/**
 	 * 构造函数，设置默认POST处理器
 	 */
 	public DefaultPostProcess() {
 		this.processor = new PostProcessorAdapter();
-		this.xStream = new XStream();
 	}
 
 	@Override
@@ -52,7 +48,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		Properties properties = xmlParse.parseString(postData);
 		String msgType = properties.getProperty(AbstractBaseEntity.MSG_TYPE);
 		// 如果是事件消息
-		if (msgType.equals(EntityEnum.EVENT_CLICK.getMsgType())) {
+		if (msgType.equals(EntityType.EVENT)) {
 			return doEventAnalyze(properties, postData);
 		}
 		// 如果是普通消息
@@ -71,8 +67,9 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	private AbstractBaseEntity doEventAnalyze(Properties properties, String postData) {
 		String event = properties.getProperty(AbstractBaseEntity.EVENT);
 		String eventKey = properties.getProperty(AbstractBaseEntity.EVENT_KEY);
+		XStream xStream = new XStream();
 		switch (event) {
-		case EntityEnum.EVENT_SUBSCRIBE.getEvent() :
+		case EntityType.EVENT_SUBSCRIBE:
 			if (StringUtils.isEmpty(eventKey)) {
 				/*
 				 <xml>
@@ -83,23 +80,23 @@ public class DefaultPostProcess extends AbstractPostProcess {
 				 <Event><![CDATA[subscribe]]></Event>
 				 </xml>
 				 */
-				xStream.alias("xml", EventSubscribeEntity.class);							
-			} else {
-				/*
-				 <xml>
-				 <ToUserName><![CDATA[toUser]]></ToUserName>
-				 <FromUserName><![CDATA[FromUser]]></FromUserName>
-				 <CreateTime>123456789</CreateTime>
-				 <MsgType><![CDATA[event]]></MsgType>
-				 <Event><![CDATA[subscribe]]></Event>
-				 <EventKey><![CDATA[qrscene_123123]]></EventKey>
-				 <Ticket><![CDATA[TICKET]]></Ticket>
-				 </xml>
-				 */
-				xStream.alias("xml", EventScanSubscribeEntity.class);			
+				xStream.alias("xml", EventSubscribeEntity.class);
+				break;
 			}
+			/*
+			 <xml>
+			 <ToUserName><![CDATA[toUser]]></ToUserName>
+			 <FromUserName><![CDATA[FromUser]]></FromUserName>
+			 <CreateTime>123456789</CreateTime>
+			 <MsgType><![CDATA[event]]></MsgType>
+			 <Event><![CDATA[subscribe]]></Event>
+			 <EventKey><![CDATA[qrscene_123123]]></EventKey>
+			 <Ticket><![CDATA[TICKET]]></Ticket>
+			 </xml>
+			 */
+			xStream.alias("xml", EventScanSubscribeEntity.class);			
 			break;
-		case EntityEnum.EVENT_UNSUBSCRIBE.getEvent() :
+		case EntityType.EVENT_UNSUBSCRIBE:
 			/*
 			 <xml>
 			 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -111,7 +108,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 			 */
 			xStream.alias("xml", EventUnSubscribeEntity.class);			
 			break;
-		case EntityEnum.EVENT_SCAN.getEvent() :
+		case EntityType.EVENT_SCAN:
 			/*
 			 <xml>
 			 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -125,7 +122,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 			 */
 			xStream.alias("xml", EventScanEntity.class);
 			break;
-		case EntityEnum.EVENT_LOCATION.getEvent() :
+		case EntityType.EVENT_LOCATION:
 			/*
 			 <xml>
 			 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -140,7 +137,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 			 */
 			xStream.alias("xml", EventLocationEntity.class);
 			break;
-		case EntityEnum.EVENT_CLICK.getEvent() :
+		case EntityType.EVENT_CLICK:
 			/*
 		  	 <xml>
 		 	 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -153,7 +150,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 			 */
 			 xStream.alias("xml", EventClickEntity.class);
 			 break;
-		case EntityEnum.EVENT_VIEW.getEvent() :
+		case EntityType.EVENT_VIEW:
 			/*
 			 <xml>
 			 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -176,15 +173,14 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * 解析事件消息
 	 * 
 	 * @param properties 名字和值信息
-	 * 
 	 * @param postData POST方式推送的数据
-	 * 
 	 * @return 解析后的实体(抽象)
 	 */
 	private AbstractBaseEntity doMessageAnalyze(Properties properties, String postData) {
 		String msgType = properties.getProperty(AbstractBaseEntity.MSG_TYPE);
+		XStream xStream = new XStream();
 		switch (msgType) {
-		case EntityEnum.TEXT.getMsgType() :
+		case EntityType.TEXT:
 			/*
 		 	 <xml>
 		     <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -197,7 +193,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		 	 */ 
 			xStream.alias("xml", TextEntity.class);			
 			break;
-		case EntityEnum.IMAGE.getMsgType() :
+		case EntityType.IMAGE:
 			/*
 			 <xml>
 	 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -211,7 +207,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 			 */
 			xStream.alias("xml", ImageEntity.class);
 			break;
-		case EntityEnum.VOICE.getMsgType() :
+		case EntityType.VOICE:
 			/*
 			 <xml>
 			 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -225,7 +221,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 			 */
 			xStream.alias("xml", ImageEntity.class);
 			break;
-		case EntityEnum.VIDEO.getMsgType() :
+		case EntityType.VIDEO:
 			/*
 			 <xml>
 			 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -239,7 +235,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 			 */
 			xStream.alias("xml", VideoEntity.class);
 			break;
-		case EntityEnum.SHORTVIDEO.getMsgType() :
+		case EntityType.SHORTVIDEO:
 			/*
 			 <xml>
 			 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -253,7 +249,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 			 */
 			xStream.alias("xml", ShortVideoEntity.class);
 			break;
-		case EntityEnum.LOCATION.getMsgType() :
+		case EntityType.LOCATION:
 		/*
 		 <xml>
 		 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -269,7 +265,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		 */
 			xStream.alias("xml", LocationEntity.class);
 			break;
-		case EntityEnum.LINK.getMsgType() :
+		case EntityType.LINK:
 			/*
 			 * <xml> <ToUserName><![CDATA[toUser]]></ToUserName>
 			 * <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -289,47 +285,85 @@ public class DefaultPostProcess extends AbstractPostProcess {
 
 	@Override
 	String process(AbstractBaseEntity entity) {
-		switch (entity.getMsgEnum()) {
-		case TEXT:
-			return this.processor.postProcessText((TextEntity) entity);
-		case IMAGE:
-			return this.processor.postProcessImage((ImageEntity) entity);
-		case VOICE:
-			return this.processor.postProcessVoice((VoiceEntity) entity);
-		case VIDEO:
-			return this.processor.postProcessVideo((VideoEntity) entity);
-		case SHORTVIDEO:
-			return this.processor
-					.postProcessShortVideo((ShortVideoEntity) entity);
-		case LOCATION:
-			return this.processor.postProcessLocation((LocationEntity) entity);
-		case LINK:
-			return this.processor.postProcessLink((LinkEntity) entity);
-		case EVENT_SUBSCRIBE:
-			return this.processor
-					.postProcessEventSubscribe((EventSubscribeEntity) entity);
-		case EVENT_UNSUBSCRIBE:
-			return this.processor
-					.postProcessEventUnSubscribe((EventUnSubscribeEntity) entity);
-		case EVENT_SCAN_SUBSCRIBE:
-			return this.processor
-					.postProcessEventScanSubscribe((EventScanSubscribeEntity) entity);
-		case EVENT_SCAN:
-			return this.processor
-					.postProcessEventScan((EventScanEntity) entity);
-		case EVENT_LOCATION:
-			return this.processor
-					.postProcessEventLocation((EventLocationEntity) entity);
-		case EVENT_CLICK:
-			return this.processor
-					.postProcessEventClick((EventClickEntity) entity);
-		case EVENT_VIEW:
-			return this.processor
-					.postProcessEventView((EventViewEntity) entity);
-		default:
-			throw new IllegalStateException(String.format(
-					"处理实体异常-实体不是预期的类型(%s)", entity.getMsgType()));
+		if (entity.getMsgType().equals(EntityType.EVENT)) {
+			return doProcessEvent(entity);
 		}
+		return doProcessMessage(entity);
+	}
+	
+	/**
+	 * 处理事件实体
+	 * @param entity 事件实体
+	 * @return
+	 */
+	private String doProcessEvent(AbstractBaseEntity entity) {
+		String event = entity.getEvent();
+		String eventKey = entity.getEventKey();
+		String result;
+		switch(event) {
+		case EntityType.EVENT_SUBSCRIBE:
+			if (StringUtils.isEmpty(eventKey)) {
+				result = this.processor.postProcessEventSubscribe((EventSubscribeEntity) entity);
+			} else {
+				result = this.processor.postProcessEventScanSubscribe((EventScanSubscribeEntity)entity);
+			}
+			break;
+		case EntityType.EVENT_UNSUBSCRIBE:
+			result = this.processor.postProcessEventUnSubscribe((EventUnSubscribeEntity) entity);
+			break;
+		case EntityType.EVENT_SCAN:
+			result = this.processor.postProcessEventScan((EventScanEntity) entity);
+			break;
+		case EntityType.EVENT_LOCATION:
+			result = this.processor.postProcessEventLocation((EventLocationEntity) entity);
+			break;
+		case EntityType.EVENT_CLICK:
+			result = this.processor.postProcessEventClick((EventClickEntity) entity);
+			break;
+		case EntityType.EVENT_VIEW:
+			result = this.processor.postProcessEventView((EventViewEntity) entity);
+			break;
+		default:
+			throw new IllegalStateException(String.format("处理事件实体异常-事件实体不是预期的类型: %s", event));
+		}
+		return result;
+	}
+
+	/**
+	 * 处理消息实体
+	 * @param entity 消息实体
+	 * @return
+	 */
+	private String doProcessMessage(AbstractBaseEntity entity) {
+		String msgType = entity.getMsgType();
+		String result;
+		switch (msgType)
+		{
+		case EntityType.TEXT:
+			result = this.processor.postProcessText((TextEntity) entity);
+			break;
+		case EntityType.IMAGE:
+			result = this.processor.postProcessImage((ImageEntity) entity);
+			break;
+		case EntityType.VOICE:
+			result = this.processor.postProcessVoice((VoiceEntity) entity);
+			break;
+		case EntityType.VIDEO:
+			result = this.processor.postProcessVideo((VideoEntity) entity);
+			break;
+		case EntityType.SHORTVIDEO:
+			result = this.processor.postProcessShortVideo((ShortVideoEntity) entity);
+			break;
+		case EntityType.LOCATION:
+			result = this.processor.postProcessLocation((LocationEntity) entity);
+			break;
+		case EntityType.LINK:
+			result = this.processor.postProcessLink((LinkEntity) entity);
+			break;
+		default:
+			throw new IllegalStateException(String.format("处理消息实体异常-消息实体不是预期的类型: %s", msgType));
+		}
+		return result;
 	}
 
 	/**

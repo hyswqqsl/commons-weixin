@@ -5,24 +5,17 @@ package com.ironside.weixin.request.entity;
  * @author 雪庭
  * @sine at 2015年4月8日
  */
-public class EventClickEntity extends AbstractBaseEntity {
+public class EventClickEntity extends AbstractBaseEvent {
 
-	/** 事件KEY值，qrscene_为前缀，后面为二维码的参数值 */
-	private String eventKey;
-	
-	/**
-	 * 构造函数，设置类型
-	 */
-	public EventClickEntity() {
-		this.setMsgEnum(EntityEnum.EVENT_CLICK);
-	}
-	
+	/** 事件KEY值 */
+	protected String EventKey;
+
 	/**
 	 * 取得事件KEY值
 	 * @return 事件KEY值
 	 */
 	public String getEventKey() {
-		return eventKey;
+		return EventKey;
 	}
 	
 	/**
@@ -30,15 +23,7 @@ public class EventClickEntity extends AbstractBaseEntity {
 	 * @param eventKey 事件KEY值
 	 */
 	public void setEventKey(String eventKey) {
-		this.eventKey = eventKey;
-	}
-	
-	/**
-	 * 取得事件类型
-	 * @return 事件类型
-	 */
-	public String getEvent() {
-		return getMsgEnum().getEvent();
+		EventKey = eventKey;
 	}
 	
 }

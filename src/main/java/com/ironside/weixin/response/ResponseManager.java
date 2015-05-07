@@ -127,11 +127,8 @@ public class ResponseManager {
 	/** 图文回复消息缓冲 */
 	NewsResponse newsResponse;
 
-	/** xml解析对象 */
-	private XStream xStream;
 
 	public ResponseManager() {
-		this.xStream = new XStream();
 	}
 	
 	/**
@@ -230,6 +227,7 @@ public class ResponseManager {
 	 * @return 文本回复实体
 	 */
 	private TextResponse doGetTextResponse() {
+		XStream xStream = new XStream();
 		xStream.alias("xml", TextResponse.class);
 		if (StringUtils.isEmpty(this.textXmlFile)) {
 			return (TextResponse) xStream.fromXML(DEFAULT_TEXT_XML_STRING);
@@ -271,6 +269,7 @@ public class ResponseManager {
 	 * @return 图片回复实体
 	 */
 	private ImageResponse doGetImageResponse() {
+		XStream xStream = new XStream();
 		xStream.alias("xml", ImageResponse.class);
 		if (StringUtils.isEmpty(this.imageXmlFile)) {
 			return (ImageResponse)xStream.fromXML(DEFAULT_IMAGE_XML_STRING);
@@ -312,6 +311,7 @@ public class ResponseManager {
 	 * @return 语音回复实体
 	 */
 	private VoiceResponse doGetVoiceResponse() {
+		XStream xStream = new XStream();
 		xStream.alias("xml", VoiceResponse.class);
 		if (StringUtils.isEmpty(this.voiceXmlFile)) {
 			return (VoiceResponse)xStream.fromXML(DEFAULT_VOICE_XML_STRING);
@@ -353,6 +353,7 @@ public class ResponseManager {
 	 * @return 视频回复实体
 	 */
 	private VideoResponse doGetVideoResponse() {
+		XStream xStream = new XStream();
 		xStream.alias("xml", VideoResponse.class);
 		if (StringUtils.isEmpty(this.videoXmlFile)) {
 			return (VideoResponse)xStream.fromXML(DEFAULT_VIDEO_XML_STRING);
@@ -394,6 +395,7 @@ public class ResponseManager {
 	 * @return 音乐回复实体
 	 */
 	private MusicResponse doGetMusicResponse() {
+		XStream xStream = new XStream();
 		xStream.alias("xml", MusicResponse.class);
 		if (StringUtils.isEmpty(this.musicXmlFile)) {
 			return (MusicResponse)xStream.fromXML(DEFAULT_MUSIC_XML_STRING);
@@ -436,6 +438,7 @@ public class ResponseManager {
 	 * @return 图文回复实体
 	 */
 	private NewsResponse doGetNewsResponse() {
+		XStream xStream = new XStream();
 		xStream.alias("xml", NewsResponse.class);
 		xStream.alias("item", News.class);
 		if (StringUtils.isEmpty(this.newsXmlFile)) {

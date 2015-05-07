@@ -5,17 +5,6 @@ package com.ironside.weixin.request.entity;
  * @author 雪庭
  * @sine 1.0 at 2015年4月8日
  */
-public class EventSubscribeEntity extends AbstractBaseEntity {
-
-	public EventSubscribeEntity() {
-		this.setMsgEnum(EntityEnum.EVENT_SUBSCRIBE);
-	}
+public class EventSubscribeEntity extends AbstractBaseEvent {
 	
-	/**
-	 * 取得事件类型
-	 * @return 事件类型
-	 */
-	public String getEvent() {
-		return getMsgEnum().getEvent();
-	}	
 }

@@ -7,29 +7,19 @@ package com.ironside.weixin.request.entity;
  */
 public class ImageEntity extends AbstractBaseEntity {
 	
-	/** 对应xml中定义的'图片链接'标识 */
-	public final static String PIC_URL= "PicUrl";
-	
 	/** 图片链接 */
-	private String picUrl;
+	private String PicUrl;
 	/** 图片消息媒体id，可以调用多媒体文件下载接口拉取数据 */
-	private String mediaId;
+	private String MediaId;
 	/** 消息id，64位整型 */
-	private String msgId;
-	
-	/**
-	 * 构造函数，设置类型
-	 */
-	public ImageEntity() {
-		this.setMsgEnum(EntityEnum.IMAGE);
-	}
+	private String MsgId;
 	
 	/**
 	 * 取得图片链接
 	 * @return 图片链接
 	 */
 	public String getPicUrl() {
-		return picUrl;
+		return PicUrl;
 	}
 	
 	/**
@@ -37,7 +27,7 @@ public class ImageEntity extends AbstractBaseEntity {
 	 * @param picUrl 图片链接
 	 */
 	public void setPicUrl(String picUrl) {
-		this.picUrl = picUrl;
+		this.PicUrl = picUrl;
 	}
 	
 	/**
@@ -45,7 +35,7 @@ public class ImageEntity extends AbstractBaseEntity {
 	 * @return 图片消息媒体id
 	 */	
 	public String getMediaId() {
-		return mediaId;
+		return MediaId;
 	}
 	
 	/**
@@ -53,7 +43,7 @@ public class ImageEntity extends AbstractBaseEntity {
 	 * @param mediaId 图片消息媒体id
 	 */	
 	public void setMediaId(String mediaId) {
-		this.mediaId = mediaId;
+		this.MediaId = mediaId;
 	}
 	
 	/**
@@ -61,7 +51,7 @@ public class ImageEntity extends AbstractBaseEntity {
 	 * @return 消息id
 	 */	
 	public String getMsgId() {
-		return msgId;
+		return MsgId;
 	}
 	
 	/**
@@ -69,7 +59,7 @@ public class ImageEntity extends AbstractBaseEntity {
 	 * @param msgId 消息id
 	 */	
 	public void setMsgId(String msgId) {
-		this.msgId = msgId;
+		this.MsgId = msgId;
 	}
 	
 }

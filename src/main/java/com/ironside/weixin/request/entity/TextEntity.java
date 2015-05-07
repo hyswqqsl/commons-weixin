@@ -7,27 +7,17 @@ package com.ironside.weixin.request.entity;
  */
 public class TextEntity extends AbstractBaseEntity{
 	
-	/** 对应xml中定义的'文本消息内容'标识 */
-	public final static String CONTENT = "Content";
-
 	/** 文本消息内容 */
-	private String content;
+	private String Content;
 	/** 消息id，64位整型 */
-	private String msgId;
+	private String MsgId;
 
-	/**
-	 * 构造函数，设置类型
-	 */
-	public TextEntity() {
-		this.setMsgEnum(EntityEnum.TEXT);
-	}
-	
 	/**
 	 * 取得文本消息内容
 	 * @return 文本消息内容
 	 */
 	public String getContent() {
-		return content;
+		return Content;
 	}
 	
 	/**
@@ -35,7 +25,7 @@ public class TextEntity extends AbstractBaseEntity{
 	 * @param content 文本消息内容
 	 */
 	public void setContent(String content) {
-		this.content = content;
+		this.Content = content;
 	}
 	
 	/**
@@ -43,7 +33,7 @@ public class TextEntity extends AbstractBaseEntity{
 	 * @return 消息id
 	 */
 	public String getMsgId() {
-		return msgId;
+		return MsgId;
 	}
 	
 	/**
@@ -51,7 +41,7 @@ public class TextEntity extends AbstractBaseEntity{
 	 * @param msgId 消息id
 	 */
 	public void setMsgId(String msgId) {
-		this.msgId = msgId;
+		this.MsgId = msgId;
 	}
 	
 }

@@ -51,6 +51,9 @@ public class ResponseManagerTest {
 		Assert.assertEquals(textResponse.getFromUserName(), "fromUser");
 		Assert.assertEquals(textResponse.getToUserName(), "toUser");
 		Assert.assertEquals(textResponse.getMsgType(), ResponseType.TEXT);
+		// 测试XStream.alias重叠问题
+		ImageResponse imageResponse = this.responseManager.getImageResponse();
+		Assert.assertEquals(imageResponse.getFromUserName(), "fromUser");
 		// *** 测试根据回复实体xml文件取得回复实体 ***
 		this.responseManager.setTextXmlFile(TEST_TEXT_XMLFILE);
 		textResponse = this.responseManager.getTextResponse();

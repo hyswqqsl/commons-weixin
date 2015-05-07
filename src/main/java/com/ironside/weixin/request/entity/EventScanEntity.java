@@ -5,13 +5,25 @@ package com.ironside.weixin.request.entity;
  * @author ZXJ
  * @sine 1.0 at 2015年4月8日
  */
-public class EventScanEntity extends EventScanSubscribeEntity {
+public class EventScanEntity extends EventClickEntity {
+	
+	/** 二维码的ticket，可用来换取二维码图片 */
+	protected String Ticket;
 	
 	/**
-	 * 构造函数，设置类型
+	 * 取得二维码的ticket
+	 * @return 二维码的ticket
 	 */
-	public EventScanEntity(){
-		this.setMsgEnum(EntityEnum.EVENT_SCAN);
+	public String getTicket() {
+		return Ticket;
 	}
-
+	
+	/**
+	 * 设置二维码的ticket
+	 * @param ticket 二维码的ticket
+	 */
+	public void setTicket(String ticket) {
+		this.Ticket = ticket;
+	}
+		
 }

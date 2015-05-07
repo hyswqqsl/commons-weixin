@@ -8,35 +8,21 @@ package com.ironside.weixin.request.entity;
  */
 public class LinkEntity extends AbstractBaseEntity {
 	
-	/** 对应xml中定义的'消息标题'标识 */
-	public final static String TITLE = "Title";
-	/** 对应xml中定义的'消息描述'标识 */
-	public final static String DESCRIPTION = "Description";
-	/** 对应xml中定义的'消息链接'标识 */
-	public final static String URL = "Url";
-	
 	/** 消息标题 */
-	private String title;
+	private String Title;
 	/** 消息描述 */
-	private String description;
+	private String Description;
 	/** 消息链接 */
-	private String url;
+	private String Url;
 	/** 消息id，64位整型 */
-	private String msgId;
-	
-	/**
-	 * 构造函数，设置类型
-	 */
-	public LinkEntity() {
-		this.setMsgEnum(EntityEnum.LINK);
-	}
+	private String MsgId;
 	
 	/**
 	 * 取得消息标题
 	 * @return 消息标题
 	 */
 	public String getTitle() {
-		return title;
+		return Title;
 	}
 	
 	/**
@@ -44,7 +30,7 @@ public class LinkEntity extends AbstractBaseEntity {
 	 * @param title 消息标题
 	 */
 	public void setTitle(String title) {
-		this.title = title;
+		this.Title = title;
 	}
 	
 	/**
@@ -52,7 +38,7 @@ public class LinkEntity extends AbstractBaseEntity {
 	 * @return 消息描述
 	 */
 	public String getDescription() {
-		return description;
+		return Description;
 	}
 	
 	/**
@@ -60,7 +46,7 @@ public class LinkEntity extends AbstractBaseEntity {
 	 * @param description 消息描述
 	 */
 	public void setDescription(String description) {
-		this.description = description;
+		this.Description = description;
 	}
 	
 	/**
@@ -68,7 +54,7 @@ public class LinkEntity extends AbstractBaseEntity {
 	 * @return 消息链接 
 	 */
 	public String getUrl() {
-		return url;
+		return Url;
 	}
 	
 	/**
@@ -76,7 +62,7 @@ public class LinkEntity extends AbstractBaseEntity {
 	 * @param url 消息链接
 	 */
 	public void setUrl(String url) {
-		this.url = url;
+		this.Url = url;
 	}
 	
 	/**
@@ -84,7 +70,7 @@ public class LinkEntity extends AbstractBaseEntity {
 	 * @return 消息id
 	 */
 	public String getMsgId() {
-		return msgId;
+		return MsgId;
 	}
 	
 	/**
@@ -92,6 +78,6 @@ public class LinkEntity extends AbstractBaseEntity {
 	 * @param msgId 消息id
 	 */
 	public void setMsgId(String msgId) {
-		this.msgId = msgId;
+		this.MsgId = msgId;
 	}
 }

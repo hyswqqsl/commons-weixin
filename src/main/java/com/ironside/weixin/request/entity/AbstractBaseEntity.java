@@ -1,7 +1,5 @@
 package com.ironside.weixin.request.entity;
 
-import java.util.Date;
-
 /**
  * 基础POST实体类
  * @author 雪庭
@@ -9,39 +7,28 @@ import java.util.Date;
  */
 public abstract class AbstractBaseEntity {
 	
-	/** 对应xml中定义的'开发者微信号'标识 */
-	public final static String TO_USER_NAME = "ToUserName";
-	/** 对应xml中定义的'发送方帐号'标识 */
-	public final static String FORM_USER_NAME = "FromUserName";
-	/** 对应xml中定义的'消息创建时间'标识 */
-	public final static String CREATE_TIME = "CreateTime";
 	/** 对应xml中定义的'消息类型'标识 */
 	public final static String MSG_TYPE = "MsgType";
 	/** 对应xml中定义的'事件类型'标识 */
 	public final static String EVENT = "Event";
 	/** 事件KEY值 */
 	public final static String EVENT_KEY = "EventKey";
-	/** 对应xml中定义的'消息id'标识 */
-	public final static String MSG_ID= "MsgId";
-	/** 对应xml中定义的'消息媒体id'标识 */
-	public final static String MEDIA_ID= "MediaId";
 	
 	/** 开发者微信号  */
-	private String toUserName;
+	private String ToUserName;
 	/** 发送方帐号（一个OpenID） */
-	private String fromUserName;
+	private String FromUserName;
 	/** 消息创建时间  */
-	private Date createTime;
-	/** 消息类型对象 */
-	private EntityEnum msgEnum; 
-	
+	private String CreateTime;
+	/** 消息类型 */
+	private String MsgType;	
 	
 	/**
 	 * 取得开发者微信号
 	 * @return 开发者微信号
 	 */
 	public String getToUserName() {
-		return toUserName;
+		return ToUserName;
 	}
 	
 	/**
@@ -49,7 +36,7 @@ public abstract class AbstractBaseEntity {
 	 * @param toUserName 开发者微信号
 	 */
 	public void setToUserName(String toUserName) {
-		this.toUserName = toUserName;
+		this.ToUserName = toUserName;
 	}
 	
 	/**
@@ -57,7 +44,7 @@ public abstract class AbstractBaseEntity {
 	 * @return 发送方帐号
 	 */
 	public String getFromUserName() {
-		return fromUserName;
+		return FromUserName;
 	}
 	
 	/**
@@ -65,47 +52,55 @@ public abstract class AbstractBaseEntity {
 	 * @param fromUserName 发送方帐号
 	 */
 	public void setFromUserName(String fromUserName) {
-		this.fromUserName = fromUserName;
+		this.FromUserName = fromUserName;
 	}
 	
 	/**
 	 * 取得消息创建时间
 	 * @return 消息创建时间
 	 */
-	public Date getCreateTime() {
-		return createTime;
+	public String getCreateTime() {
+		return CreateTime;
 	}
 	
 	/**
 	 * 设置消息创建时间
 	 * @param createTime 消息创建时间
 	 */
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
+	public void setCreateTime(String createTime) {
+		this.CreateTime = createTime;
 	}
-	
-	/**
-	 * 取得消息类型对象
-	 * @return 消息类型对象
-	 */
-	public EntityEnum getMsgEnum() {
-		return msgEnum;
-	}
-	
-	/**
-	 * 设置消息类型对象
-	 * @param msgType 消息类型对象
-	 */
-	public void setMsgEnum(EntityEnum msgEnum) {
-		this.msgEnum = msgEnum;
-	}
-		
+
 	/**
 	 * 取得消息类型
 	 * @return 消息类型
 	 */
 	public String getMsgType() {
-		return getMsgEnum().getMsgType();
+		return MsgType;
+	}
+
+	/**
+	 * 设置消息类型
+	 * @param msgType 取得消息类型
+	 */
+	public void setMsgType(String msgType) {
+		MsgType = msgType;
 	}
 	
+	/**
+	 * 取得事件类型
+	 * @return
+	 */
+	public String getEvent() {
+		return null;
+	}
+	
+	/**
+	 * 取得事件KEY值
+	 * @return 事件KEY值
+	 */
+	public String getEventKey() {
+		return null;
+	}
+			
 }

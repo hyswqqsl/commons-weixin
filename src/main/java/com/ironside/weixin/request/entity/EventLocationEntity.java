@@ -5,35 +5,21 @@ package com.ironside.weixin.request.entity;
  * @author ZXJ
  * @sine 1.0 at 2015年4月8日
  */
-public class EventLocationEntity extends AbstractBaseEntity {
-	
-	/** 对应xml中定义的'地理位置纬度'标识 */
-	public final static String LATITUDE = "Latitude";
-	/** 对应xml中定义的'地理位置经度'标识 */
-	public final static String LONGITUDE = "Longitude";
-	/** 对应xml中定义的'地理位置精度'标识 */
-	public final static String PRECISION = "Precision";
+public class EventLocationEntity extends AbstractBaseEvent {
 	
 	/** 地理位置纬度 */
-	private String latitude;
+	private String Latitude;
 	/** 地理位置经度 */
-	private String longitude;
+	private String Longitude;
 	/** 地理位置精度 */
-	private String precision;
-	
-	/**
-	 * 构造函数，设置类型
-	 */
-	public EventLocationEntity() {
-		this.setMsgEnum(EntityEnum.EVENT_LOCATION);
-	}
+	private String Precision;
 	
 	/**
 	 * 取得地理位置纬度
 	 * @return 地理位置纬度
 	 */
 	public String getLatitude() {
-		return latitude;
+		return Latitude;
 	}
 	
 	/**
@@ -41,7 +27,7 @@ public class EventLocationEntity extends AbstractBaseEntity {
 	 * @param latitude 地理位置纬度
 	 */
 	public void setLatitude(String latitude) {
-		this.latitude = latitude;
+		this.Latitude = latitude;
 	}
 	
 	/**
@@ -49,7 +35,7 @@ public class EventLocationEntity extends AbstractBaseEntity {
 	 * @return 地理位置经度
 	 */
 	public String getLongitude() {
-		return longitude;
+		return Longitude;
 	}
 	
 	/**
@@ -57,7 +43,7 @@ public class EventLocationEntity extends AbstractBaseEntity {
 	 * @param longitude 地理位置经度
 	 */
 	public void setLongitude(String longitude) {
-		this.longitude = longitude;
+		this.Longitude = longitude;
 	}
 	
 	/**
@@ -65,7 +51,7 @@ public class EventLocationEntity extends AbstractBaseEntity {
 	 * @return 地理位置精度
 	 */
 	public String getPrecision() {
-		return precision;
+		return Precision;
 	}
 	
 	/**
@@ -73,15 +59,7 @@ public class EventLocationEntity extends AbstractBaseEntity {
 	 * @param precision 地理位置精度
 	 */
 	public void setPrecision(String precision) {
-		this.precision = precision;
+		this.Precision = precision;
 	}
-	
-	/**
-	 * 取得事件类型
-	 * @return 事件类型
-	 */
-	public String getEvent() {
-		return getMsgEnum().getEvent();
-	}	
 
 }

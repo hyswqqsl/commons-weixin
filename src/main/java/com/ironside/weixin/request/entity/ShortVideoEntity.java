@@ -7,10 +7,4 @@ package com.ironside.weixin.request.entity;
  */
 public class ShortVideoEntity extends VideoEntity {
 
-	/**
-	 * 构造函数，设置类型
-	 */
-	public ShortVideoEntity() {
-		this.setMsgEnum(EntityEnum.SHORTVIDEO);
-	}
 }

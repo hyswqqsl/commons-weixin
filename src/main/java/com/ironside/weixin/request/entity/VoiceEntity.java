@@ -7,22 +7,12 @@ package com.ironside.weixin.request.entity;
  */
 public class VoiceEntity extends AbstractBaseEntity {
 	
-	/** 对应xml中定义的'语音格式'标识 */
-	public final static String FORMAT = "Format";
-
 	/** 语音消息媒体id，可以调用多媒体文件下载接口拉取数据 */
 	private String MediaId;
 	/** 语音格式，如amr，speex等 */
-	private String format;
+	private String Format;
 	/** 消息id，64位整型 */
-	private String msgId;
-	
-	/**
-	 * 构造函数，设置类型 
-	 */
-	public VoiceEntity() {
-		this.setMsgEnum(EntityEnum.VOICE);
-	}
+	private String MsgId;
 	
 	/**
 	 * 取得语音消息媒体id
@@ -45,7 +35,7 @@ public class VoiceEntity extends AbstractBaseEntity {
 	 * @return 语音格式
 	 */
 	public String getFormat() {
-		return format;
+		return Format;
 	}
 	
 	/**
@@ -53,7 +43,7 @@ public class VoiceEntity extends AbstractBaseEntity {
 	 * @param format 语音格式
 	 */	
 	public void setFormat(String format) {
-		this.format = format;
+		this.Format = format;
 	}
 	
 	/**
@@ -61,7 +51,7 @@ public class VoiceEntity extends AbstractBaseEntity {
 	 * @return 消息id
 	 */
 	public String getMsgId() {
-		return msgId;
+		return MsgId;
 	}
 	
 	/**
@@ -69,8 +59,7 @@ public class VoiceEntity extends AbstractBaseEntity {
 	 * @param msgId 消息id
 	 */	
 	public void setMsgId(String msgId) {
-		this.msgId = msgId;
+		this.MsgId = msgId;
 	}
-	
 	
 }

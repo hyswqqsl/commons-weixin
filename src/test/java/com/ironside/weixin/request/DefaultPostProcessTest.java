@@ -1,16 +1,12 @@
 package com.ironside.weixin.request;
 
-import java.util.Date;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ironside.weixin.XmlParse;
-import com.ironside.weixin.request.DefaultPostProcess;
 import com.ironside.weixin.request.entity.AbstractBaseEntity;
-import com.ironside.weixin.request.entity.EntityEnum;
+import com.ironside.weixin.request.entity.EntityType;
 import com.ironside.weixin.request.entity.EventScanSubscribeEntity;
 import com.ironside.weixin.request.entity.EventSubscribeEntity;
 import com.ironside.weixin.request.entity.ImageEntity;
@@ -28,8 +24,6 @@ public class DefaultPostProcessTest {
 	@Before
 	public void setUp() throws Exception {
 		process = new DefaultPostProcess();
-		XmlParse xmlParse = new XmlParse();
-		process.setXmlParse(xmlParse);
 	}
 
 	@After
@@ -54,9 +48,8 @@ public class DefaultPostProcessTest {
 		// 调用解析
 		AbstractBaseEntity entity = process.analyze(xml);
 		// 验证结果
-		Assert.assertEquals(entity.getMsgEnum(), EntityEnum.IMAGE);
+		Assert.assertEquals(entity.getMsgType(), EntityType.IMAGE);
 		Assert.assertEquals("toUser", entity.getToUserName());
-		Assert.assertTrue(entity.getCreateTime() instanceof Date);
 		Assert.assertTrue(entity instanceof ImageEntity);
 		ImageEntity iEntity = (ImageEntity)entity;
 		Assert.assertEquals("this is a url", iEntity.getPicUrl()); 
@@ -80,11 +73,10 @@ public class DefaultPostProcessTest {
 		// 调用解析
 		AbstractBaseEntity entity = process.analyze(xml);
 		EventSubscribeEntity sEntity = (EventSubscribeEntity)entity;
-		Assert.assertEquals(EntityEnum.EVENT_SUBSCRIBE.getMsgType(), sEntity.getMsgType());
-		Assert.assertEquals(EntityEnum.EVENT_SUBSCRIBE.getEvent(), sEntity.getEvent());
+		Assert.assertEquals(sEntity.getMsgType(), EntityType.EVENT);
+		Assert.assertEquals(sEntity.getEvent(), EntityType.EVENT_SUBSCRIBE);
+		Assert.assertNull(entity.getEventKey());
 		Assert.assertEquals("toUser", sEntity.getToUserName());
-		// 验证结果
-		Assert.assertEquals(EntityEnum.EVENT_SUBSCRIBE, entity.getMsgEnum());
 		/** 扫描带参数二维码-用户未关注时，进行关注后的事件 */
 		// 构造xml
 		xml = 
@@ -100,10 +92,10 @@ public class DefaultPostProcessTest {
 		// 调用解析
 		entity = process.analyze(xml);
 		// 验证结果
-		Assert.assertEquals(EntityEnum.EVENT_SCAN_SUBSCRIBE, entity.getMsgEnum());
+		Assert.assertEquals(entity.getEvent(), EntityType.EVENT_SUBSCRIBE);
+		Assert.assertEquals(entity.getEventKey(), "qrscene_123123");
 		EventScanSubscribeEntity ssEntity = (EventScanSubscribeEntity)entity;
-		Assert.assertEquals(EntityEnum.EVENT_SUBSCRIBE.getMsgType(), ssEntity.getMsgType());
-		Assert.assertEquals(EntityEnum.EVENT_SUBSCRIBE.getEvent(), ssEntity.getEvent());
+		Assert.assertEquals(ssEntity.getMsgType(), EntityType.EVENT);
 		Assert.assertEquals("toUser", ssEntity.getToUserName());
 	}
 

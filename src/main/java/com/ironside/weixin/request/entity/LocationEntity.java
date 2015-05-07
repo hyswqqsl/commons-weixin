@@ -7,39 +7,23 @@ package com.ironside.weixin.request.entity;
  */
 public class LocationEntity extends AbstractBaseEntity {
 	
-	/** 对应xml中定义的'地理位置维度'标识 */
-	public final static String LOCATION_X = "Location_X";
-	/** 对应xml中定义的'地理位置经度'标识 */
-	public final static String LOCATION_Y = "Location_Y";
-	/** 对应xml中定义的'地图缩放大小'标识 */
-	public final static String SCALE = "Scale";
-	/** 对应xml中定义的'地理位置信息'标识 */
-	public final static String LABEL = "Label";
-
 	/** 地理位置维度 */
-	private String locationX;
+	private String LocationX;
 	/**	地理位置经度 */
-	private String locationY;
+	private String LocationY;
 	/** 地图缩放大小 */
-	private String scale;
+	private String Scale;
 	/** 地理位置信息 */
-	private String label;
+	private String Label;
 	/** 消息id，64位整型 */
-	private String msgId;
-	
-	/**
-	 * 构造函数，设置类型
-	 */
-	public LocationEntity() {
-		this.setMsgEnum(EntityEnum.LOCATION);		
-	}
+	private String MsgId;
 	
 	/**
 	 * 取得地理位置维度
 	 * @return 地理位置维度
 	 */
 	public String getLocationX() {
-		return locationX;
+		return LocationX;
 	}
 	
 	/**
@@ -47,7 +31,7 @@ public class LocationEntity extends AbstractBaseEntity {
 	 * @param locationX 地理位置维度
 	 */
 	public void setLocationX(String locationX) {
-		this.locationX = locationX;
+		this.LocationX = locationX;
 	}
 	
 	/**
@@ -55,7 +39,7 @@ public class LocationEntity extends AbstractBaseEntity {
 	 * @return 地理位置经度
 	 */	
 	public String getLocationY() {
-		return locationY;
+		return LocationY;
 	}
 	
 	/**
@@ -63,7 +47,7 @@ public class LocationEntity extends AbstractBaseEntity {
 	 * @param locationY 地理位置经度
 	 */	
 	public void setLocationY(String locationY) {
-		this.locationY = locationY;
+		this.LocationY = locationY;
 	}
 	
 	/**
@@ -71,7 +55,7 @@ public class LocationEntity extends AbstractBaseEntity {
 	 * @return 地图缩放大小
 	 */	
 	public String getScale() {
-		return scale;
+		return Scale;
 	}
 	
 	/**
@@ -79,7 +63,7 @@ public class LocationEntity extends AbstractBaseEntity {
 	 * @param scale 地图缩放大小
 	 */	
 	public void setScale(String scale) {
-		this.scale = scale;
+		this.Scale = scale;
 	}
 	
 	/**
@@ -87,7 +71,7 @@ public class LocationEntity extends AbstractBaseEntity {
 	 * @return 地理位置信息
 	 */	
 	public String getLabel() {
-		return label;
+		return Label;
 	}
 	
 	/**
@@ -95,7 +79,7 @@ public class LocationEntity extends AbstractBaseEntity {
 	 * @param label 地理位置信息
 	 */	
 	public void setLabel(String label) {
-		this.label = label;
+		this.Label = label;
 	}
 	
 	/**
@@ -103,7 +87,7 @@ public class LocationEntity extends AbstractBaseEntity {
 	 * @return 消息id
 	 */	
 	public String getMsgId() {
-		return msgId;
+		return MsgId;
 	}
 	
 	/**
@@ -111,7 +95,7 @@ public class LocationEntity extends AbstractBaseEntity {
 	 * @param msgId 消息id
 	 */	
 	public void setMsgId(String msgId) {
-		this.msgId = msgId;
+		this.MsgId = msgId;
 	}
 	
 }
