@@ -52,7 +52,8 @@ public class WXBizMsgCryptTest {
 	}
 
 	@Test
-	public void testNormal() throws ParserConfigurationException, SAXException, IOException {
+	public void testNormal() throws ParserConfigurationException, SAXException,
+			IOException {
 		try {
 			WXBizMsgCrypt pc = new WXBizMsgCrypt(token, encodingAesKey, appId);
 			String afterEncrpt = pc.encryptMsg(replyMsg, timestamp, nonce);
@@ -72,7 +73,8 @@ public class WXBizMsgCryptTest {
 			String fromXML = String.format(xmlFormat, encrypt);
 
 			// 第三方收到公众号平台发送的消息
-			String afterDecrpt = pc.decryptMsg(msgSignature, timestamp, nonce, fromXML);
+			String afterDecrpt = pc.decryptMsg(msgSignature, timestamp, nonce,
+					fromXML);
 			assertEquals(replyMsg, afterDecrpt);
 		} catch (AesException e) {
 			fail("正常流程，怎么就抛出异常了？？？？？？");
@@ -114,8 +116,8 @@ public class WXBizMsgCryptTest {
 	}
 
 	@Test
-	public void testValidateSignatureError() throws ParserConfigurationException, SAXException,
-			IOException {
+	public void testValidateSignatureError()
+			throws ParserConfigurationException, SAXException, IOException {
 		try {
 			WXBizMsgCrypt pc = new WXBizMsgCrypt(token, encodingAesKey, appId);
 			String afterEncrpt = pc.encryptMsg(replyMsg, timestamp, nonce);
@@ -141,7 +143,8 @@ public class WXBizMsgCryptTest {
 	@Test
 	public void testVerifyUrl() throws AesException {
 		WXBizMsgCrypt wxcpt = new WXBizMsgCrypt("QDG6eK",
-				"jWmYm7qr5nMoAUwZRjGtBxmz3KA1tkAj3ykkR6q2B2C", "wx5823bf96d3bd56c7");
+				"jWmYm7qr5nMoAUwZRjGtBxmz3KA1tkAj3ykkR6q2B2C",
+				"wx5823bf96d3bd56c7");
 		String verifyMsgSig = "5c45ff5e21c57e6ad56bac8758b79b1d9ac89fd3";
 		String timeStamp = "1409659589";
 		String nonce = "263014780";
