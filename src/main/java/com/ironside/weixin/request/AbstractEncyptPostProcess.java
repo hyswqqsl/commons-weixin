@@ -1,5 +1,7 @@
 package com.ironside.weixin.request;
 
+import org.springframework.util.Assert;
+
 import com.qq.weixin.mp.aes.AesException;
 
 /**
@@ -11,6 +13,9 @@ public abstract class AbstractEncyptPostProcess extends DefaultPostProcess imple
 
 	@Override
 	public String process(String signature, String timeStamp, String nonce, String postData) throws AesException {
+		Assert.hasText(signature);
+		Assert.hasText(timeStamp);
+		Assert.hasText(postData);
 		// 解密消息
 		String decyptData = decypt(signature, timeStamp, nonce, postData);
 		// 处理消息

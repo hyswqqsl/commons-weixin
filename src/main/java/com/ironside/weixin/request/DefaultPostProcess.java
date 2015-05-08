@@ -5,6 +5,8 @@ import java.util.Properties;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import com.ironside.weixin.IPostProcessor;
+import com.ironside.weixin.PostProcessorAdapter;
 import com.ironside.weixin.request.entity.AbstractBaseEntity;
 import com.ironside.weixin.request.entity.EntityType;
 import com.ironside.weixin.request.entity.EventClickEntity;

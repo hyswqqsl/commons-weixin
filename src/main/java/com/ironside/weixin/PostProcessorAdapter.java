@@ -1,4 +1,4 @@
-package com.ironside.weixin.request;
+package com.ironside.weixin;
 
 import com.ironside.weixin.request.entity.EventClickEntity;
 import com.ironside.weixin.request.entity.EventLocationEntity;

@@ -35,9 +35,9 @@ public class DefaultEncyptPostProcess extends AbstractEncyptPostProcess {
 	 * @param appId 公众平台appid
 	 */
 	public DefaultEncyptPostProcess(String token, String encodingAesKey, String encodingAesOldKey, String appId) {
-		Assert.hasText(token, "token 参数不能为空");
-		Assert.hasText(encodingAesKey, "encodingAesKey 参数不能为空");
-		Assert.hasText(appId, "appId 参数不能为空");
+		Assert.hasText(token);
+		Assert.hasText(encodingAesKey);
+		Assert.hasText(appId);
 		this.token = token;
 		this.encodingAesKey = encodingAesKey;
 		this.encodingAesOldKey = encodingAesOldKey;

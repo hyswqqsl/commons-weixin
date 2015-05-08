@@ -7,9 +7,11 @@ import org.junit.Test;
 
 import com.ironside.weixin.request.entity.AbstractBaseEntity;
 import com.ironside.weixin.request.entity.EntityType;
+import com.ironside.weixin.request.entity.EventClickEntity;
 import com.ironside.weixin.request.entity.EventScanSubscribeEntity;
 import com.ironside.weixin.request.entity.EventSubscribeEntity;
 import com.ironside.weixin.request.entity.ImageEntity;
+import com.ironside.weixin.request.entity.TextEntity;
 
 /**
  * POST方式推送给微信公众账号的消息处理测试
@@ -98,5 +100,5 @@ public class DefaultPostProcessTest {
 		Assert.assertEquals(ssEntity.getMsgType(), EntityType.EVENT);
 		Assert.assertEquals("toUser", ssEntity.getToUserName());
 	}
-
+	
 }

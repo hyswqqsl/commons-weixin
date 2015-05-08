@@ -16,7 +16,7 @@ public abstract class AbstractPostProcess implements IPostProcess {
 		// 消息解析为实体
 		AbstractBaseEntity entity = analyze(postData);
 		// 处理实体
-		String resData =  process(entity);
+		String resData = process(entity);
 		// 返回响应信息
 		return resData;
 	}
