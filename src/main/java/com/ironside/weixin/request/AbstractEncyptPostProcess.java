@@ -1,5 +1,7 @@
 package com.ironside.weixin.request;
 
+import com.qq.weixin.mp.aes.AesException;
+
 /**
  * POST方式推送给微信公众账号的加密消息处理，定义加密解密处理逻辑。
  * @author 雪庭
@@ -7,7 +9,8 @@ package com.ironside.weixin.request;
  */
 public abstract class AbstractEncyptPostProcess extends DefaultPostProcess implements IEncyptPostProcess {
 
-	public String process(String signature, String timeStamp, String nonce, String postData) {
+	@Override
+	public String process(String signature, String timeStamp, String nonce, String postData) throws AesException {
 		// 解密消息
 		String decyptData = decypt(signature, timeStamp, nonce, postData);
 		// 处理消息
@@ -25,8 +28,9 @@ public abstract class AbstractEncyptPostProcess extends DefaultPostProcess imple
 	 * @param nonce 随机数
 	 * @param postData POST方式推送的加密数据
 	 * @return 解密后的消息
+	 * @throws AesException 解密异常
 	 */
-	protected abstract String decypt(String signature, String timeStamp, String nonce,	String postData); 
+	protected abstract String decypt(String signature, String timeStamp, String nonce,	String postData) throws AesException; 
 	
 	/**
 	 * 加密消息
@@ -34,8 +38,9 @@ public abstract class AbstractEncyptPostProcess extends DefaultPostProcess imple
 	 * @param timeStamp 时间戳
 	 * @param nonce 随机数
 	 * @return 加密后的消息
+	 * @throws AesException 加密异常
 	 */
-	protected abstract String encryption(String responseData, String timeStamp, String nonce);
+	protected abstract String encryption(String responseData, String timeStamp, String nonce) throws AesException;
 	
 
 }

@@ -45,8 +45,8 @@ public class DefaultEncyptPostProcess extends AbstractEncyptPostProcess {
 	}
 
 	@Override
-	protected String decypt(String signature, String timeStamp, String nonce,	String postData) {
-		String xmlStr;
+	protected String decypt(String signature, String timeStamp, String nonce, String postData) throws AesException {
+		String xmlStr = null;
 		WXBizMsgCrypt pc;
 		// 解密，并解析XML。出于安全考虑，公众平台网站提供了修改EncodingAESKey的功能(在EncodingAESKey可能泄漏时进行修改),
 		// 所以建议公众账号保存当前的和上一次的EncodinAESKey，若当前EncodingAESKey解密失败，则尝试用上一次的EncodingAESKey的解密。
@@ -55,11 +55,12 @@ public class DefaultEncyptPostProcess extends AbstractEncyptPostProcess {
 			pc = new WXBizMsgCrypt(this.token, this.encodingAesKey, this.appId);
 			xmlStr = pc.decryptMsg(signature, timeStamp, nonce, postData);
 		}catch (AesException e) {
-			
-			if(e.getCode()==AesException.IllegalAesKey) {
-				// 试验老的AESKEY
-				pc = new WXBizMsgCrypt(token, encodingAesOldKey, appId);
+			// 试验老的AESKEY
+			try {
+				pc = new WXBizMsgCrypt(this.token, this.encodingAesOldKey, this.appId);
 				xmlStr = pc.decryptMsg(signature, timeStamp, nonce, postData);
+			} catch (AesException e1) {
+				throw e1;
 			}
 		}
 		return xmlStr;
@@ -68,8 +69,9 @@ public class DefaultEncyptPostProcess extends AbstractEncyptPostProcess {
 	}
 
 	@Override
-	protected String encryption(String responseData, String timeStamp, String nonce) {
-		return null;
+	protected String encryption(String responseData, String timeStamp, String nonce) throws AesException {
+		WXBizMsgCrypt pc = new WXBizMsgCrypt(this.token, this.encodingAesKey, this.appId);
+		return pc.encryptMsg(responseData, timeStamp, nonce);
 	}
 
 }
