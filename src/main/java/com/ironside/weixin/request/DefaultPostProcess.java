@@ -67,7 +67,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @return 解析后的实体(抽象)
 	 */
 	private AbstractBaseEntity doEventAnalyze(Properties properties, String postData) {
-		String event = properties.getProperty(AbstractBaseEntity.EVENT);
+		String event = properties.getProperty(AbstractBaseEntity.EVENT).toLowerCase();
 		String eventKey = properties.getProperty(AbstractBaseEntity.EVENT_KEY);
 		XStream xStream = new XStream();
 		switch (event) {
@@ -172,14 +172,14 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	}
 
 	/*
-	 * 解析事件消息
+	 * 解析普通消息
 	 * 
 	 * @param properties 名字和值信息
 	 * @param postData POST方式推送的数据
 	 * @return 解析后的实体(抽象)
 	 */
 	private AbstractBaseEntity doMessageAnalyze(Properties properties, String postData) {
-		String msgType = properties.getProperty(AbstractBaseEntity.MSG_TYPE);
+		String msgType = properties.getProperty(AbstractBaseEntity.MSG_TYPE).toLowerCase();
 		XStream xStream = new XStream();
 		switch (msgType) {
 		case EntityType.TEXT:
@@ -299,7 +299,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @return
 	 */
 	private String doProcessEvent(AbstractBaseEntity entity) {
-		String event = entity.getEvent();
+		String event = entity.getEvent().toLowerCase();
 		String eventKey = entity.getEventKey();
 		String result;
 		switch(event) {
@@ -337,7 +337,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 	 * @return
 	 */
 	private String doProcessMessage(AbstractBaseEntity entity) {
-		String msgType = entity.getMsgType();
+		String msgType = entity.getMsgType().toLowerCase();
 		String result;
 		switch (msgType)
 		{
