@@ -4,6 +4,7 @@ import org.springframework.util.Assert;
 
 import com.qq.weixin.mp.aes.AesException;
 import com.qq.weixin.mp.aes.WXBizMsgCrypt;
+import com.sun.org.apache.bcel.internal.generic.DDIV;
 
 /**
  * POST方式推送给微信公众账号的加密消息处理，具体实现消息加密、解密。
@@ -19,7 +20,9 @@ public class DefaultEncyptPostProcess extends AbstractEncyptPostProcess {
 	/** 公众平台上，开发者设置的上一次EncodingAESKey */
 	private String encodingAesOldKey;
 	/** 公众平台appid */
-	private String appId;	
+	private String appId;
+	/** 解密用的模板 */
+	String xmlFormat = "<xml><ToUserName><![CDATA[toUser]]></ToUserName><Encrypt><![CDATA[%1$s]]></Encrypt></xml>";
 
 	/** 屏蔽默认构造函数 */
 	@SuppressWarnings("unused")
@@ -53,6 +56,7 @@ public class DefaultEncyptPostProcess extends AbstractEncyptPostProcess {
 		// 回包时，用哪个Key解密成功，则用此Key加密对应的回包
 		try{
 			pc = new WXBizMsgCrypt(this.token, this.encodingAesKey, this.appId);
+			postData = String.format(xmlFormat, postData);
 			xmlStr = pc.decryptMsg(signature, timeStamp, nonce, postData);
 		}catch (AesException e) {
 			// 试验老的AESKEY

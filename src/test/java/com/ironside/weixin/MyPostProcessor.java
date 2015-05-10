@@ -6,6 +6,7 @@ import org.springframework.util.Assert;
 
 import com.ironside.weixin.request.entity.EventClickEntity;
 import com.ironside.weixin.request.entity.TextEntity;
+import com.ironside.weixin.request.entity.VideoEntity;
 import com.ironside.weixin.response.ResponseManager;
 import com.ironside.weixin.response.entity.AbstractBaseResponse;
 import com.ironside.weixin.response.entity.ImageResponse;
@@ -83,6 +84,14 @@ public class MyPostProcessor extends PostProcessorAdapter {
 		return result;
 	}
 	
-
+	@Override
+	public String postProcessVideo(VideoEntity entity) {
+		String fromUserName = entity.getFromUserName();
+		String toUserName = entity.getToUserName();		
+		TextResponse response = this.responseManager.getTextResponse();
+		response.setFromUserName(toUserName);
+		response.setToUserName(fromUserName);
+		return this.responseManager.responseToXml(response);
+	}
 
 }
