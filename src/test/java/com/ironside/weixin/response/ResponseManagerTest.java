@@ -1,5 +1,7 @@
 package com.ironside.weixin.response;
 
+import java.util.Properties;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,7 +49,12 @@ public class ResponseManagerTest {
 
 	@Before
 	public void setUp() throws Exception {
+		Properties properties = new Properties();
+		properties.setProperty("a1", "weixin");
+		properties.setProperty("a2", "zxj");
+		properties.setProperty("a3", "machine");
 		responseManager = new ResponseManager();
+		responseManager.setProperties(properties);
 	}
 
 	@After
@@ -75,6 +82,7 @@ public class ResponseManagerTest {
 		Assert.assertEquals(textResponse.getFromUserName(), "testFromUser");
 		Assert.assertEquals(textResponse.getToUserName(), "testToUser");
 		Assert.assertEquals(textResponse.getMsgType(), ResponseType.TEXT);
+		Assert.assertEquals(textResponse.getContent(), "weixin,zxj,machine 你好");
 		// *** 测试不存在的xml文件 ***
 		this.responseManager.setTextXmlFile(NOEXISTING_TEST_XMLFILE);
 		textResponse = this.responseManager.getTextResponse();
@@ -200,7 +208,7 @@ public class ResponseManagerTest {
 		video = (VideoResponse.Video)response.getVideo();
 		Assert.assertEquals(video.getMediaId(), "test_media_id");
 		Assert.assertNull(video.getTitle());
-		Assert.assertEquals(video.getDescription(), "test_description");
+		Assert.assertEquals(video.getDescription(), "machine,zxj,weixin test_description");
 		Assert.assertNull(this.responseManager.videoXmlFile);
 		// *** 测试有问题的实体xml文件
 		this.responseManager.setVideoXmlFile(WRONG_XMLFILE);
@@ -287,7 +295,7 @@ public class ResponseManagerTest {
 		for(int i=0;i<response.getArticleCount();i++) {
 			news=(NewsResponse.News)response.getArticles().get(i);
 			Assert.assertNull(news.getTitle());
-			Assert.assertEquals(news.getDescription(), "description");
+			Assert.assertEquals(news.getDescription(), "zxj,zxj,zxj description");
 			Assert.assertEquals(news.getPicUrl(), "picUrl");
 			Assert.assertEquals(news.getUrl(), "url");
 		}
