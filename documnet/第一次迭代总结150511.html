@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="gbk"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>weixin</title>
+<meta http-equiv="Content-Type" content="text/html;charset=gbk"/>
+<meta name="title" content="weixin"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2015-05-11 11:45:36 "/>
+<meta name="author" content=""/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<link rel="stylesheet" type="text/css" href="core.css" />
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">weixin</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 微信公众平台</a>
+<ul>
+<li><a href="#sec-1-1">1.1 开发准备</a></li>
+<li><a href="#sec-1-2">1.2 第一次迭代总结</a>
+<ul>
+<li><a href="#sec-1-2-1">1.2.1 类设计</a></li>
+<li><a href="#sec-1-2-2">1.2.2 web程序开发</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> 微信公众平台</h2>
+<div class="outline-text-2" id="text-1">
+
+
+
+</div>
+
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> 开发准备</h3>
+<div class="outline-text-3" id="text-1-1">
+
+<ul>
+<li>微信公众号服务器只是做了一个中介的作用
+</li>
+</ul>
+
+
+<div class="figure">
+<p><img src="http://images.cnblogs.com/cnblogs_com/machine/446980/o_weixin.png" width="600" style="border:2px solid black" alt="http://images.cnblogs.com/cnblogs_com/machine/446980/o_weixin.png" /></p>
+<p>微信公众号服务器和网站的关系</p>
+</div>
+
+<ul>
+<li>目前面临的主要问题是：兰石化网络环境不能连接微信服务器，开发的机器只
+  能放在北京，不方便
+</li>
+<li>北京可以使用nat123在内网搭建网站，不要要外网ip地址，也不需要申请域名，
+  用于测试开发
+</li>
+<li>可以申请微信公众平台接口测试帐号，前期避免繁琐的账号认证，打开浏览器，输入：
+  <a href="http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login">http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login</a>
+</li>
+<li>正式运营时，可以使用新浪云计算SAE Java平台，不用自己购买服务器和管理
+  服务器
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> 第一次迭代总结</h3>
+<div class="outline-text-3" id="text-1-2">
+
+
+</div>
+
+<div id="outline-container-1-2-1" class="outline-4">
+<h4 id="sec-1-2-1"><span class="section-number-4">1.2.1</span> 类设计</h4>
+<div class="outline-text-4" id="text-1-2-1">
+
+
+
+<div class="figure">
+<p><img src="http://images.cnblogs.com/cnblogs_com/machine/446980/o_request.jpg" width="800" style="border:2px solid black" alt="http://images.cnblogs.com/cnblogs_com/machine/446980/o_request.jpg" /></p>
+<p>微信公众平台第一次迭代总结类设计</p>
+</div>
+
+<ul>
+<li>通用库设计的宗旨，是提供微信处理过程中的通用功能，简化微信处理
+</li>
+<li>设计IPostProcess和IEncyptPostProcess两个接口，第一个接口是明文微信处理，第二个
+  接口是加密微信处理；用户最终使用者两个接口的实现，DefaultPostProcess和
+  DefaultEncyptPostProcess
+</li>
+</ul>
+
+
+
+
+
+<pre class="src src-java"><span style="font-weight: bold;">/**</span>
+<span style="font-weight: bold;"> * POST&#26041;&#24335;&#25512;&#36865;&#32473;&#24494;&#20449;&#20844;&#20247;&#36134;&#21495;&#30340;&#28040;&#24687;&#22788;&#29702;&#65292;&#28040;&#24687;&#20998;&#20026;&#26222;&#36890;&#28040;&#24687;&#21644;&#20107;&#20214;&#28040;&#24687;&#20004;&#31181;&#12290;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@author</span><span style="font-weight: bold;"> &#38634;&#24237;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@since</span><span style="font-weight: bold;"> 1.0 at 2015&#24180;4&#26376;3&#26085;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #00ffff; font-weight: bold;">public</span> <span style="color: #00ffff; font-weight: bold;">interface</span> <span style="color: #98fb98; font-weight: bold;">IPostProcess</span> {
+  <span style="font-weight: bold;">/**</span>
+<span style="font-weight: bold;">   * &#22788;&#29702;&#28040;&#24687;</span>
+<span style="font-weight: bold;">   * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> postData POST&#26041;&#24335;&#25512;&#36865;&#30340;&#25968;&#25454;</span>
+<span style="font-weight: bold;">   * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#22788;&#29702;&#21709;&#24212;&#20449;&#24687;</span>
+<span style="font-weight: bold;">   */</span>
+  <span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">process</span>(<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">postData</span>);
+}
+
+<span style="font-weight: bold;">/**</span>
+<span style="font-weight: bold;"> * POST&#26041;&#24335;&#25512;&#36865;&#32473;&#24494;&#20449;&#20844;&#20247;&#36134;&#21495;&#30340;&#21152;&#23494;&#28040;&#24687;&#22788;&#29702;&#65292; &#20351;&#29992;AES&#23545;&#31216;&#21152;&#23494;&#31639;&#27861;&#12290;</span>
+<span style="font-weight: bold;"> * &#38024;&#23545;&#25512;&#36865;&#32473;&#24494;&#20449;&#20844;&#20247;&#36134;&#21495;&#30340;&#26222;&#36890;&#28040;&#24687;&#21644;&#20107;&#20214;&#28040;&#24687;&#65292;&#20197;&#21450;&#25512;&#36865;&#32473;&#35774;&#22791;&#20844;&#20247;&#36134;&#21495;</span>
+<span style="font-weight: bold;"> * &#30340;&#35774;&#22791;&#28040;&#24687;&#36827;&#34892;&#21152;&#23494;&#65292;&#20844;&#20247;&#36134;&#21495;&#23545;&#23494;&#25991;&#28040;&#24687;&#30340;&#22238;&#22797;&#20063;&#35201;&#27714;&#21152;&#23494;&#12290;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@author</span><span style="font-weight: bold;"> &#38634;&#24237;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@since</span><span style="font-weight: bold;"> 1.0 at 2015&#24180;4&#26376;3&#26085;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #00ffff; font-weight: bold;">public</span> <span style="color: #00ffff; font-weight: bold;">interface</span> <span style="color: #98fb98; font-weight: bold;">IEncyptPostProcess</span> <span style="color: #00ffff; font-weight: bold;">extends</span> <span style="color: #98fb98; font-weight: bold;">IPostProcess</span> {
+  <span style="font-weight: bold;">/**</span>
+<span style="font-weight: bold;">   * &#22788;&#29702;&#21152;&#23494;&#28040;&#24687;</span>
+<span style="font-weight: bold;">   * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> signature &#24494;&#20449;&#21152;&#23494;&#31614;&#21517;</span>
+<span style="font-weight: bold;">   * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> timestamp &#26102;&#38388;&#25139;</span>
+<span style="font-weight: bold;">   * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> nonce &#38543;&#26426;&#25968;</span>
+<span style="font-weight: bold;">   * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> postData POST&#26041;&#24335;&#25512;&#36865;&#30340;&#21152;&#23494;&#25968;&#25454;</span>
+<span style="font-weight: bold;">   * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#22788;&#29702;&#21709;&#24212;&#20449;&#24687;</span>
+<span style="font-weight: bold;">   * </span><span style="color: #7fffd4; font-weight: bold;">@throws</span><span style="font-weight: bold;"> AesException &#35299;&#23494;&#24322;&#24120;</span>
+<span style="font-weight: bold;">   */</span>
+  <span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">process</span>(<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">signature</span>, <span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">timeStamp</span>, <span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">nonce</span>, <span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">postData</span>) <span style="color: #00ffff; font-weight: bold;">throws</span> <span style="color: #98fb98; font-weight: bold;">AesException</span>;
+}
+</pre>
+
+
+<ul>
+<li>用户只需实现一个PostProcessorAdapter适配器类，这个类中有各种微信请求，用户可以
+  选择实现的处理请求，可以在处理中进行内容判断、数据库查询等操作，根据结果返回需
+  要的响应
+</li>
+</ul>
+
+
+
+
+
+<pre class="src src-java"><span style="font-weight: bold;">/**</span>
+<span style="font-weight: bold;"> * &#22788;&#29702;&#25991;&#26412;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> entity &#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#21709;&#24212;&#28040;&#24687;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">postProcessText</span>(<span style="color: #98fb98; font-weight: bold;">TextEntity</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">entity</span>);
+
+<span style="font-weight: bold;">/** </span>
+<span style="font-weight: bold;"> * &#22788;&#29702;&#22270;&#29255;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> entity &#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#21709;&#24212;&#28040;&#24687;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">postProcessImage</span>(<span style="color: #98fb98; font-weight: bold;">ImageEntity</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">entity</span>);
+
+<span style="font-weight: bold;">/** </span>
+<span style="font-weight: bold;"> * &#22788;&#29702;&#35821;&#38899;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> entity &#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#21709;&#24212;&#28040;&#24687;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">postProcessVoice</span>(<span style="color: #98fb98; font-weight: bold;">VoiceEntity</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">entity</span>);
+
+<span style="font-weight: bold;">/** </span>
+<span style="font-weight: bold;"> * &#22788;&#29702;&#35270;&#39057;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> entity &#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#21709;&#24212;&#28040;&#24687;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">postProcessVideo</span>(<span style="color: #98fb98; font-weight: bold;">VideoEntity</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">entity</span>);
+
+<span style="font-weight: bold;">/** </span>
+<span style="font-weight: bold;"> * &#22788;&#29702;&#23567;&#35270;&#39057;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> entity &#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#21709;&#24212;&#28040;&#24687;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">postProcessShortVideo</span>(<span style="color: #98fb98; font-weight: bold;">ShortVideoEntity</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">entity</span>);
+
+<span style="font-weight: bold;">/** </span>
+<span style="font-weight: bold;"> * &#22788;&#29702;&#22320;&#29702;&#20301;&#32622;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> entity &#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#21709;&#24212;&#28040;&#24687;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">postProcessLocation</span>(<span style="color: #98fb98; font-weight: bold;">LocationEntity</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">entity</span>);
+
+<span style="font-weight: bold;">/** </span>
+<span style="font-weight: bold;"> * &#22788;&#29702;&#38142;&#25509;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> entity &#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#21709;&#24212;&#28040;&#24687;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">postProcessLink</span>(<span style="color: #98fb98; font-weight: bold;">LinkEntity</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">entity</span>);
+
+<span style="font-weight: bold;">/** </span>
+<span style="font-weight: bold;"> * &#22788;&#29702;&#20851;&#27880;/&#21462;&#28040;&#20851;&#27880;-&#35746;&#38405;&#20107;&#20214;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> entity &#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#21709;&#24212;&#28040;&#24687;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">postProcessEventSubscribe</span>(<span style="color: #98fb98; font-weight: bold;">EventSubscribeEntity</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">entity</span>);
+
+<span style="font-weight: bold;">/** </span>
+<span style="font-weight: bold;"> * &#22788;&#29702;&#20851;&#27880;/&#21462;&#28040;&#20851;&#27880;-&#21462;&#28040;&#35746;&#38405;&#20107;&#20214;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> entity &#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#21709;&#24212;&#28040;&#24687;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">postProcessEventUnSubscribe</span>(<span style="color: #98fb98; font-weight: bold;">EventUnSubscribeEntity</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">entity</span>);
+
+<span style="font-weight: bold;">/** </span>
+<span style="font-weight: bold;"> * &#22788;&#29702;&#25195;&#25551;&#24102;&#21442;&#25968;&#20108;&#32500;&#30721;-&#29992;&#25143;&#26410;&#20851;&#27880;&#26102;&#65292;&#36827;&#34892;&#20851;&#27880;&#21518;&#30340;&#20107;&#20214;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> entity &#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#21709;&#24212;&#28040;&#24687;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">postProcessEventScanSubscribe</span>(<span style="color: #98fb98; font-weight: bold;">EventScanSubscribeEntity</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">entity</span>);
+
+<span style="font-weight: bold;">/** </span>
+<span style="font-weight: bold;"> * &#22788;&#29702;&#25195;&#25551;&#24102;&#21442;&#25968;&#20108;&#32500;&#30721;-&#29992;&#25143;&#24050;&#20851;&#27880;&#26102;&#30340;&#20107;&#20214;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> entity &#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#21709;&#24212;&#28040;&#24687;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">postProcessEventScan</span>(<span style="color: #98fb98; font-weight: bold;">EventScanEntity</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">entity</span>);
+
+<span style="font-weight: bold;">/** </span>
+<span style="font-weight: bold;"> * &#22788;&#29702;&#19978;&#25253;&#22320;&#29702;&#20301;&#32622;&#20107;&#20214;&#23454;&#20307;  </span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> entity &#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#21709;&#24212;&#28040;&#24687; </span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">postProcessEventLocation</span>(<span style="color: #98fb98; font-weight: bold;">EventLocationEntity</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">entity</span>);
+
+<span style="font-weight: bold;">/** </span>
+<span style="font-weight: bold;"> * &#22788;&#29702;&#33258;&#23450;&#20041;&#33756;&#21333;-&#28857;&#20987;&#33756;&#21333;&#25289;&#21462;&#28040;&#24687;&#26102;&#30340;&#20107;&#20214;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> entity &#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#21709;&#24212;&#28040;&#24687;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">postProcessEventClick</span>(<span style="color: #98fb98; font-weight: bold;">EventClickEntity</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">entity</span>);
+
+<span style="font-weight: bold;">/** </span>
+<span style="font-weight: bold;"> * &#22788;&#29702;&#33258;&#23450;&#20041;&#33756;&#21333;-&#28857;&#20987;&#33756;&#21333;&#36339;&#36716;&#38142;&#25509;&#26102;&#30340;&#20107;&#20214;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@param</span><span style="font-weight: bold;"> entity &#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#21709;&#24212;&#28040;&#24687;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">postProcessEventView</span>(<span style="color: #98fb98; font-weight: bold;">EventViewEntity</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">entity</span>);
+</pre>
+
+
+<ul>
+<li>PostProcessorAdapter适配器类，引用ResponseManager回复实体管理，以产生各种回复
+  实体。ResponseManager有两种产生回复实体的方式，一是返回默认形式实体，二是返回
+  指定xml文件格式的回复实体
+</li>
+</ul>
+
+
+
+
+
+<pre class="src src-java"><span style="font-weight: bold;">/**</span>
+<span style="font-weight: bold;"> * &#20174;xml&#25991;&#20214;&#20013;&#35299;&#26512;&#23454;&#20307;</span><span style="color: #7fffd4; font-weight: bold;">&lt;/br&gt;</span><span style="font-weight: bold;"> &#22914;&#26524;&#35774;&#32622;&#20102;xml&#25991;&#20214;&#65292;&#20174;xml&#25991;&#20214;&#20013;&#35299;&#26512;&#65307;&#21542;&#21017;&#20174;&#40664;&#35748;xml&#25991;&#20214;&#20013;&#35299;&#26512;</span>
+<span style="font-weight: bold;"> * </span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#25991;&#26412;&#22238;&#22797;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #00ffff; font-weight: bold;">private</span> <span style="color: #98fb98; font-weight: bold;">TextResponse</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">doGetTextResponse</span>() {
+  <span style="color: #98fb98; font-weight: bold;">XStream</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">xStream</span> = <span style="color: #00ffff; font-weight: bold;">new</span> <span style="color: #98fb98; font-weight: bold;">XStream</span>();
+  xStream.alias(<span style="color: #7fffd4; font-style: italic;">"xml"</span>, TextResponse.<span style="color: #00ffff; font-weight: bold;">class</span>);
+  <span style="color: #00ffff; font-weight: bold;">if</span> (StringUtils.isEmpty(<span style="color: #00ffff; font-weight: bold;">this</span>.textXmlFile)) {
+    <span style="color: #00ffff; font-weight: bold;">return</span> (<span style="color: #98fb98; font-weight: bold;">TextResponse</span>) xStream.fromXML(DEFAULT_TEXT_XML_STRING);
+  }
+  <span style="color: #98fb98; font-weight: bold;">URL</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">url</span> = ClassLoader.getSystemResource(<span style="color: #00ffff; font-weight: bold;">this</span>.textXmlFile);
+  <span style="color: #66cdaa; font-style: italic;">// </span><span style="color: #66cdaa; font-style: italic;">&#22914;&#26524;xml&#25991;&#20214;&#19981;&#23384;&#22312;&#65292;&#20351;&#29992;&#40664;&#35748;xml&#25991;&#20214;&#65292;&#21516;&#26102;&#23558;xml&#25991;&#20214;&#32622;&#31354;</span>
+  <span style="color: #00ffff; font-weight: bold;">if</span> (url == <span style="color: #7fffd4; font-weight: bold;">null</span>) {
+    <span style="color: #00ffff; font-weight: bold;">this</span>.textXmlFile = <span style="color: #7fffd4; font-weight: bold;">null</span>;
+    <span style="color: #00ffff; font-weight: bold;">return</span> (<span style="color: #98fb98; font-weight: bold;">TextResponse</span>) xStream.fromXML(DEFAULT_TEXT_XML_STRING);
+  }
+...
+}
+</pre>
+
+
+<ul>
+<li>ResponseManager中设置了实体缓冲，如果缓冲实体不为空，下次取得实体时，不再解析
+  xml文件，直接从缓冲中返回实体，提高效率
+</li>
+</ul>
+
+
+
+
+
+<pre class="src src-java"><span style="font-weight: bold;">/**</span>
+<span style="font-weight: bold;"> * &#21462;&#24471;&#25991;&#26412;&#22238;&#22797;&#23454;&#20307;</span><span style="color: #7fffd4; font-weight: bold;">&lt;/br&gt;</span><span style="font-weight: bold;"> &#22914;&#26524;&#32531;&#20914;&#20013;&#26377;&#23454;&#20307;&#65292;&#30452;&#25509;&#36820;&#22238;&#65307;&#21542;&#21017;&#20174;xml&#25991;&#20214;&#20013;&#35299;&#26512;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> * </span>
+<span style="font-weight: bold;"> * </span><span style="color: #7fffd4; font-weight: bold;">@return</span><span style="font-weight: bold;"> &#25991;&#26412;&#22238;&#22797;&#23454;&#20307;</span>
+<span style="font-weight: bold;"> */</span>
+<span style="color: #00ffff; font-weight: bold;">public</span> <span style="color: #98fb98; font-weight: bold;">TextResponse</span> <span style="color: #87cefa; font-weight: bold; font-style: italic;">getTextResponse</span>() {
+  <span style="color: #00ffff; font-weight: bold;">if</span> (<span style="color: #00ffff; font-weight: bold;">this</span>.textResponse == <span style="color: #7fffd4; font-weight: bold;">null</span>) {
+    <span style="color: #00ffff; font-weight: bold;">this</span>.textResponse = doGetTextResponse();
+  }
+  <span style="color: #00ffff; font-weight: bold;">return</span> <span style="color: #00ffff; font-weight: bold;">this</span>.textResponse;
+}
+</pre>
+
+
+<ul>
+<li>ResponseManager中可设置键对值Properties对象，可以对TextResponse、VideoResponse、
+  NewsResponse中相关内容自动替换
+</li>
+<li>用户使用微信通用库时，可以从请求中(request)的到是否加密的信息，如果未加密，可
+  使用DefaultPostProcess类，加密可使用DefaultEncyptPostProcess，同时实现自己的处
+  理器(PostProcessorAdapter适配器)，然会直接调用process，即可得到正确的回复串
+</li>
+</ul>
+
+
+
+
+
+<pre class="src src-java"><span style="color: #66cdaa; font-style: italic;">// </span><span style="color: #66cdaa; font-style: italic;">&#26410;&#21152;&#23494;&#30340;&#20449;&#24687;</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">result</span> = <span style="color: #00ffff; font-weight: bold;">this</span>.postProcess.process(postData);
+<span style="color: #66cdaa; font-style: italic;">// </span><span style="color: #66cdaa; font-style: italic;">&#21152;&#23494;&#30340;&#20449;&#24687;</span>
+<span style="color: #98fb98; font-weight: bold;">String</span> <span style="color: #eedd82; font-weight: bold; font-style: italic;">result</span> = <span style="color: #00ffff; font-weight: bold;">this</span>.process.process(signature, timestamp, nonce, postData);
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-1-2-2" class="outline-4">
+<h4 id="sec-1-2-2"><span class="section-number-4">1.2.2</span> web程序开发</h4>
+<div class="outline-text-4" id="text-1-2-2">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="postamble">
+<p class="date">Date: 2015-05-11 11:45:36 </p>
+<p class="author">Author: </p>
+<p class="creator">Org version 7.8.06 with Emacs version 23</p>
+<a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
+
+</div>
+</body>
+</html>

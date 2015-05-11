@@ -39,8 +39,7 @@ public class PostProcessorTest {
 	@Before
 	public void setUp() throws Exception {
 		// 消息处理器
-		ResponseManager responseManager = new ResponseManager();
-		MyPostProcessor processor = new MyPostProcessor(responseManager);
+		MyPostProcessor processor = new MyPostProcessor();
 		// POST方式推送给微信公众账号的消息处理
 		postProcess = new DefaultPostProcess();
 		// 设置消息处理器

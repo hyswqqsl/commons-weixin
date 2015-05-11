@@ -1,17 +1,10 @@
 package com.ironside.weixin;
 
-import javax.imageio.ImageReader;
-
-import org.springframework.util.Assert;
-
 import com.ironside.weixin.request.entity.EventClickEntity;
 import com.ironside.weixin.request.entity.TextEntity;
 import com.ironside.weixin.request.entity.VideoEntity;
-import com.ironside.weixin.response.ResponseManager;
 import com.ironside.weixin.response.entity.AbstractBaseResponse;
-import com.ironside.weixin.response.entity.ImageResponse;
 import com.ironside.weixin.response.entity.TextResponse;
-import com.ironside.weixin.response.entity.VoiceResponse;
 
 /**
  * 测试用的POST处理器
@@ -20,21 +13,6 @@ import com.ironside.weixin.response.entity.VoiceResponse;
  */
 public class MyPostProcessor extends PostProcessorAdapter {
 	
-	/** 回复实体管理 */
-	private ResponseManager responseManager;
-	
-	/**
-	 * 屏蔽默认构造函数
-	 */
-	private MyPostProcessor() {
-	
-	}
-	
-	public MyPostProcessor(ResponseManager responseManager) {
-		Assert.notNull(responseManager);
-		this.responseManager = responseManager;
-	}
-
 	@Override
 	public String postProcessText(TextEntity entity) {
 		String fromUserName = entity.getFromUserName();

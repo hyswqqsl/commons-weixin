@@ -14,6 +14,7 @@ import com.ironside.weixin.request.entity.ShortVideoEntity;
 import com.ironside.weixin.request.entity.TextEntity;
 import com.ironside.weixin.request.entity.VideoEntity;
 import com.ironside.weixin.request.entity.VoiceEntity;
+import com.ironside.weixin.response.ResponseManager;
 
 /**
  * POST处理器缺省适配模式
@@ -23,7 +24,13 @@ import com.ironside.weixin.request.entity.VoiceEntity;
 public class PostProcessorAdapter implements IPostProcessor {
 	
 	/** 默认回复消息 */
-	protected final String result = "success"; 
+	protected final String result = "success";
+	/** 回复实体管理 */
+	protected ResponseManager responseManager;
+	
+	public PostProcessorAdapter() {
+		this.responseManager = new ResponseManager();
+	}
 
 	public String postProcessText(TextEntity entity) {
 		return result;
