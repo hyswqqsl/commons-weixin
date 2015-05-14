@@ -207,27 +207,21 @@ public class ResponseManagerTest {
 		Assert.assertEquals(video.getTitle(), "title");
 		Assert.assertEquals(video.getDescription(), "description");
 		// *** 测试根据回复实体xml文件取得回复实体 ***
-		this.responseManager.setVideoXmlFile("testVideoResponse.xml");
-		response = this.responseManager.getVideoResponse();
+		String key = "TEST";
+		this.responseManager.setVideoXmlFile(key, "testVideoResponse.xml");
+		response = this.responseManager.getVideoResponse(key);
 		Assert.assertEquals(response.getMsgType(), ResponseType.VIDEO);
 		// 子对象
 		video = (VideoResponse.Video)response.getVideo();
 		Assert.assertEquals(video.getMediaId(), "test_media_id");
 		Assert.assertNull(video.getTitle());
 		Assert.assertEquals(video.getDescription(), "test_description");
-		Assert.assertNull(this.responseManager.videoXmlFile);
 		// *** 测试有问题的实体xml文件
-		this.responseManager.setVideoXmlFile(WRONG_XMLFILE);
-		
+		key = "WRONG";
+		this.responseManager.setVideoXmlFile(key, WRONG_XMLFILE);
 		try {
-			response = this.responseManager.getVideoResponse();
+			response = this.responseManager.getVideoResponse(key);
 		} catch(UnknownFieldException e) {
-			Assert.assertNull(this.responseManager.videoXmlFile);
-			response = this.responseManager.getVideoResponse();
-			Assert.assertEquals(response.getMsgType(), ResponseType.VIDEO);
-			// 子对象
-			video = (VideoResponse.Video)response.getVideo();
-			Assert.assertEquals(video.getMediaId(), "media_id");
 			return;
 		}
 		Assert.fail("测试有问题的实体xml文件出错");				

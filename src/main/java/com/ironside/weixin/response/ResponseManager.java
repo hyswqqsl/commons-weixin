@@ -111,10 +111,10 @@ public class ResponseManager {
 	Properties textXmlFileProperties;
 	/** 图片类型回复xml文件 */
 	Properties imageXmlFileProperties;
-	 /** 语音类型回复xml文件 */
+	/** 语音类型回复xml文件 */
 	Properties voiceXmlFileProperties;
 	/** 视频类型回复xml文件 */
-	String videoXmlFile;
+	Properties videoXmlFileProperties;
 	/** 音乐类型回复xml文件 */
 	String musicXmlFile;
 	/** 图文类型回复xml文件 */
@@ -130,12 +130,13 @@ public class ResponseManager {
 	VoiceResponse defaultVoiceResponse;
 	Map<String, VoiceResponse> voiceResponseMap;
 	/** 视频回复消息缓冲 */
-	VideoResponse videoResponse;
+	VideoResponse defaultVideoResponse;
+	Map<String, VideoResponse> videoResponseMap;
 	/** 音乐回复消息缓冲 */
 	MusicResponse musicResponse;
 	/** 图文回复消息缓冲 */
 	NewsResponse newsResponse;
-	
+
 	/** 用于替换的键对值 */
 	private Properties properties;
 
@@ -143,14 +144,18 @@ public class ResponseManager {
 		this.textXmlFileProperties = new Properties();
 		this.imageXmlFileProperties = new Properties();
 		this.voiceXmlFileProperties = new Properties();
+		this.videoXmlFileProperties = new Properties();
 		this.textResponseMap = new HashMap<String, TextResponse>();
 		this.imageResponseMap = new HashMap<String, ImageResponse>();
 		this.voiceResponseMap = new HashMap<String, VoiceResponse>();
+		this.videoResponseMap = new HashMap<String, VideoResponse>();
 	}
-	
+
 	/**
 	 * 设置文本类型回复xml文件
 	 * 
+	 * @param key
+	 *            xml文件键值
 	 * @param textXmlFile
 	 *            文本类型回复xml文件
 	 */
@@ -165,6 +170,8 @@ public class ResponseManager {
 	/**
 	 * 设置图片类型回复xml文件
 	 * 
+	 * @param key
+	 *            xml文件键值
 	 * @param textXmlFile
 	 *            图片类型回复xml文件
 	 */
@@ -179,6 +186,8 @@ public class ResponseManager {
 	/**
 	 * 设置语音类型回复xml文件
 	 * 
+	 * @param key
+	 *            xml文件键值
 	 * @param voiceXmlFile
 	 *            语音类型回复xml文件
 	 */
@@ -193,14 +202,17 @@ public class ResponseManager {
 	/**
 	 * 设置视频类型回复xml文件
 	 * 
+	 * @param key
+	 *            xml文件键值
 	 * @param videoXmlFile
 	 *            视频类型回复xml文件
 	 */
-	public void setVideoXmlFile(String videoXmlFile) {
+	public void setVideoXmlFile(String key, String videoXmlFile) {
+		Assert.hasText(key);
 		Assert.hasText(videoXmlFile);
-		this.videoXmlFile = videoXmlFile;
+		this.videoXmlFileProperties.setProperty(key, videoXmlFile);
 		// 清空缓存
-		this.videoResponse = null;
+		this.videoResponseMap.remove(key);
 	}
 
 	/**
@@ -228,23 +240,27 @@ public class ResponseManager {
 		// 清空缓存
 		this.newsResponse = null;
 	}
-	
+
 	/**
 	 * 取得默认文本回复实体</br> 如果缓冲中有实体，直接返回；否则从解析字符串
+	 * 
 	 * @return
 	 */
 	TextResponse getTextResponse() {
-		if (this.defaultTextResponse==null) {
+		if (this.defaultTextResponse == null) {
 			XStream xStream = new XStream();
 			xStream.alias("xml", TextResponse.class);
-			this.defaultTextResponse = (TextResponse) xStream.fromXML(DEFAULT_TEXT_XML_STRING);
+			this.defaultTextResponse = (TextResponse) xStream
+					.fromXML(DEFAULT_TEXT_XML_STRING);
 		}
 		return this.defaultTextResponse;
 	}
-	
+
 	/**
 	 * 取得默认文本回复实体，根据请求实体设置fromUser和toUser
-	 * @param requset 请求实体 
+	 * 
+	 * @param requset
+	 *            请求实体
 	 * @return 文本回复实体
 	 */
 	public TextResponse getTextResponse(AbstractBaseEntity entity) {
@@ -257,7 +273,9 @@ public class ResponseManager {
 
 	/**
 	 * 取得文本回复实体</br> 如果缓冲中有实体，直接返回；否则从xml文件中解析实体
-	 * @param key 回复实体键值
+	 * 
+	 * @param key
+	 *            回复实体键值
 	 * @return 文本回复实体
 	 */
 	TextResponse getTextResponse(String key) {
@@ -272,11 +290,14 @@ public class ResponseManager {
 		response.setContent(replace(response.getContent()));
 		return response;
 	}
-	
+
 	/**
 	 * 取得文本回复实体，根据请求实体设置fromUser和toUser
-	 * @param key 回复实体键值
-	 * @param request 请求实体
+	 * 
+	 * @param key
+	 *            回复实体键值
+	 * @param request
+	 *            请求实体
 	 * @return 文本回复实体
 	 */
 	public TextResponse getTextResponse(String key, AbstractBaseEntity request) {
@@ -284,16 +305,18 @@ public class ResponseManager {
 		Assert.notNull(response);
 		response.setFromUserName(request.getToUserName());
 		response.setToUserName(request.getFromUserName());
-		return response;		
+		return response;
 	}
-	
+
 	/**
 	 * 用键对值替换字符串
-	 * @param str 字符串
+	 * 
+	 * @param str
+	 *            字符串
 	 * @return 替换过的字符串
 	 */
 	private String replace(String str) {
-		if (this.properties==null) {
+		if (this.properties == null) {
 			return str;
 		}
 		Enumeration<Object> keys = this.properties.keys();
@@ -301,22 +324,26 @@ public class ResponseManager {
 		while (keys.hasMoreElements()) {
 			key = (String) keys.nextElement();
 			str = str.replaceAll(key, this.properties.getProperty(key));
-		}		
-		return str;		
-	}	
-	
+		}
+		return str;
+	}
+
 	/**
 	 * 设置用于替换的键对值
-	 * @param properties 用于替换的键对值
+	 * 
+	 * @param properties
+	 *            用于替换的键对值
 	 */
 	public void setProperties(Properties properties) {
 		this.properties = properties;
 	}
-	
+
 	/**
 	 * 从xml文件中解析实体</br> 如果设置了xml文件，从xml文件中解析；否则从默认xml文件中解析，
 	 * 同时将解析后的文本回复实体，加入到缓冲池中
-	 * 
+	 *
+	 * @param key
+	 *            回复实体键值
 	 * @return 文本回复实体
 	 */
 	private TextResponse doGetTextResponse(String key) {
@@ -334,33 +361,38 @@ public class ResponseManager {
 			return getTextResponse();
 		}
 		// 取得文件绝对路径
-		String xmlFilePath = ClassLoader.getSystemResource(textXmlFile).getPath();
+		String xmlFilePath = ClassLoader.getSystemResource(textXmlFile)
+				.getPath();
 		File file = new File(xmlFilePath);
-		
+
 		// 根据名字和值对应生成对象
-		TextResponse response =  (TextResponse) xStream.fromXML(file);
-		Assert.isTrue(response.getMsgType().equals(ResponseType.TEXT), String.format("text回复xml中MsgType有误： %s", response.getMsgType()));
+		TextResponse response = (TextResponse) xStream.fromXML(file);
+		Assert.isTrue(response.getMsgType().equals(ResponseType.TEXT),
+				String.format("text回复xml中MsgType有误： %s", response.getMsgType()));
 		this.textResponseMap.put(key, response);
-		return response;		
+		return response;
 	}
-	
+
 	/*
 	 * 取得默认图片回复实体</br> 如果缓冲中有实体，直接返回；否则从解析字符串
 	 * 
 	 * @return 图片回复实体
 	 */
 	ImageResponse getImageResponse() {
-		if (this.defaultImageResponse==null) {
+		if (this.defaultImageResponse == null) {
 			XStream xStream = new XStream();
 			xStream.alias("xml", ImageResponse.class);
-			this.defaultImageResponse = (ImageResponse) xStream.fromXML(DEFAULT_IMAGE_XML_STRING);			
+			this.defaultImageResponse = (ImageResponse) xStream
+					.fromXML(DEFAULT_IMAGE_XML_STRING);
 		}
 		return this.defaultImageResponse;
 	}
-	
+
 	/**
 	 * 取得默认图片回复实体，根据请求实体设置fromUser和toUser
-	 * @param requset 请求实体 
+	 * 
+	 * @param requset
+	 *            请求实体
 	 * @return 图片回复实体图片回复实体
 	 */
 	public ImageResponse getImageResponse(AbstractBaseEntity entity) {
@@ -370,12 +402,14 @@ public class ResponseManager {
 		response.setToUserName(entity.getFromUserName());
 		return response;
 	}
-	
+
 	/**
 	 * 取得图片回复实体</br> 如果缓冲中有实体，直接返回；否则从xml文件中解析实体
-	 * @param key 回复实体键值
+	 * 
+	 * @param key
+	 *            回复实体键值
 	 * @return 图片回复实体
- 	 */
+	 */
 	ImageResponse getImageResponse(String key) {
 		ImageResponse response;
 		if (this.imageResponseMap.get(key) == null) {
@@ -385,11 +419,14 @@ public class ResponseManager {
 		}
 		return response;
 	}
-	
+
 	/**
 	 * 取得图片回复实体，根据请求实体设置fromUser和toUser
-	 * @param key 回复实体键值
-	 * @param request 请求实体
+	 * 
+	 * @param key
+	 *            回复实体键值
+	 * @param request
+	 *            请求实体
 	 * @return 图片回复实体
 	 */
 	public ImageResponse getImageResponse(String key, AbstractBaseEntity request) {
@@ -397,12 +434,14 @@ public class ResponseManager {
 		Assert.notNull(response);
 		response.setFromUserName(request.getToUserName());
 		response.setToUserName(request.getFromUserName());
-		return response;		
+		return response;
 	}
-	
+
 	/**
 	 * 从xml文件中解析实体</br> 如果设置了xml文件，从xml文件中解析；否则从默认xml文件中解析
 	 * 
+	 * @param key
+	 *            回复实体键值
 	 * @return 图片回复实体
 	 */
 	private ImageResponse doGetImageResponse(String key) {
@@ -420,34 +459,38 @@ public class ResponseManager {
 			return getImageResponse();
 		}
 		// 取得文件绝对路径
-		String xmlFilePath = ClassLoader.getSystemResource(imageXmlFile).getPath();
+		String xmlFilePath = ClassLoader.getSystemResource(imageXmlFile)
+				.getPath();
 		File file = new File(xmlFilePath);
-		
+
 		// 根据名字和值对应生成对象
-		ImageResponse response =  (ImageResponse)xStream.fromXML(file);
-		Assert.isTrue(response.getMsgType().equals(ResponseType.IMAGE), String.format("image回复xml中MsgType有误： %s", response.getMsgType()));
+		ImageResponse response = (ImageResponse) xStream.fromXML(file);
+		Assert.isTrue(response.getMsgType().equals(ResponseType.IMAGE), String
+				.format("image回复xml中MsgType有误： %s", response.getMsgType()));
 		this.imageResponseMap.put(key, response);
-		return response;		
+		return response;
 	}
 
-	
 	/*
 	 * 取得默认语音回复实体</br> 如果缓冲中有实体，直接返回；否则从解析字符串
 	 * 
 	 * @return 语音回复实体
 	 */
 	VoiceResponse getVoiceResponse() {
-		if (this.defaultVoiceResponse==null) {
+		if (this.defaultVoiceResponse == null) {
 			XStream xStream = new XStream();
 			xStream.alias("xml", VoiceResponse.class);
-			this.defaultVoiceResponse = (VoiceResponse) xStream.fromXML(DEFAULT_VOICE_XML_STRING);			
+			this.defaultVoiceResponse = (VoiceResponse) xStream
+					.fromXML(DEFAULT_VOICE_XML_STRING);
 		}
 		return this.defaultVoiceResponse;
 	}
-	
+
 	/**
 	 * 取得默认语音回复实体，根据请求实体设置fromUser和toUser
-	 * @param requset 请求实体 
+	 * 
+	 * @param requset
+	 *            请求实体
 	 * @return 语音回复实体图片回复实体
 	 */
 	public VoiceResponse getVoiceResponse(AbstractBaseEntity entity) {
@@ -457,12 +500,14 @@ public class ResponseManager {
 		response.setToUserName(entity.getFromUserName());
 		return response;
 	}
-	
+
 	/**
 	 * 取得语音回复实体</br> 如果缓冲中有实体，直接返回；否则从xml文件中解析实体
-	 * @param key 回复实体键值
+	 * 
+	 * @param key
+	 *            回复实体键值
 	 * @return 语音回复实体
- 	 */
+	 */
 	VoiceResponse getVoiceResponse(String key) {
 		VoiceResponse response;
 		if (this.voiceResponseMap.get(key) == null) {
@@ -475,8 +520,11 @@ public class ResponseManager {
 
 	/**
 	 * 取得语音回复实体，根据请求实体设置fromUser和toUser
-	 * @param key 回复实体键值
-	 * @param request 请求实体
+	 * 
+	 * @param key
+	 *            回复实体键值
+	 * @param request
+	 *            请求实体
 	 * @return 语音回复实体
 	 */
 	public VoiceResponse getVoiceResponse(String key, AbstractBaseEntity request) {
@@ -484,12 +532,14 @@ public class ResponseManager {
 		Assert.notNull(response);
 		response.setFromUserName(request.getToUserName());
 		response.setToUserName(request.getFromUserName());
-		return response;		
+		return response;
 	}
-	
+
 	/**
 	 * 从xml文件中解析实体</br> 如果设置了xml文件，从xml文件中解析；否则从默认xml文件中解析
-	 * 
+	 *
+	 * @param key
+	 *            回复实体键值
 	 * @return 语音回复实体
 	 */
 	private VoiceResponse doGetVoiceResponse(String key) {
@@ -506,56 +556,110 @@ public class ResponseManager {
 			return getVoiceResponse();
 		}
 		// 取得文件绝对路径
-		String xmlFilePath = ClassLoader.getSystemResource(voiceXmlFile).getPath();
+		String xmlFilePath = ClassLoader.getSystemResource(voiceXmlFile)
+				.getPath();
 		File file = new File(xmlFilePath);
-		
+
 		// 根据名字和值对应生成对象
-		VoiceResponse response =  (VoiceResponse)xStream.fromXML(file);
-		Assert.isTrue(response.getMsgType().equals(ResponseType.VOICE), String.format("voice回复xml中MsgType有误： %s", response.getMsgType()));
+		VoiceResponse response = (VoiceResponse) xStream.fromXML(file);
+		Assert.isTrue(response.getMsgType().equals(ResponseType.VOICE), String
+				.format("voice回复xml中MsgType有误： %s", response.getMsgType()));
 		this.voiceResponseMap.put(key, response);
-		return response;	
+		return response;
 	}
-	
-	/**
-	 * 取得视频回复实体
+
+	/*
+	 * 取得默认视频回复实体</br> 如果缓冲中有实体，直接返回；否则从解析字符串
 	 * 
 	 * @return 视频回复实体
 	 */
-	public VideoResponse getVideoResponse() {
-		if (this.videoResponse == null) {
-			this.videoResponse = doGetVideoResponse();
+	VideoResponse getVideoResponse() {
+		if (this.defaultVideoResponse == null) {
+			XStream xStream = new XStream();
+			xStream.alias("xml", VideoResponse.class);
+			this.defaultVideoResponse = (VideoResponse) xStream
+					.fromXML(DEFAULT_VIDEO_XML_STRING);
 		}
-		return this.videoResponse;
+		return this.defaultVideoResponse;
+	}
+
+	/**
+	 * 取得默认视频回复实体，根据请求实体设置fromUser和toUser
+	 * 
+	 * @param requset
+	 *            请求实体
+	 * @return 视频回复实体图片回复实体
+	 */
+	public VideoResponse getVideoResponse(AbstractBaseEntity entity) {
+		VideoResponse response = getVideoResponse();
+		Assert.notNull(response);
+		response.setFromUserName(entity.getToUserName());
+		response.setToUserName(entity.getFromUserName());
+		return response;
+	}
+
+	/**
+	 * 取得视频回复实体</br> 如果缓冲中有实体，直接返回；否则从xml文件中解析实体
+	 * 
+	 * @param key
+	 *            回复实体键值
+	 * @return 视频回复实体
+	 */
+	VideoResponse getVideoResponse(String key) {
+		VideoResponse response;
+		if (this.videoResponseMap.get(key) == null) {
+			response = doGetVideoResponse(key);
+		} else {
+			response = this.videoResponseMap.get(key);
+		}
+		return response;
+	}
+	
+	/**
+	 * 取得视频回复实体，根据请求实体设置fromUser和toUser
+	 * @param key 回复实体键值
+	 * @param request 请求实体
+	 * @return 视频回复实体
+	 */
+	public VideoResponse getVideoResponse(String key, AbstractBaseEntity request) {
+		VideoResponse response = getVideoResponse(key);
+		Assert.notNull(response);
+		response.setFromUserName(request.getToUserName());
+		response.setToUserName(request.getFromUserName());
+		return response;		
 	}
 
 	/**
 	 * 从xml文件中解析实体</br> 如果设置了xml文件，从xml文件中解析；否则从默认xml文件中解析
 	 * 
+	 * @param key
+	 *            回复实体键值
 	 * @return 视频回复实体
 	 */
-	private VideoResponse doGetVideoResponse() {
+	private VideoResponse doGetVideoResponse(String key) {
+		Assert.hasText(key);
 		XStream xStream = new XStream();
 		xStream.alias("xml", VideoResponse.class);
-		if (StringUtils.isEmpty(this.videoXmlFile)) {
-			return (VideoResponse)xStream.fromXML(DEFAULT_VIDEO_XML_STRING);
+		String videoXmlFile = this.videoXmlFileProperties.getProperty(key);
+		if (StringUtils.isEmpty(videoXmlFile)) {
+			return getVideoResponse();
 		}
-		URL url = ClassLoader.getSystemResource(this.videoXmlFile);
+		URL url = ClassLoader.getSystemResource(videoXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
-			this.videoXmlFile = null;
-			return (VideoResponse)xStream.fromXML(DEFAULT_VIDEO_XML_STRING);
+			return getVideoResponse();
 		}
 		// 取得文件绝对路径
-		String xmlFilePath = ClassLoader.getSystemResource(videoXmlFile).getPath();
+		String xmlFilePath = ClassLoader.getSystemResource(videoXmlFile)
+				.getPath();
 		File file = new File(xmlFilePath);
-		
-		// 用完清除xml文件，防止再次解析
-		this.videoXmlFile= null;
+
 		// 根据名字和值对应生成对象
-		VideoResponse response =  (VideoResponse)xStream.fromXML(file);
-		Assert.isTrue(response.getMsgType().equals(ResponseType.VIDEO),
-				String.format("video回复xml中MsgType有误： %s", response.getMsgType()));
-		return response;			
+		VideoResponse response = (VideoResponse) xStream.fromXML(file);
+		Assert.isTrue(response.getMsgType().equals(ResponseType.VIDEO), String
+				.format("video回复xml中MsgType有误： %s", response.getMsgType()));
+		this.videoResponseMap.put(key, response);
+		return response;
 	}
 
 	/**
@@ -579,28 +683,28 @@ public class ResponseManager {
 		XStream xStream = new XStream();
 		xStream.alias("xml", MusicResponse.class);
 		if (StringUtils.isEmpty(this.musicXmlFile)) {
-			return (MusicResponse)xStream.fromXML(DEFAULT_MUSIC_XML_STRING);
+			return (MusicResponse) xStream.fromXML(DEFAULT_MUSIC_XML_STRING);
 		}
 		URL url = ClassLoader.getSystemResource(this.musicXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
 			this.musicXmlFile = null;
-			return (MusicResponse)xStream.fromXML(DEFAULT_MUSIC_XML_STRING);
+			return (MusicResponse) xStream.fromXML(DEFAULT_MUSIC_XML_STRING);
 		}
 		// 取得文件绝对路径
-		String xmlFilePath = ClassLoader.getSystemResource(musicXmlFile).getPath();
+		String xmlFilePath = ClassLoader.getSystemResource(musicXmlFile)
+				.getPath();
 		File file = new File(xmlFilePath);
-		
+
 		// 用完清除xml文件，防止再次解析
-		this.musicXmlFile= null;
+		this.musicXmlFile = null;
 		// 根据名字和值对应生成对象
-		MusicResponse response =  (MusicResponse)xStream.fromXML(file);
-		Assert.isTrue(response.getMsgType().equals(ResponseType.MUSIC),
-				String.format("music回复xml中MsgType有误： %s", response.getMsgType()));
-		return response;	
+		MusicResponse response = (MusicResponse) xStream.fromXML(file);
+		Assert.isTrue(response.getMsgType().equals(ResponseType.MUSIC), String
+				.format("music回复xml中MsgType有误： %s", response.getMsgType()));
+		return response;
 	}
 
-	
 	/**
 	 * 取得图文回复实体
 	 * 
@@ -623,50 +727,54 @@ public class ResponseManager {
 		xStream.alias("xml", NewsResponse.class);
 		xStream.alias("item", News.class);
 		if (StringUtils.isEmpty(this.newsXmlFile)) {
-			return (NewsResponse)xStream.fromXML(DEFAULT_NEWS_XML_STRING);
+			return (NewsResponse) xStream.fromXML(DEFAULT_NEWS_XML_STRING);
 		}
 		URL url = ClassLoader.getSystemResource(this.newsXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
 			this.newsXmlFile = null;
-			return (NewsResponse)xStream.fromXML(DEFAULT_NEWS_XML_STRING);
+			return (NewsResponse) xStream.fromXML(DEFAULT_NEWS_XML_STRING);
 		}
 		// 取得文件绝对路径
-		String xmlFilePath = ClassLoader.getSystemResource(newsXmlFile).getPath();
+		String xmlFilePath = ClassLoader.getSystemResource(newsXmlFile)
+				.getPath();
 		File file = new File(xmlFilePath);
-		
+
 		// 用完清除xml文件，防止再次解析
-		this.newsXmlFile= null;
+		this.newsXmlFile = null;
 		// 根据名字和值对应生成对象
-		NewsResponse response =  (NewsResponse)xStream.fromXML(file);
+		NewsResponse response = (NewsResponse) xStream.fromXML(file);
 		Assert.isTrue(response.getMsgType().equals(ResponseType.NEWS),
 				String.format("news回复xml中MsgType有误： %s", response.getMsgType()));
-		
-		//整理图文消息个数
+
+		// 整理图文消息个数
 		doRepairNewsCount(response);
-		return response;	
+		return response;
 	}
-	
+
 	/**
 	 * 整理图文消息个数
 	 */
 	private void doRepairNewsCount(NewsResponse response) {
-		if (response.getArticles().size()>NewsResponse.NEWS_CHILD_MAX_SIZE) {
+		if (response.getArticles().size() > NewsResponse.NEWS_CHILD_MAX_SIZE) {
 			int max = response.getArticles().size();
-			int diff = max -NewsResponse.NEWS_CHILD_MAX_SIZE;
+			int diff = max - NewsResponse.NEWS_CHILD_MAX_SIZE;
 			response.setArticleCount(NewsResponse.NEWS_CHILD_MAX_SIZE);
-			for(int i=0; i<diff; i++) {
-				response.getArticles().remove(response.getArticles().size()-1);
+			for (int i = 0; i < diff; i++) {
+				response.getArticles()
+						.remove(response.getArticles().size() - 1);
 			}
 		}
-		if (response.getArticleCount()!=response.getArticles().size()) {
+		if (response.getArticleCount() != response.getArticles().size()) {
 			response.setArticleCount(response.getArticles().size());
 		}
 	}
-	
+
 	/**
 	 * 回复实体转换为xml字符串
-	 * @param response 回复实体
+	 * 
+	 * @param response
+	 *            回复实体
 	 * @return xml字符串
 	 */
 	public String responseToXml(AbstractBaseResponse response) {
@@ -674,40 +782,41 @@ public class ResponseManager {
 		// 转换属性加上CDATA[[]]
 		XStream xStream = new XStream(new CdataXppDriver());
 		String xmlStr;
-		switch(msgType) {
+		switch (msgType) {
 		case ResponseType.TEXT:
 			xStream.alias("xml", TextResponse.class);
-			TextResponse textResponse = (TextResponse)response;
+			TextResponse textResponse = (TextResponse) response;
 			xmlStr = xStream.toXML(textResponse);
 			break;
 		case ResponseType.IMAGE:
 			xStream.alias("xml", ImageResponse.class);
-			ImageResponse imageResponse = (ImageResponse)response;
+			ImageResponse imageResponse = (ImageResponse) response;
 			xmlStr = xStream.toXML(imageResponse);
 			break;
 		case ResponseType.VOICE:
 			xStream.alias("xml", VoiceResponse.class);
-			VoiceResponse voiceResponse = (VoiceResponse)response;
+			VoiceResponse voiceResponse = (VoiceResponse) response;
 			xmlStr = xStream.toXML(voiceResponse);
 			break;
 		case ResponseType.VIDEO:
 			xStream.alias("xml", VideoResponse.class);
-			VideoResponse videoResponse = (VideoResponse)response;
+			VideoResponse videoResponse = (VideoResponse) response;
 			xmlStr = xStream.toXML(videoResponse);
 			break;
 		case ResponseType.MUSIC:
 			xStream.alias("xml", MusicResponse.class);
-			MusicResponse musicResponse = (MusicResponse)response;
+			MusicResponse musicResponse = (MusicResponse) response;
 			xmlStr = xStream.toXML(musicResponse);
 			break;
 		case ResponseType.NEWS:
 			xStream.alias("xml", NewsResponse.class);
 			xStream.alias("item", News.class);
-			NewsResponse newsResponse = (NewsResponse)response;
+			NewsResponse newsResponse = (NewsResponse) response;
 			xmlStr = xStream.toXML(newsResponse);
-			break;	
+			break;
 		default:
-			throw new IllegalStateException(String.format("response消息类型错误，无法转换成xml: %s", msgType));
+			throw new IllegalStateException(String.format(
+					"response消息类型错误，无法转换成xml: %s", msgType));
 		}
 		return xmlStr;
 	}
