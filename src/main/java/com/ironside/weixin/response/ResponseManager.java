@@ -3,11 +3,14 @@ package com.ironside.weixin.response;
 import java.io.File;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import com.ironside.weixin.request.entity.AbstractBaseEntity;
 import com.ironside.weixin.response.entity.AbstractBaseResponse;
 import com.ironside.weixin.response.entity.ImageResponse;
 import com.ironside.weixin.response.entity.MusicResponse;
@@ -105,7 +108,8 @@ public class ResponseManager {
 			+ "</Articles></xml>";
 
 	/** 文本类型回复xml文件 */
-	String textXmlFile;
+	// String textXmlFile;
+	Properties textXmlFileProperties;
 	/** 图片类型回复xml文件 */
 	String imageXmlFile;
 	/** 语音类型回复xml文件 */
@@ -118,7 +122,8 @@ public class ResponseManager {
 	String newsXmlFile;
 
 	/** 文本回复消息缓冲 */
-	TextResponse textResponse;
+	TextResponse defauleTextResponse;
+	Map<String, TextResponse> textResponseMap;
 	/** 图片回复消息缓冲 */
 	ImageResponse imageResponse;
 	/** 语音回复消息缓冲 */
@@ -134,6 +139,8 @@ public class ResponseManager {
 	private Properties properties;
 
 	public ResponseManager() {
+		this.textXmlFileProperties = new Properties();
+		this.textResponseMap = new HashMap<String, TextResponse>();
 	}
 	
 	/**
@@ -142,11 +149,12 @@ public class ResponseManager {
 	 * @param textXmlFile
 	 *            文本类型回复xml文件
 	 */
-	public void setTextXmlFile(String textXmlFile) {
+	public void setTextXmlFile(String key, String textXmlFile) {
+		Assert.hasText(key);
 		Assert.hasText(textXmlFile);
-		this.textXmlFile = textXmlFile;
+		this.textXmlFileProperties.setProperty(key, textXmlFile);
 		// 清空缓存
-		this.textResponse = null;
+		this.textResponseMap.remove(key);
 	}
 
 	/**
@@ -213,20 +221,63 @@ public class ResponseManager {
 		// 清空缓存
 		this.newsResponse = null;
 	}
+	
+	/**
+	 * 取得默认文本回复实体</br> 如果缓冲中有实体，直接返回；否则从解析字符串
+	 * @return
+	 */
+	TextResponse getTextResponse() {
+		if (this.defauleTextResponse==null) {
+			XStream xStream = new XStream();
+			xStream.alias("xml", TextResponse.class);
+			return (TextResponse) xStream.fromXML(DEFAULT_TEXT_XML_STRING);			
+		}
+		return this.defauleTextResponse;
+	}
+	
+	/**
+	 * 取得默认文本回复实体，根据请求实体设置fromUser和toUser
+	 * @param requset 请求实体 
+	 * @return 文本回复实体
+	 */
+	public TextResponse getTextResponse(AbstractBaseEntity request) {
+		TextResponse response = getTextResponse();
+		Assert.notNull(response);
+		response.setFromUserName(request.getToUserName());
+		response.setToUserName(request.getFromUserName());
+		return response;
+	}
 
 	/**
 	 * 取得文本回复实体</br> 如果缓冲中有实体，直接返回；否则从xml文件中解析实体
-	 * 
+	 * @param key 回复实体键值
 	 * @return 文本回复实体
 	 */
-	public TextResponse getTextResponse() {
-		if (this.textResponse == null) {
-			this.textResponse = doGetTextResponse();
+	TextResponse getTextResponse(String key) {
+		TextResponse textResponse;
+		if (this.textResponseMap.get(key) == null) {
+			textResponse = doGetTextResponse(key);
+		} else {
+			textResponse = this.textResponseMap.get(key);
 		}
 		// 克隆副本，替换内容
-		TextResponse response = this.textResponse.clone();
+		TextResponse response = textResponse.clone();
 		response.setContent(replace(response.getContent()));
 		return response;
+	}
+	
+	/**
+	 * 取得文本回复实体，根据请求实体设置fromUser和toUser
+	 * @param key 回复实体键值
+	 * @param request 请求实体 
+	 * @return 文本回复实体
+	 */
+	public TextResponse getTextResponse(String key, AbstractBaseEntity request) {
+		TextResponse response = getTextResponse(key);
+		Assert.notNull(response);
+		response.setFromUserName(request.getToUserName());
+		response.setToUserName(request.getFromUserName());
+		return response;		
 	}
 	
 	/**
@@ -254,34 +305,35 @@ public class ResponseManager {
 	public void setProperties(Properties properties) {
 		this.properties = properties;
 	}
-
+	
 	/**
-	 * 从xml文件中解析实体</br> 如果设置了xml文件，从xml文件中解析；否则从默认xml文件中解析
+	 * 从xml文件中解析实体</br> 如果设置了xml文件，从xml文件中解析；否则从默认xml文件中解析，
+	 * 同时将解析后的文本回复实体，加入到缓冲池中
 	 * 
 	 * @return 文本回复实体
 	 */
-	private TextResponse doGetTextResponse() {
+	private TextResponse doGetTextResponse(String key) {
+		Assert.hasText(key);
 		XStream xStream = new XStream();
 		xStream.alias("xml", TextResponse.class);
-		if (StringUtils.isEmpty(this.textXmlFile)) {
-			return (TextResponse) xStream.fromXML(DEFAULT_TEXT_XML_STRING);
+		String textXmlFile = this.textXmlFileProperties.getProperty(key);
+		// 如果没有对应xml文件
+		if (StringUtils.isEmpty(textXmlFile)) {
+			return getTextResponse();
 		}
-		URL url = ClassLoader.getSystemResource(this.textXmlFile);
-		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
+		URL url = ClassLoader.getSystemResource(textXmlFile);
+		// 如果xml文件不存在，使用默认实体，同时将xml文件置空
 		if (url == null) {
-			this.textXmlFile = null;
-			return (TextResponse) xStream.fromXML(DEFAULT_TEXT_XML_STRING);
+			return getTextResponse();
 		}
 		// 取得文件绝对路径
 		String xmlFilePath = ClassLoader.getSystemResource(textXmlFile).getPath();
 		File file = new File(xmlFilePath);
 		
-		// 用完清除xml文件，防止再次解析
-		this.textXmlFile = null;
 		// 根据名字和值对应生成对象
 		TextResponse response =  (TextResponse) xStream.fromXML(file);
-		Assert.isTrue(response.getMsgType().equals(ResponseType.TEXT),
-				String.format("text回复xml中MsgType有误： %s", response.getMsgType()));
+		Assert.isTrue(response.getMsgType().equals(ResponseType.TEXT), String.format("text回复xml中MsgType有误： %s", response.getMsgType()));
+		this.textResponseMap.put(key, response);
 		return response;		
 	}
 	

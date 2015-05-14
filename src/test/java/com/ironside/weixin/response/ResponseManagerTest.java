@@ -76,29 +76,38 @@ public class ResponseManagerTest {
 		ImageResponse imageResponse = this.responseManager.getImageResponse();
 		Assert.assertEquals(imageResponse.getFromUserName(), "fromUser");
 		// *** 测试根据回复实体xml文件取得回复实体 ***
-		this.responseManager.setTextXmlFile(TEST_TEXT_XMLFILE);
-		textResponse = this.responseManager.getTextResponse();
+		String key = "TEST";
+		this.responseManager.setTextXmlFile(key, TEST_TEXT_XMLFILE);
+		textResponse = this.responseManager.getTextResponse(key);
 		// 验证取得的是根据xml文件解析消息
 		Assert.assertEquals(textResponse.getFromUserName(), "testFromUser");
 		Assert.assertEquals(textResponse.getToUserName(), "testToUser");
 		Assert.assertEquals(textResponse.getMsgType(), ResponseType.TEXT);
 		Assert.assertEquals(textResponse.getContent(), "weixin,zxj,machine 你好");
 		// 验证缓冲中的模板没有改变
-		Assert.assertEquals(this.responseManager.textResponse.getContent(), "a1,a2,a3 你好");
-		// *** 测试不存在的xml文件 ***
-		this.responseManager.setTextXmlFile(NOEXISTING_TEST_XMLFILE);
-		textResponse = this.responseManager.getTextResponse();
+		Assert.assertEquals(this.responseManager.textResponseMap.get(key).getContent(), "a1,a2,a3 你好");
+		// *** 测试未设置xml文件 ***
+		key = "NOSETTEXTXML";
+		textResponse = this.responseManager.getTextResponse(key);
 		// 验证取得的是默认消息
 		Assert.assertEquals(textResponse.getFromUserName(), "fromUser");
 		Assert.assertEquals(textResponse.getToUserName(), "toUser");
 		Assert.assertEquals(textResponse.getMsgType(), ResponseType.TEXT);
-		Assert.assertNull(this.responseManager.textXmlFile);
+		Assert.assertNull(this.responseManager.textXmlFileProperties.get(key));		
+		// *** 测试不存在的xml文件 ***
+		key = "NOEXISTING";
+		this.responseManager.setTextXmlFile(key, NOEXISTING_TEST_XMLFILE);
+		textResponse = this.responseManager.getTextResponse(key);
+		// 验证取得的是默认消息
+		Assert.assertEquals(textResponse.getFromUserName(), "fromUser");
+		Assert.assertEquals(textResponse.getToUserName(), "toUser");
+		Assert.assertEquals(textResponse.getMsgType(), ResponseType.TEXT);
 		// *** 测试有问题的实体xml文件
-		this.responseManager.setTextXmlFile(WRONG_XMLFILE);
+		key = "WRONG";
+		this.responseManager.setTextXmlFile(key, WRONG_XMLFILE);
 		try {
-			textResponse = this.responseManager.getTextResponse();
+			textResponse = this.responseManager.getTextResponse(key);
 		} catch(IllegalArgumentException e) {
-			Assert.assertNull(this.responseManager.textXmlFile);
 			return;
 		}
 		Assert.fail("测试有问题的实体xml文件出错");
@@ -113,20 +122,21 @@ public class ResponseManagerTest {
 		
 		// *** 测试以缓冲方式取得回复消息 ***
 		// 根据xml文件解析消息
-		this.responseManager.setTextXmlFile(TEST_TEXT_XMLFILE);
-		TextResponse textResponse = this.responseManager.getTextResponse(); 
+		String key = "TEST";
+		this.responseManager.setTextXmlFile(key, TEST_TEXT_XMLFILE);
+		TextResponse textResponse = this.responseManager.getTextResponse(key); 
 		// 验证取得的消息内容(content)不是cacheContent
 		Assert.assertTrue((textResponse.getContent().equals(cacheContent)==false));
 		// 设置消息内容为cacheContent
-		TextResponse textResponse2 = this.responseManager.textResponse;
+		TextResponse textResponse2 = this.responseManager.textResponseMap.get(key);
 		textResponse2.setContent(cacheContent);
 		// 验证取得的消息内容是从缓冲取得
-		textResponse = this.responseManager.getTextResponse();
+		textResponse = this.responseManager.getTextResponse(key);
 		Assert.assertTrue((textResponse.getContent().equals(cacheContent)==true));
 		// *** 测试再次设置xml文件，缓冲会更新 ***
 		// 再次设置xml文件
-		this.responseManager.setTextXmlFile(TEST_TEXT_XMLFILE);
-		textResponse = this.responseManager.getTextResponse(); 
+		this.responseManager.setTextXmlFile(key, TEST_TEXT_XMLFILE);
+		textResponse = this.responseManager.getTextResponse(key); 
 		// 验证缓冲会更新
 		Assert.assertTrue((textResponse.getContent().equals(cacheContent)==false));		
 	}
