@@ -5,6 +5,6 @@
 <MsgType><![CDATA[video]]></MsgType>
 <Video>
 <MediaId><![CDATA[test_media_id]]></MediaId>
-<Description><![CDATA[a3,a2,a1 test_description]]></Description>
+<Description><![CDATA[test_description]]></Description>
 </Video> 
 </xml>

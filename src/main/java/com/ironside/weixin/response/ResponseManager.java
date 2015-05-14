@@ -223,8 +223,29 @@ public class ResponseManager {
 		if (this.textResponse == null) {
 			this.textResponse = doGetTextResponse();
 		}
-		return this.textResponse;
+		// 克隆副本，替换内容
+		TextResponse response = this.textResponse.clone();
+		response.setContent(replace(response.getContent()));
+		return response;
 	}
+	
+	/**
+	 * 用键对值替换字符串
+	 * @param str 字符串
+	 * @return 替换过的字符串
+	 */
+	private String replace(String str) {
+		if (this.properties==null) {
+			return str;
+		}
+		Enumeration<Object> keys = this.properties.keys();
+		String key;
+		while (keys.hasMoreElements()) {
+			key = (String) keys.nextElement();
+			str = str.replaceAll(key, this.properties.getProperty(key));
+		}		
+		return str;		
+	}	
 	
 	/**
 	 * 设置用于替换的键对值
@@ -261,29 +282,9 @@ public class ResponseManager {
 		TextResponse response =  (TextResponse) xStream.fromXML(file);
 		Assert.isTrue(response.getMsgType().equals(ResponseType.TEXT),
 				String.format("text回复xml中MsgType有误： %s", response.getMsgType()));
-		// 替换内容
-		response.setContent(replace(response.getContent()));
 		return response;		
 	}
 	
-	/**
-	 * 用键对值替换字符串
-	 * @param str 字符串
-	 * @return 替换过的字符串
-	 */
-	private String replace(String str) {
-		if (this.properties==null) {
-			return str;
-		}
-		Enumeration<Object> keys = this.properties.keys();
-		String key;
-		while (keys.hasMoreElements()) {
-			key = (String) keys.nextElement();
-			str = str.replaceAll(key, this.properties.getProperty(key));
-		}		
-		return str;		
-	}
-
 	/*
 	 * 取得图片回复实体
 	 * 
@@ -407,8 +408,6 @@ public class ResponseManager {
 		VideoResponse response =  (VideoResponse)xStream.fromXML(file);
 		Assert.isTrue(response.getMsgType().equals(ResponseType.VIDEO),
 				String.format("video回复xml中MsgType有误： %s", response.getMsgType()));
-		// 替换内容
-		response.getVideo().setDescription(replace(response.getVideo().getDescription()));
 		return response;			
 	}
 
@@ -451,8 +450,6 @@ public class ResponseManager {
 		MusicResponse response =  (MusicResponse)xStream.fromXML(file);
 		Assert.isTrue(response.getMsgType().equals(ResponseType.MUSIC),
 				String.format("music回复xml中MsgType有误： %s", response.getMsgType()));
-		// 替换内容
-		response.getMusic().setDescription(replace(response.getMusic().getDescription()));
 		return response;	
 	}
 
@@ -500,12 +497,6 @@ public class ResponseManager {
 		
 		//整理图文消息个数
 		doRepairNewsCount(response);
-		// 替换内容
-		News news; 
-		for (int i=0; i<response.getArticleCount(); i++) {
-			news = response.getArticles().get(i);
-			news.setDescription(replace(news.getDescription()));			
-		}
 		return response;	
 	}
 	
