@@ -118,7 +118,7 @@ public class ResponseManager {
 	/** 音乐类型回复xml文件 */
 	Properties musicXmlFileProperties;
 	/** 图文类型回复xml文件 */
-	String newsXmlFile;
+	Properties newsXmlFileProperties;
 
 	/** 文本回复消息缓冲 */
 	TextResponse defaultTextResponse;
@@ -136,7 +136,8 @@ public class ResponseManager {
 	MusicResponse defaultMusicResponse;
 	Map<String, MusicResponse> musicResponseMap;
 	/** 图文回复消息缓冲 */
-	NewsResponse newsResponse;
+	NewsResponse defaultNewsResponse;
+	Map<String, NewsResponse> newsResponseMap;
 
 	/** 用于替换的键对值 */
 	private Properties properties;
@@ -147,11 +148,13 @@ public class ResponseManager {
 		this.voiceXmlFileProperties = new Properties();
 		this.videoXmlFileProperties = new Properties();
 		this.musicXmlFileProperties = new Properties();
+		this.newsXmlFileProperties = new Properties();
 		this.textResponseMap = new HashMap<String, TextResponse>();
 		this.imageResponseMap = new HashMap<String, ImageResponse>();
 		this.voiceResponseMap = new HashMap<String, VoiceResponse>();
 		this.videoResponseMap = new HashMap<String, VideoResponse>();
 		this.musicResponseMap = new HashMap<String, MusicResponse>();
+		this.newsResponseMap = new HashMap<String, NewsResponse>();
 	}
 
 	/**
@@ -237,14 +240,17 @@ public class ResponseManager {
 	/**
 	 * 设置图文类型回复xml文件
 	 * 
+	 * @param key
+	 *            xml文件键值
 	 * @param newsXmlFile
 	 *            图文类型回复xml文件
 	 */
-	public void setNewsXmlFile(String newsXmlFile) {
+	public void setNewsXmlFile(String key, String newsXmlFile) {
+		Assert.hasText(key);		
 		Assert.hasText(newsXmlFile);
-		this.newsXmlFile = newsXmlFile;
+		this.newsXmlFileProperties.setProperty(key, newsXmlFile);
 		// 清空缓存
-		this.newsResponse = null;
+		this.newsResponseMap.remove(key);
 	}
 
 	/**
@@ -687,7 +693,7 @@ public class ResponseManager {
 	 * 
 	 * @param requset
 	 *            请求实体
-	 * @return 音乐回复实体图片回复实体
+	 * @return 音乐回复实体
 	 */
 	public MusicResponse getMusicResponse(AbstractBaseEntity entity) {
 		MusicResponse response = getMusicResponse();
@@ -760,50 +766,100 @@ public class ResponseManager {
 		return response;
 	}
 
-	/**
-	 * 取得图文回复实体
+	/*
+	 * 取得默认图文回复实体</br> 如果缓冲中有实体，直接返回；否则从解析字符串
 	 * 
 	 * @return 图文回复实体
 	 */
-	public NewsResponse getNewsResponse() {
-		if (this.newsResponse == null) {
-			this.newsResponse = doGetNewsResponse();
+	NewsResponse getNewsResponse() {
+		if (this.defaultNewsResponse==null) {
+			XStream xStream = new XStream();
+			xStream.alias("xml", NewsResponse.class);
+			xStream.alias("item", News.class);
+			this.defaultNewsResponse = (NewsResponse) xStream.fromXML(DEFAULT_NEWS_XML_STRING);			
 		}
-		return this.newsResponse;
+		return this.defaultNewsResponse;
 	}
+	
+	/**
+	 * 取得默认图文回复实体，根据请求实体设置fromUser和toUser
+	 * 
+	 * @param requset
+	 *            请求实体
+	 * @return 图文回复实体
+	 */
+	public NewsResponse getNewsResponse(AbstractBaseEntity entity) {
+		NewsResponse response = getNewsResponse();
+		Assert.notNull(response);
+		response.setFromUserName(entity.getToUserName());
+		response.setToUserName(entity.getFromUserName());
+		return response;
+	}
+	 
+	/**
+	 * 取得图文回复实体</br> 如果缓冲中有实体，直接返回；否则从xml文件中解析实体
+	 * 
+	 * @param key
+	 *            回复实体键值
+	 * @return 图文回复实体
+	 */
+	NewsResponse getNewsResponse(String key) {
+		NewsResponse response;
+		if (this.newsResponseMap.get(key) == null) {
+			response = doGetNewsResponse(key);
+		} else {
+			response = this.newsResponseMap.get(key);
+		}
+		return response;
+	}
+	
+	/**
+	 * 取得图文回复实体，根据请求实体设置fromUser和toUser
+	 * @param key 回复实体键值
+	 * @param request 请求实体
+	 * @return 图文回复实体
+	 */
+	public NewsResponse getNewsResponse(String key, AbstractBaseEntity request) {
+		NewsResponse response = getNewsResponse(key);
+		Assert.notNull(response);
+		response.setFromUserName(request.getToUserName());
+		response.setToUserName(request.getFromUserName());
+		return response;		
+	}
+	
 
 	/**
 	 * 从xml文件中解析实体</br> 如果设置了xml文件，从xml文件中解析；否则从默认xml文件中解析
-	 * 
+	 *
+	 * @param key 回复实体键值
 	 * @return 图文回复实体
 	 */
-	private NewsResponse doGetNewsResponse() {
+	private NewsResponse doGetNewsResponse(String key) {
+		Assert.hasText(key);		
 		XStream xStream = new XStream();
 		xStream.alias("xml", NewsResponse.class);
 		xStream.alias("item", News.class);
-		if (StringUtils.isEmpty(this.newsXmlFile)) {
-			return (NewsResponse) xStream.fromXML(DEFAULT_NEWS_XML_STRING);
+		String newsXmlFile = this.newsXmlFileProperties.getProperty(key);
+		if (StringUtils.isEmpty(newsXmlFile)) {
+			return getNewsResponse();
 		}
-		URL url = ClassLoader.getSystemResource(this.newsXmlFile);
+		URL url = ClassLoader.getSystemResource(newsXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
-			this.newsXmlFile = null;
-			return (NewsResponse) xStream.fromXML(DEFAULT_NEWS_XML_STRING);
+			return getNewsResponse();
 		}
 		// 取得文件绝对路径
 		String xmlFilePath = ClassLoader.getSystemResource(newsXmlFile)
 				.getPath();
 		File file = new File(xmlFilePath);
 
-		// 用完清除xml文件，防止再次解析
-		this.newsXmlFile = null;
 		// 根据名字和值对应生成对象
 		NewsResponse response = (NewsResponse) xStream.fromXML(file);
 		Assert.isTrue(response.getMsgType().equals(ResponseType.NEWS),
 				String.format("news回复xml中MsgType有误： %s", response.getMsgType()));
-
 		// 整理图文消息个数
 		doRepairNewsCount(response);
+		this.newsResponseMap.put(key, response);
 		return response;
 	}
 

@@ -95,7 +95,6 @@ public class ResponseManagerTest {
 		Assert.assertEquals(textResponse.getMsgType(), ResponseType.TEXT);
 		Assert.assertNull(this.responseManager.textXmlFileProperties.get(key));		
 		// *** 测试不存在的xml文件 ***
-		key = "NOEXISTING";
 		this.responseManager.setTextXmlFile(key, NOEXISTING_TEST_XMLFILE);
 		textResponse = this.responseManager.getTextResponse(key);
 		// 验证取得的是默认消息
@@ -103,7 +102,6 @@ public class ResponseManagerTest {
 		Assert.assertEquals(textResponse.getToUserName(), "toUser");
 		Assert.assertEquals(textResponse.getMsgType(), ResponseType.TEXT);
 		// *** 测试有问题的实体xml文件
-		key = "WRONG";
 		this.responseManager.setTextXmlFile(key, WRONG_XMLFILE);
 		try {
 			textResponse = this.responseManager.getTextResponse(key);
@@ -157,7 +155,6 @@ public class ResponseManagerTest {
 		Assert.assertEquals(response.getMsgType(), ResponseType.IMAGE);
 		Assert.assertEquals(((ImageResponse.Image)response.getImage()).getMediaId(), "test_media_id");
 		// *** 测试有问题的实体xml文件
-		key = "WRONG";
 		this.responseManager.setImageXmlFile(key, WRONG_XMLFILE);
 		try {
 			response = this.responseManager.getImageResponse(key);
@@ -183,7 +180,6 @@ public class ResponseManagerTest {
 		Assert.assertEquals(response.getMsgType(), ResponseType.VOICE);
 		Assert.assertEquals(((VoiceResponse.Voice)response.getVoice()).getMediaId(), "test_media_id");
 		// *** 测试有问题的实体xml文件
-		key = "WRONG";
 		this.responseManager.setVoiceXmlFile(key, WRONG_XMLFILE);
 		try {
 			response = this.responseManager.getVoiceResponse(key);
@@ -217,7 +213,6 @@ public class ResponseManagerTest {
 		Assert.assertNull(video.getTitle());
 		Assert.assertEquals(video.getDescription(), "test_description");
 		// *** 测试有问题的实体xml文件
-		key = "WRONG";
 		this.responseManager.setVideoXmlFile(key, WRONG_XMLFILE);
 		try {
 			response = this.responseManager.getVideoResponse(key);
@@ -254,7 +249,6 @@ public class ResponseManagerTest {
 		Assert.assertEquals(music.getDescription(), "test_description");
 		Assert.assertEquals(music.getMusicUrl(), "test_music_url");
 		// *** 测试有问题的实体xml文件
-		key = "WRONG";
 		this.responseManager.setMusicXmlFile(key, WRONG_XMLFILE);
 		
 		try {
@@ -283,8 +277,9 @@ public class ResponseManagerTest {
 			Assert.assertEquals(news.getUrl(), "url");
 		}
 		// *** 测试根据回复实体xml文件取得回复实体 ***
-		this.responseManager.setNewsXmlFile("testNewsResponse.xml");
-		response = this.responseManager.getNewsResponse();
+		String key = "TESTE";
+		this.responseManager.setNewsXmlFile(key, "testNewsResponse.xml");
+		response = this.responseManager.getNewsResponse(key);
 		Assert.assertEquals(response.getMsgType(), ResponseType.NEWS);
 		Assert.assertEquals(response.getArticleCount(), 3);		
 		for(int i=0;i<response.getArticleCount();i++) {
@@ -295,20 +290,14 @@ public class ResponseManagerTest {
 			Assert.assertEquals(news.getUrl(), "url");
 		}
 		// *** 测试如果图文数超过限制，节点数将是最大值
-		this.responseManager.setNewsXmlFile("testNewsMaxResponse.xml");
-		response = this.responseManager.getNewsResponse();
+		this.responseManager.setNewsXmlFile(key, "testNewsMaxResponse.xml");
+		response = this.responseManager.getNewsResponse(key);
 		Assert.assertEquals(response.getArticleCount(), NewsResponse.NEWS_CHILD_MAX_SIZE);
 		// *** 测试有问题的实体xml文件
-		this.responseManager.setNewsXmlFile(WRONG_XMLFILE);
+		this.responseManager.setNewsXmlFile(key, WRONG_XMLFILE);
 		try {
-			response = this.responseManager.getNewsResponse();
+			response = this.responseManager.getNewsResponse(key);
 		} catch(UnknownFieldException e) {
-			Assert.assertNull(this.responseManager.newsXmlFile);
-			response = this.responseManager.getNewsResponse();
-			Assert.assertEquals(response.getMsgType(), ResponseType.NEWS);
-			// 子对象
-			news = (NewsResponse.News)response.getArticles().get(0);
-			Assert.assertEquals(news.getTitle(), "title");
 			return;
 		}
 		Assert.fail("测试有问题的实体xml文件出错");
