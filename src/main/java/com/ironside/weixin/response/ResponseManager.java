@@ -240,11 +240,11 @@ public class ResponseManager {
 	 * @param requset 请求实体 
 	 * @return 文本回复实体
 	 */
-	public TextResponse getTextResponse(AbstractBaseEntity request) {
+	public TextResponse getTextResponse(AbstractBaseEntity entity) {
 		TextResponse response = getTextResponse();
 		Assert.notNull(response);
-		response.setFromUserName(request.getToUserName());
-		response.setToUserName(request.getFromUserName());
+		response.setFromUserName(entity.getToUserName());
+		response.setToUserName(entity.getFromUserName());
 		return response;
 	}
 
@@ -269,7 +269,7 @@ public class ResponseManager {
 	/**
 	 * 取得文本回复实体，根据请求实体设置fromUser和toUser
 	 * @param key 回复实体键值
-	 * @param request 请求实体 
+	 * @param request 请求实体
 	 * @return 文本回复实体
 	 */
 	public TextResponse getTextResponse(String key, AbstractBaseEntity request) {
@@ -342,10 +342,17 @@ public class ResponseManager {
 	 * 
 	 * @return 图片回复实体
 	 */
-	public ImageResponse getImageResponse() {
+	ImageResponse getImageResponse() {
 		if (this.imageResponse == null) {
 			this.imageResponse = doGetImageResponse();
 		}
+		return this.imageResponse;
+	}
+	
+	public ImageResponse getImageResponse(AbstractBaseEntity entity) {
+		ImageResponse response = getImageResponse();
+		response.setFromUserName(entity.getToUserName());
+		response.setToUserName(entity.getFromUserName());
 		return this.imageResponse;
 	}
 
@@ -384,11 +391,18 @@ public class ResponseManager {
 	 * 
 	 * @return 语音回复实体
 	 */
-	public VoiceResponse getVoiceResponse() {
+	VoiceResponse getVoiceResponse() {
 		if (this.voiceResponse == null) {
 			this.voiceResponse = doGetVoiceResponse();
 		}
 		return this.voiceResponse;
+	}
+	
+	public VoiceResponse getVoiceResponse(AbstractBaseEntity entity) {
+		VoiceResponse response = getVoiceResponse();
+		imageResponse.setFromUserName(entity.getToUserName());
+		imageResponse.setToUserName(entity.getFromUserName());
+		return response;
 	}
 
 	/**

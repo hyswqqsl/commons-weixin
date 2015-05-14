@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ironside.weixin.request.DefaultPostProcess;
+import com.ironside.weixin.request.entity.TextEntity;
 import com.ironside.weixin.response.ResponseManager;
 import com.ironside.weixin.response.entity.AbstractBaseResponse;
 import com.ironside.weixin.response.entity.TextResponse;
@@ -57,7 +58,7 @@ public class PostProcessorTest {
 		String result = this.postProcess.process(postData);
 		// 验证
 		ResponseManager responseManager = new ResponseManager();
-		TextResponse response = responseManager.getTextResponse();
+		TextResponse response = responseManager.getTextResponse(new TextEntity());
 		response.setFromUserName("toUser");
 		response.setToUserName("fromUser");
 		response.setContent(MyMessage.OS_INFO);
@@ -82,7 +83,7 @@ public class PostProcessorTest {
 		String result = this.postProcess.process(postData);
 		// 验证
 		ResponseManager responseManager = new ResponseManager();
-		AbstractBaseResponse response = responseManager.getTextResponse();
+		AbstractBaseResponse response = responseManager.getTextResponse(new TextEntity());
 		response.setFromUserName("toUser");
 		response.setToUserName("fromUser");
 		String validate_result = responseManager.responseToXml(response);
@@ -93,7 +94,7 @@ public class PostProcessorTest {
 		postData = String.format(event_click_xml_format, MyMessage.CLICK_IMAGE);
 		result = this.postProcess.process(postData);
 		// 验证
-		response = responseManager.getImageResponse();
+		response = responseManager.getImageResponse(new TextEntity());
 		response.setFromUserName("toUser");
 		response.setToUserName("fromUser");		
 		validate_result = responseManager.responseToXml(response);
