@@ -243,8 +243,9 @@ public class ResponseManagerTest {
 		Assert.assertEquals(music.getHQMusicUrl(), "hq_music_url");
 		Assert.assertEquals(music.getThumbMediaId(), "thumb_media_id");
 		// *** 测试根据回复实体xml文件取得回复实体 ***
-		this.responseManager.setMusicXmlFile("testMusicResponse.xml");
-		response = this.responseManager.getMusicResponse();
+		String key = "TEST";
+		this.responseManager.setMusicXmlFile(key, "testMusicResponse.xml");
+		response = this.responseManager.getMusicResponse(key);
 		Assert.assertEquals(response.getMsgType(), ResponseType.MUSIC);
 		// 子对象
 		music = (MusicResponse.Music)response.getMusic();
@@ -252,19 +253,13 @@ public class ResponseManagerTest {
 		Assert.assertNull(music.getTitle());
 		Assert.assertEquals(music.getDescription(), "test_description");
 		Assert.assertEquals(music.getMusicUrl(), "test_music_url");
-		Assert.assertNull(this.responseManager.musicXmlFile);
 		// *** 测试有问题的实体xml文件
-		this.responseManager.setMusicXmlFile(WRONG_XMLFILE);
+		key = "WRONG";
+		this.responseManager.setMusicXmlFile(key, WRONG_XMLFILE);
 		
 		try {
-			response = this.responseManager.getMusicResponse();
+			response = this.responseManager.getMusicResponse(key);
 		} catch(UnknownFieldException e) {
-			Assert.assertNull(this.responseManager.musicXmlFile);
-			response = this.responseManager.getMusicResponse();
-			Assert.assertEquals(response.getMsgType(), ResponseType.MUSIC);
-			// 子对象
-			music = (MusicResponse.Music)response.getMusic();
-			Assert.assertEquals(music.getThumbMediaId(), "thumb_media_id");
 			return;
 		}
 		Assert.fail("测试有问题的实体xml文件出错");				

@@ -116,7 +116,7 @@ public class ResponseManager {
 	/** 视频类型回复xml文件 */
 	Properties videoXmlFileProperties;
 	/** 音乐类型回复xml文件 */
-	String musicXmlFile;
+	Properties musicXmlFileProperties;
 	/** 图文类型回复xml文件 */
 	String newsXmlFile;
 
@@ -133,7 +133,8 @@ public class ResponseManager {
 	VideoResponse defaultVideoResponse;
 	Map<String, VideoResponse> videoResponseMap;
 	/** 音乐回复消息缓冲 */
-	MusicResponse musicResponse;
+	MusicResponse defaultMusicResponse;
+	Map<String, MusicResponse> musicResponseMap;
 	/** 图文回复消息缓冲 */
 	NewsResponse newsResponse;
 
@@ -145,10 +146,12 @@ public class ResponseManager {
 		this.imageXmlFileProperties = new Properties();
 		this.voiceXmlFileProperties = new Properties();
 		this.videoXmlFileProperties = new Properties();
+		this.musicXmlFileProperties = new Properties();
 		this.textResponseMap = new HashMap<String, TextResponse>();
 		this.imageResponseMap = new HashMap<String, ImageResponse>();
 		this.voiceResponseMap = new HashMap<String, VoiceResponse>();
 		this.videoResponseMap = new HashMap<String, VideoResponse>();
+		this.musicResponseMap = new HashMap<String, MusicResponse>();
 	}
 
 	/**
@@ -218,14 +221,17 @@ public class ResponseManager {
 	/**
 	 * 设置音乐类型回复xml文件
 	 * 
+	 * @param key
+	 *            xml文件键值
 	 * @param videoXmlFile
 	 *            音乐类型回复xml文件
 	 */
-	public void setMusicXmlFile(String musicXmlFile) {
+	public void setMusicXmlFile(String key, String musicXmlFile) {
+		Assert.hasText(key);
 		Assert.hasText(musicXmlFile);
-		this.musicXmlFile = musicXmlFile;
+		this.musicXmlFileProperties.setProperty(key, musicXmlFile);
 		// 清空缓存
-		this.musicResponse = null;
+		this.musicResponseMap.remove(key);
 	}
 
 	/**
@@ -662,46 +668,95 @@ public class ResponseManager {
 		return response;
 	}
 
-	/**
-	 * 取得音乐回复实体
+	/*
+	 * 取得默认音乐回复实体</br> 如果缓冲中有实体，直接返回；否则从解析字符串
 	 * 
 	 * @return 音乐回复实体
 	 */
-	public MusicResponse getMusicResponse() {
-		if (this.musicResponse == null) {
-			this.musicResponse = doGetMusicResponse();
+	MusicResponse getMusicResponse() {
+		if (this.defaultMusicResponse==null) {
+			XStream xStream = new XStream();
+			xStream.alias("xml", MusicResponse.class);
+			this.defaultMusicResponse = (MusicResponse) xStream.fromXML(DEFAULT_MUSIC_XML_STRING);			
 		}
-		return this.musicResponse;
+		return this.defaultMusicResponse;
+	}
+	
+	/**
+	 * 取得默认音乐回复实体，根据请求实体设置fromUser和toUser
+	 * 
+	 * @param requset
+	 *            请求实体
+	 * @return 音乐回复实体图片回复实体
+	 */
+	public MusicResponse getMusicResponse(AbstractBaseEntity entity) {
+		MusicResponse response = getMusicResponse();
+		Assert.notNull(response);
+		response.setFromUserName(entity.getToUserName());
+		response.setToUserName(entity.getFromUserName());
+		return response;
+	}
+	
+	/**
+	 * 取得音乐回复实体</br> 如果缓冲中有实体，直接返回；否则从xml文件中解析实体
+	 * 
+	 * @param key
+	 *            回复实体键值
+	 * @return 音乐回复实体
+	 */
+	MusicResponse getMusicResponse(String key) {
+		MusicResponse response;
+		if (this.musicResponseMap.get(key) == null) {
+			response = doGetMusicResponse(key);
+		} else {
+			response = this.musicResponseMap.get(key);
+		}
+		return response;
+	}
+	
+	/**
+	 * 取得音乐回复实体，根据请求实体设置fromUser和toUser
+	 * @param key 回复实体键值
+	 * @param request 请求实体
+	 * @return 音乐回复实体
+	 */
+	public MusicResponse getMusicResponse(String key, AbstractBaseEntity request) {
+		MusicResponse response = getMusicResponse(key);
+		Assert.notNull(response);
+		response.setFromUserName(request.getToUserName());
+		response.setToUserName(request.getFromUserName());
+		return response;		
 	}
 
 	/**
 	 * 从xml文件中解析实体</br> 如果设置了xml文件，从xml文件中解析；否则从默认xml文件中解析
-	 * 
+	 *
+	 * @param key 回复实体键值
 	 * @return 音乐回复实体
 	 */
-	private MusicResponse doGetMusicResponse() {
+	private MusicResponse doGetMusicResponse(String key) {
+		Assert.hasText(key);		
 		XStream xStream = new XStream();
 		xStream.alias("xml", MusicResponse.class);
-		if (StringUtils.isEmpty(this.musicXmlFile)) {
-			return (MusicResponse) xStream.fromXML(DEFAULT_MUSIC_XML_STRING);
+		String musicXmlFile = this.musicXmlFileProperties.getProperty(key);
+		if (StringUtils.isEmpty(musicXmlFile)) {
+			return getMusicResponse();
 		}
-		URL url = ClassLoader.getSystemResource(this.musicXmlFile);
+		URL url = ClassLoader.getSystemResource(musicXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
-			this.musicXmlFile = null;
-			return (MusicResponse) xStream.fromXML(DEFAULT_MUSIC_XML_STRING);
+			return getMusicResponse();
 		}
 		// 取得文件绝对路径
 		String xmlFilePath = ClassLoader.getSystemResource(musicXmlFile)
 				.getPath();
 		File file = new File(xmlFilePath);
 
-		// 用完清除xml文件，防止再次解析
-		this.musicXmlFile = null;
 		// 根据名字和值对应生成对象
 		MusicResponse response = (MusicResponse) xStream.fromXML(file);
 		Assert.isTrue(response.getMsgType().equals(ResponseType.MUSIC), String
 				.format("music回复xml中MsgType有误： %s", response.getMsgType()));
+		this.musicResponseMap.put(key, response);
 		return response;
 	}
 
