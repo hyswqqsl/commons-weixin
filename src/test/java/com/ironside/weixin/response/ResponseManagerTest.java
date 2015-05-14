@@ -177,20 +177,17 @@ public class ResponseManagerTest {
 		Assert.assertEquals(response.getMsgType(), ResponseType.VOICE);
 		Assert.assertEquals(((VoiceResponse.Voice)response.getVoice()).getMediaId(), "media_id");
 		// *** 测试根据回复实体xml文件取得回复实体 ***
-		this.responseManager.setVoiceXmlFile("testVoiceResponse.xml");
-		response = this.responseManager.getVoiceResponse();
+		String key = "TEST";
+		this.responseManager.setVoiceXmlFile(key, "testVoiceResponse.xml");
+		response = this.responseManager.getVoiceResponse(key);
 		Assert.assertEquals(response.getMsgType(), ResponseType.VOICE);
 		Assert.assertEquals(((VoiceResponse.Voice)response.getVoice()).getMediaId(), "test_media_id");
-		Assert.assertNull(this.responseManager.voiceXmlFile);
 		// *** 测试有问题的实体xml文件
-		this.responseManager.setVoiceXmlFile(WRONG_XMLFILE);
+		key = "WRONG";
+		this.responseManager.setVoiceXmlFile(key, WRONG_XMLFILE);
 		try {
-			response = this.responseManager.getVoiceResponse();
+			response = this.responseManager.getVoiceResponse(key);
 		} catch(UnknownFieldException e) {
-			Assert.assertNull(this.responseManager.voiceXmlFile);
-			response = this.responseManager.getVoiceResponse();
-			Assert.assertEquals(response.getMsgType(), ResponseType.VOICE);
-			Assert.assertEquals(((VoiceResponse.Voice)response.getVoice()).getMediaId(), "media_id");
 			return;
 		}
 		Assert.fail("测试有问题的实体xml文件出错");		
