@@ -108,11 +108,11 @@ public class ResponseManager {
 			+ "</Articles></xml>";
 
 	/** 文本类型回复xml文件 */
-	// String textXmlFile;
 	Properties textXmlFileProperties;
 	/** 图片类型回复xml文件 */
-	String imageXmlFile;
-	/** 语音类型回复xml文件 */
+	// String imageXmlFile;
+	Properties imageXmlFileProperties;
+	 /** 语音类型回复xml文件 */
 	String voiceXmlFile;
 	/** 视频类型回复xml文件 */
 	String videoXmlFile;
@@ -122,10 +122,11 @@ public class ResponseManager {
 	String newsXmlFile;
 
 	/** 文本回复消息缓冲 */
-	TextResponse defauleTextResponse;
+	TextResponse defaultTextResponse;
 	Map<String, TextResponse> textResponseMap;
 	/** 图片回复消息缓冲 */
-	ImageResponse imageResponse;
+	ImageResponse defaultImageResponse;
+	Map<String, ImageResponse> imageResponseMap;
 	/** 语音回复消息缓冲 */
 	VoiceResponse voiceResponse;
 	/** 视频回复消息缓冲 */
@@ -140,7 +141,9 @@ public class ResponseManager {
 
 	public ResponseManager() {
 		this.textXmlFileProperties = new Properties();
+		this.imageXmlFileProperties = new Properties();
 		this.textResponseMap = new HashMap<String, TextResponse>();
+		this.imageResponseMap = new HashMap<String, ImageResponse>();
 	}
 	
 	/**
@@ -163,11 +166,12 @@ public class ResponseManager {
 	 * @param textXmlFile
 	 *            图片类型回复xml文件
 	 */
-	public void setImageXmlFile(String imageXmlFile) {
+	public void setImageXmlFile(String key, String imageXmlFile) {
+		Assert.hasText(key);
 		Assert.hasText(imageXmlFile);
-		this.imageXmlFile = imageXmlFile;
+		this.imageXmlFileProperties.setProperty(key, imageXmlFile);
 		// 清空缓存
-		this.imageResponse = null;
+		this.imageResponseMap.remove(key);
 	}
 
 	/**
@@ -227,12 +231,12 @@ public class ResponseManager {
 	 * @return
 	 */
 	TextResponse getTextResponse() {
-		if (this.defauleTextResponse==null) {
+		if (this.defaultTextResponse==null) {
 			XStream xStream = new XStream();
 			xStream.alias("xml", TextResponse.class);
 			return (TextResponse) xStream.fromXML(DEFAULT_TEXT_XML_STRING);			
 		}
-		return this.defauleTextResponse;
+		return this.defaultTextResponse;
 	}
 	
 	/**
@@ -338,51 +342,88 @@ public class ResponseManager {
 	}
 	
 	/*
-	 * 取得图片回复实体
+	 * 取得默认图片回复实体</br> 如果缓冲中有实体，直接返回；否则从解析字符串
 	 * 
 	 * @return 图片回复实体
 	 */
 	ImageResponse getImageResponse() {
-		if (this.imageResponse == null) {
-			this.imageResponse = doGetImageResponse();
+		if (this.defaultImageResponse==null) {
+			XStream xStream = new XStream();
+			xStream.alias("xml", ImageResponse.class);
+			return (ImageResponse) xStream.fromXML(DEFAULT_IMAGE_XML_STRING);			
 		}
-		return this.imageResponse;
+		return this.defaultImageResponse;
 	}
 	
+	/**
+	 * 取得默认图片回复实体，根据请求实体设置fromUser和toUser
+	 * @param requset 请求实体 
+	 * @return 图片回复实体图片回复实体
+	 */
 	public ImageResponse getImageResponse(AbstractBaseEntity entity) {
 		ImageResponse response = getImageResponse();
+		Assert.notNull(response);
 		response.setFromUserName(entity.getToUserName());
 		response.setToUserName(entity.getFromUserName());
-		return this.imageResponse;
+		return response;
 	}
-
+	
+	/**
+	 * 取得图片回复实体</br> 如果缓冲中有实体，直接返回；否则从xml文件中解析实体
+	 * @param key 回复实体键值
+	 * @return 图片回复实体
+ 	 */
+	ImageResponse getImageResponse(String key) {
+		ImageResponse response;
+		if (this.imageResponseMap.get(key) == null) {
+			response = doGetImageResponse(key);
+		} else {
+			response = this.imageResponseMap.get(key);
+		}
+		return response;
+	}
+	
+	/**
+	 * 取得图片回复实体，根据请求实体设置fromUser和toUser
+	 * @param key 回复实体键值
+	 * @param request 请求实体
+	 * @return 图片回复实体
+	 */
+	public ImageResponse getImageResponse(String key, AbstractBaseEntity request) {
+		ImageResponse response = getImageResponse(key);
+		Assert.notNull(response);
+		response.setFromUserName(request.getToUserName());
+		response.setToUserName(request.getFromUserName());
+		return response;		
+	}
+	
 	/**
 	 * 从xml文件中解析实体</br> 如果设置了xml文件，从xml文件中解析；否则从默认xml文件中解析
 	 * 
 	 * @return 图片回复实体
 	 */
-	private ImageResponse doGetImageResponse() {
+	private ImageResponse doGetImageResponse(String key) {
+		Assert.hasText(key);
 		XStream xStream = new XStream();
 		xStream.alias("xml", ImageResponse.class);
-		if (StringUtils.isEmpty(this.imageXmlFile)) {
-			return (ImageResponse)xStream.fromXML(DEFAULT_IMAGE_XML_STRING);
+		String imageXmlFile = this.imageXmlFileProperties.getProperty(key);
+		// 如果没有对应xml文件
+		if (StringUtils.isEmpty(imageXmlFile)) {
+			return getImageResponse();
 		}
-		URL url = ClassLoader.getSystemResource(this.imageXmlFile);
+		URL url = ClassLoader.getSystemResource(imageXmlFile);
 		// 如果xml文件不存在，使用默认xml文件，同时将xml文件置空
 		if (url == null) {
-			this.imageXmlFile = null;
-			return (ImageResponse)xStream.fromXML(DEFAULT_IMAGE_XML_STRING);
+			return getImageResponse();
 		}
 		// 取得文件绝对路径
 		String xmlFilePath = ClassLoader.getSystemResource(imageXmlFile).getPath();
 		File file = new File(xmlFilePath);
 		
-		// 用完清除xml文件，防止再次解析
-		this.imageXmlFile= null;
 		// 根据名字和值对应生成对象
 		ImageResponse response =  (ImageResponse)xStream.fromXML(file);
-		Assert.isTrue(response.getMsgType().equals(ResponseType.IMAGE),
-				String.format("image回复xml中MsgType有误： %s", response.getMsgType()));
+		Assert.isTrue(response.getMsgType().equals(ResponseType.IMAGE), String.format("image回复xml中MsgType有误： %s", response.getMsgType()));
+		this.imageResponseMap.put(key, response);
 		return response;		
 	}
 
@@ -400,8 +441,8 @@ public class ResponseManager {
 	
 	public VoiceResponse getVoiceResponse(AbstractBaseEntity entity) {
 		VoiceResponse response = getVoiceResponse();
-		imageResponse.setFromUserName(entity.getToUserName());
-		imageResponse.setToUserName(entity.getFromUserName());
+		response.setFromUserName(entity.getToUserName());
+		response.setToUserName(entity.getFromUserName());
 		return response;
 	}
 

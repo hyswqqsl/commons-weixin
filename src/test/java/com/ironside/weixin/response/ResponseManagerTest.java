@@ -151,20 +151,17 @@ public class ResponseManagerTest {
 		Assert.assertEquals(response.getMsgType(), ResponseType.IMAGE);
 		Assert.assertEquals(((ImageResponse.Image)response.getImage()).getMediaId(), "media_id");
 		// *** 测试根据回复实体xml文件取得回复实体 ***
-		this.responseManager.setImageXmlFile("testImageResponse.xml");
-		response = this.responseManager.getImageResponse();
+		String key = "TEST";
+		this.responseManager.setImageXmlFile(key, "testImageResponse.xml");
+		response = this.responseManager.getImageResponse(key);
 		Assert.assertEquals(response.getMsgType(), ResponseType.IMAGE);
 		Assert.assertEquals(((ImageResponse.Image)response.getImage()).getMediaId(), "test_media_id");
-		Assert.assertNull(this.responseManager.imageXmlFile);
 		// *** 测试有问题的实体xml文件
-		this.responseManager.setImageXmlFile(WRONG_XMLFILE);
+		key = "WRONG";
+		this.responseManager.setImageXmlFile(key, WRONG_XMLFILE);
 		try {
-			response = this.responseManager.getImageResponse();
+			response = this.responseManager.getImageResponse(key);
 		} catch(UnknownFieldException e) {
-			Assert.assertNull(this.responseManager.imageXmlFile);
-			response = this.responseManager.getImageResponse();
-			Assert.assertEquals(response.getMsgType(), ResponseType.IMAGE);
-			Assert.assertEquals(((ImageResponse.Image)response.getImage()).getMediaId(), "media_id");
 			return;
 		}
 		Assert.fail("测试有问题的实体xml文件出错");				
