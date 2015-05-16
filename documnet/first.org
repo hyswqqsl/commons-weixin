@@ -1,0 +1,22 @@
+- 通用库设计的宗旨，是提供微信处理过程中的通用功能，简化微信处理设计
+  IPostProcess和IEncyptPostProcess两个接口，第一个接口是明文微信处理，
+  第二个 接口是加密微信处理；用户最终使用者两个接口的实现，
+  DefaultPostProcess和 DefaultEncyptPostProcess
+
+- 用户只需实现一个PostProcessorAdapter适配器类，这个类中有各种微信请求，
+  用户可以 选择实现的处理请求，可以在处理中进行内容判断、数据库查询等
+  操作，根据结果返回需 要的响应
+
+- PostProcessorAdapter适配器类，引用ResponseManager回复实体管理，以产
+  生各种回复 实体。ResponseManager有两种产生回复实体的方式，一是返回默
+  认形式实体，二是返回 指定xml文件格式的回复实体
+
+- ResponseManager中设置了实体缓冲，如果缓冲实体不为空，下次取得实体时，
+  不再解析 xml文件，直接从缓冲中返回实体，提高效率
+
+- ResponseManager中可设置键对值Properties对象，可以对TextResponse、
+  VideoResponse、 NewsResponse中相关内容自动替换用户使用微信通用库时，
+  可以从请求中(request)的到是否加密的信息，如果未加密，可 使用
+  DefaultPostProcess类，加密可使用DefaultEncyptPostProcess，同时实现自
+  己的处 理器(PostProcessorAdapter适配器)，然会直接调用process，即可得
+  到正确的回复串

@@ -1,0 +1,293 @@
+h1{
+    /*
+      margin-top: 0px;
+      margin-left: -100px;
+      margin-right: -40px;
+      */
+    text-align: center;
+    /*padding: 22px 0px 16px 60px;*/
+    font-family: georgia, "trebuchet ms";
+    font-weight: bolder;
+    color: #004f37;
+    /*border-bottom: #004f37 2px solid;
+      border-left-width: 6px;*/
+    /*background: #d9e7e2 url(http://images.cnblogs.com/cnblogs_com/csophys/368957/r_sky.png)
+     */
+    repeat-x;
+    font-size: 30px;
+    line-height: 1;
+}
+
+h2 {
+    margin-left: -9px;
+    margin-right: 0px;
+    margin-top: 25pt;
+    padding: 3px 0px 3px 10px;
+    /*  color: #005a9c;
+        color: #f63811;
+        color: #c61a02; */
+    color: #005a9c;
+    font-family: georgia, "trebuchet ms";
+    font-weight: bold;
+    font-size: 20px;
+    /*  border-bottom: #005a9c 1px solid;*/
+    border: #005a9c 1px solid;
+    border-left: #005a9c 6px solid;
+    /*  border-width: 1px;*/
+    /*  border-style: ridge;*/
+    background: #c4d9ef;
+    line-height: 1;
+    background-image: url(http://images.cnblogs.com/cnblogs_com/csophys/368957/r_lightblue.gif);
+}
+
+
+h3 {
+    margin-left: -6px;
+    margin-right: 0px;
+    /*  margin-top: 40pt; */
+    padding: 1px 0px 1px 1px;
+    color: #2b804c;
+    /*  color: #6b18e7;
+        color: #ff3300;*/
+    font-family: "trebuchet ms";
+    font-weight: bold;
+    font-size: 18px;
+    border-bottom: #2b804c 1px solid;
+    border-left: #2b804c 6px solid;
+    /*  border-bottom: #6b18e7 1px dashed;
+        border-style: groove; */
+    background: #d9eae0;
+    line-height: 1;
+    background-image: url(http://images.cnblogs.com/cnblogs_com/csophys/368957/r_lightgreen.gif);
+}
+
+h4 {
+    margin-left: -3px;
+    margin-right: 0px;
+    /*padding: 3px 0px 3px 10px;*/
+    font-family: "trebuchet ms";
+    font-weight: bold;
+    font-size: 16px;
+    /* color: (#963455; fce6eb) (4d2b82, e0d5f1) */
+    color: #d04b44;
+    border-bottom: #d04b44 1px solid;
+    border-left: #d04b44 6px solid;
+    /*background: #f2dad8;*/
+    line-height: 1;
+/*  background-image: url(http://images.cnblogs.com/cnblogs_com/csophys/368957/r_nicebg2.png);*/
+}
+
+h5 {
+    /*   border: grey 1px dashed; */
+    margin: 10px 0px 2px 0px;
+    font-size: 14pt;
+    color: #7b7b5a;
+    line-height: 1;
+}
+
+ p {
+   font-size: 100%;
+   text-align: 140%;
+ }
+
+pre {
+    line-height: 1.6;
+    font: 10.5pt consola,"bitstream vera sans", courier new, helvetica;
+    color:wheat;
+    // color: #284d6a;
+    /*border: #95dcef 1px dashed;*/
+    padding: 0.5em 0em 0.5em 1em;
+    margin-left: 0px;
+    margin-right: 0px;
+    /* background: #c4e6f0;*/
+    /* background-image: url(http://images.cnblogs.com/cnblogs_com/csophys/368957/r_bg_old.gif);*/
+    /* background-image: url(http://images.cnblogs.com/cnblogs_com/csophys/368957/r_brick.gif); */
+    /* background: #f7fcee;*/
+    background:#2f4f4f;
+}
+/* for program source*/
+.comment {
+    /* font-lock-comment-face */
+    color: #cd0000;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.function-name {
+    /* font-lock-function-name-face */
+    color: #0000ff;
+    font-weight: bold;
+}
+.keyword {
+    /* font-lock-keyword-face */
+    color: #a020f0;
+    font-weight: bold;
+}
+.preprocessor {
+    /* font-lock-preprocessor-face */
+    /*color: #7fffd4;*/
+    color: black;
+    font-weight: bold;
+
+}
+.string {
+    /* font-lock-string-face */
+    color: #008b00;
+}
+.type {
+    /* font-lock-type-face */
+    color: #000080;
+}
+.variable-name {
+    /* font-lock-variable-name-face */
+    color: #8b5a2b;
+}
+
+.doc {
+    /* font-lock-comment-face */
+    color: #f0a4a4;
+}
+
+/* src example */
+
+pre.example
+{
+    color: #f0fea8;
+    border: #ccaa00 2px solid;
+    padding: 0.5em 0.5em 0.5em 1em;
+    margin-left: 30px;
+    margin-right: 40px;
+    /* background-color: rgb(31, 31, 31); */
+    background-color: #2f4f4f;
+    font-family: "courier new", monospace;
+    font-size: 100%;
+    line-height: 150%;
+/*    background-image: url(../images/menu_tr.gif);    */
+}
+
+pre.src
+{
+    color: #fffe58;    /*color: #f5deb3; */
+    //max-height: 3in;
+    //background-color: rgb(31, 31, 31);
+    background-color: #2f4f4f;
+    font-family: "courier new", monospace;
+    font-size: 100%;
+    line-height: 150%;
+    white-space: pre;
+    overflow: auto;
+}
+
+/* src highlight */
+
+.org-comment-delimiter, .org-comment
+{
+    color: #84f4d3;
+    font-style: italic;
+}
+
+.org-constant
+{
+    color: #84bad3;
+    /* font-weight: bolder; */
+}
+
+.org-keyword
+{
+    color: #9484e3;
+    /* font-weight: bolder; */
+}
+
+.org-type
+{
+    color: #a6f8ae;
+    /* font-weight: bolder; */
+}
+
+.org-function-name
+{
+    /* font-size: 120%; */
+    color: #6eaad5;
+    /* font-weight: bolder;     */
+}
+
+.org-string
+{
+    color: #eeffd5;
+    /* font-weight: bolder;         */
+}
+
+.org-builtin
+{
+    color: #88e999;
+    /* font-weight: bolder;         */
+}
+
+.org-variable-name
+{
+    color: #8899aa;
+    /* font-weight: bolder;         */
+}
+
+.org-font-latex-sedate
+{
+    /* font-size: 120%; */
+    color: #6eb8d5;
+    /* font-weight: bolder;         */
+}
+
+ul, ol {
+  margin-left: 0px;
+  margin-right: 0px;
+  padding: 0px;
+/*  text-align: justify;*/
+}
+
+ul{
+  list-style-image: url(http://images.cnblogs.com/cnblogs_com/csophys/368957/r_ul.gif);
+}
+
+ul ol{
+  list-style-image: none;
+}
+
+ul ul {
+  list-style-image: url(http://images.cnblogs.com/cnblogs_com/csophys/368957/r_olul.gif);
+}
+
+ol ul {
+  list-style-image: url(http://images.cnblogs.com/cnblogs_com/csophys/368957/r_ulul.gif);
+}
+
+table
+{
+    font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+    width:100%;
+    border-collapse:collapse;
+}
+
+th
+{
+    font-size:1.1em;
+    text-align:left;
+    padding:3px 7px 2px 7px;
+    padding-top:5px;
+    padding-bottom:4px;
+    background-color:#005aac;
+    color: #f1f1ef;
+}
+
+tr.alt td
+{
+    color:#000000;
+    background-color:#EAF2D3;
+}
+
+div.figure
+{
+    padding: 0.5em;
+}
+div.figure p
+{
+    text-align: center;
+}
