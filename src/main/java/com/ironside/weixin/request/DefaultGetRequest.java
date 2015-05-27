@@ -23,10 +23,10 @@ public class DefaultGetRequest implements IGetRequest {
 	}
 
 	@Override
-	public String process(String token, String signatur, String timestamp,
+	public String process(String token, String signature, String timestamp,
 			String nonce, String echostr) {
 		Assert.hasText(token);
-		Assert.hasText(signatur);
+		Assert.hasText(signature);
 		Assert.hasText(timestamp);
 		Assert.hasText(nonce);
 		Assert.hasText(echostr);
@@ -43,8 +43,8 @@ public class DefaultGetRequest implements IGetRequest {
 		// 2. 将三个参数字符串拼接成一个字符串进行sha1加密
 		String temp = DigestUtils.sha1Hex(params.get(0) + params.get(1) + params.get(2));
 		// 3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
-		if (temp.equals(signatur)) {
-			return signatur;
+		if (temp.equals(signature)) {
+			return echostr;
 		}
 		return null;
 	}
