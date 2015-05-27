@@ -1,6 +1,5 @@
 package com.ironside.weixin.request;
 
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
