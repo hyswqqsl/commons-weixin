@@ -20,3 +20,16 @@
   DefaultPostProcess类，加密可使用DefaultEncyptPostProcess，同时实现自
   己的处 理器(PostProcessorAdapter适配器)，然会直接调用process，即可得
   到正确的回复串
+
+** 当前日期: 2015/05/28 周四 
+- TextResponse实现了cloneable接口，可以克隆对象，防止缓冲对象被改变，应该所有响
+  应都加上cloneable接口？
+- Response Entity使用了XStream实现实体和XML转换
+- 缓冲加大，每个响应对象形成缓冲池
+- Spring mvc 可以直接获得参数，@RequestParam String timestamp, 不需要使用HttpServletRequest.getParameter("timestamp")
+- Spring mvc 可以直接获得数据，@RequestBody String postData)，不需要输入流方式
+- Spring mvc 可以直接返回数据@ResponseBody，不需要输出流方式
+- @RequestMapping(method = RequestMethod.POST, produces = "text/html;charset=utf-8")可以保证返回数据是UTF-8格式
+- 使用apache httpClient和spring-web实现https访问方式，很方便
+- Active Entity使用了XStream实现实体和json转换
+

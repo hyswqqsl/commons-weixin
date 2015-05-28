@@ -265,7 +265,7 @@ public class ResponseManager {
 			this.defaultTextResponse = (TextResponse) xStream
 					.fromXML(DEFAULT_TEXT_XML_STRING);
 		}
-		return this.defaultTextResponse;
+		return this.defaultTextResponse.clone();
 	}
 
 	/**
