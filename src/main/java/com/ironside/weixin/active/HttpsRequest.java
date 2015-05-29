@@ -10,12 +10,14 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * 默认实现https方式访问
+ * https方式请求实现
  * 
  * @author 雪庭
  * @sine 1.0 at 2015年5月28日
  */
-public class DefaultHttpsProcess implements IHttpsProcess {
+public class HttpsRequest {
+	
+	private static HttpsRequest instance;
 
 	/**
 	 * RestTemplate是Spring提供的用于访问Rest服务的客户端，
@@ -38,17 +40,37 @@ public class DefaultHttpsProcess implements IHttpsProcess {
 		return this.restTemplate;
 	}
 
-	@Override
+	/**
+	 * https方式访问，get方法
+	 * @param httpsUrl https地址
+	 * @return 微信服务器返回的json串
+	 */
 	public String processGet(String httpsUrl) {
 		ResponseEntity<String> response = getRestTemplate().exchange(httpsUrl, HttpMethod.GET, null, String.class);
 		return response.getBody();
 	}
 	
-	@Override
+	/**
+	 * https方式访问，get方法
+	 * @param httpsUrl https地址
+	 * @param json post方式发送的json串
+	 * @return 微信服务器返回的json串
+	 */
 	public String processPost(String httpsUrl, String json) {
 		HttpEntity<String> httpEntity = new HttpEntity<String>(json);
 		ResponseEntity<String> response = getRestTemplate().exchange(httpsUrl, HttpMethod.POST, httpEntity, String.class);
 		return response.getBody();
+	}
+	
+	/**
+	 * 单例模式
+	 * @return https方式对象
+	 */
+	public static HttpsRequest getInstance() {
+		if (instance==null) {
+			instance = new HttpsRequest();
+		}
+		return instance;
 	}
 
 }

@@ -16,9 +16,8 @@ import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
  * @author 雪庭
  * @sine 1.0 at 2015年5月28日
  */
-public class DefaultHttpsProcessTest {
+public class HttpsRequestTest {
 	
-	private DefaultHttpsProcess httpsProcess;
 	private String httpsGetUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
 	private String httpsPostUrl = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
 	
@@ -28,7 +27,6 @@ public class DefaultHttpsProcessTest {
 
 	@Before
 	public void setUp() throws Exception {
-		httpsProcess = new DefaultHttpsProcess();
 	}
 
 	@After
@@ -38,17 +36,18 @@ public class DefaultHttpsProcessTest {
 	@Test
 	public void processTest() {
 		httpsGetUrl = httpsGetUrl.replaceAll("APPID", appid).replaceAll("APPSECRET", secret);
-		String json = httpsProcess.processGet(httpsGetUrl);
+		String json = HttpsRequest.getInstance().processGet(httpsGetUrl);
 		XStream xStream = new XStream(new JettisonMappedXmlDriver());
 		json = jsonTemplate.replaceAll("json", json);
 		xStream.alias("object", AccessToken.class);
 		AccessToken accessToken = (AccessToken)xStream.fromXML(json);
+		accessToken.setAccess_time(System.currentTimeMillis()/1000);
 		Assert.assertNotNull(json);
 		Assert.assertNotNull(accessToken.getAccess_token());
 		httpsPostUrl = httpsPostUrl.replaceAll("ACCESS_TOKEN", accessToken.getAccess_token());
-		json = httpsProcess.processPost(httpsPostUrl, "{\"button\":[{\"type\":\"click\",\"name\":\"text\",\"key\":\"1\"},"
-				+ "{\"type\":\"click\",\"name\":\"image\",\"key\":\"2\"},"
-				+ "{\"type\":\"click\",\"name\":\"voice\",\"key\":\"3\"}]}");
+		json = HttpsRequest.getInstance().processPost(httpsPostUrl, "{\"button\":[{\"type\":\"click\",\"name\":\"text\",\"key\":\"1\"},"
+				+ "{\"type\":\"click\",\"name\":\"imagee\",\"key\":\"2\"},"
+				+ "{\"type\":\"click\",\"name\":\"voicee\",\"key\":\"3\"}]}");
 		Assert.assertEquals(json, "{\"errcode\":0,\"errmsg\":\"ok\"}");
 	}
 	
