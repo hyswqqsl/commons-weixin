@@ -9,16 +9,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ironside.weixin.active.entity.AccessToken;
+import com.ironside.weixin.active.entity.IpAddresses;
 
 public class AuthorizeRequestTest {
 	
-	private IAuthorize authorizeApplication;
+	private IAuthorize authorizeRequest;
 	private final String appid = "wxdce9a330da720609";
 	private final String secret = "a9c33e27b711b683514f8b6404776967";	
 
 	@Before
 	public void setUp() throws Exception {
-		authorizeApplication = new AuthorizeRequest();
+		authorizeRequest = new AuthorizeRequest();
 	}
 
 	@After
@@ -27,10 +28,16 @@ public class AuthorizeRequestTest {
 
 	@Test
 	public void testGetAccessToken() {
-		AccessToken accessToken = authorizeApplication.getAccessToken(appid, secret);
-		assertEquals(accessToken.getExpires_in(), 7200);
+		AccessToken accessToken = authorizeRequest.getAccessToken(appid, secret);
+		assertEquals(accessToken.getExpiresIn(), 7200);
 		assertTrue(accessToken.isOver()==false);
-		assertFalse(accessToken.getAccess_time()==0);
+		assertFalse(accessToken.getAccessTime()==0);
 	}
 
+	@Test
+	public void testGetIpAddress() {
+		AccessToken accessToken = authorizeRequest.getAccessToken(appid, secret);
+		IpAddresses ipAddress = authorizeRequest.getIpAddress(accessToken);
+		assertTrue(ipAddress.getIpList().size()>0);
+	}
 }

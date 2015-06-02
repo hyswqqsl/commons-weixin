@@ -1,6 +1,5 @@
 package com.ironside.weixin.active.entity;
 
-import java.util.Date;
 
 /**
  * access_token是公众号的全局唯一凭证，公众号调用各接口时都需使用access_token。
@@ -34,27 +33,27 @@ public class AccessToken {
 		return false;
 	}
 
-	public String getAccess_token() {
+	public String getAccessToken() {
 		return access_token;
 	}
 
-	public void setAccess_token(String access_token) {
-		this.access_token = access_token;
+	public void setAccessToken(String accessToken) {
+		this.access_token = accessToken;
 	}
 
-	public int getExpires_in() {
+	public int getExpiresIn() {
 		return expires_in;
 	}
 
-	public void setExpires_in(int expires_in) {
-		this.expires_in = expires_in;
+	public void setExpiresIn(int expiresIn) {
+		this.expires_in = expiresIn;
 	}
 
-	public void setAccess_time(long access_time) {
-		this.access_time = access_time;
+	public void setAccessTime(long accessTime) {
+		this.access_time = accessTime;
 	}
 
-	public long getAccess_time() {
+	public long getAccessTime() {
 		return access_time;
 	}
 

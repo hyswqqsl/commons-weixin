@@ -41,10 +41,10 @@ public class HttpsRequestTest {
 		json = jsonTemplate.replaceAll("json", json);
 		xStream.alias("object", AccessToken.class);
 		AccessToken accessToken = (AccessToken)xStream.fromXML(json);
-		accessToken.setAccess_time(System.currentTimeMillis()/1000);
+		accessToken.setAccessTime(System.currentTimeMillis()/1000);
 		Assert.assertNotNull(json);
-		Assert.assertNotNull(accessToken.getAccess_token());
-		httpsPostUrl = httpsPostUrl.replaceAll("ACCESS_TOKEN", accessToken.getAccess_token());
+		Assert.assertNotNull(accessToken.getAccessToken());
+		httpsPostUrl = httpsPostUrl.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
 		json = HttpsRequest.getInstance().processPost(httpsPostUrl, "{\"button\":[{\"type\":\"click\",\"name\":\"text\",\"key\":\"1\"},"
 				+ "{\"type\":\"click\",\"name\":\"imagee\",\"key\":\"2\"},"
 				+ "{\"type\":\"click\",\"name\":\"voicee\",\"key\":\"3\"}]}");
