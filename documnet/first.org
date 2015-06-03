@@ -38,6 +38,13 @@
   Illegal key size or default parameters Illegal key size or default parameters是
   指密钥长度是受限制的，java运行时环境读到的是受限的policy文件。文件位于
   ${java_home}/jre/lib/security这种限制是因为美国对软件出口的控制
+- 在开发者首次提交验证申请时，微信服务器将发送GET请求到填写的URL上， 并且带上四个
+  参数(signature、timestamp、nonce、echostr)， 开发者通过对签名(即signature)的效
+  验，来判断此条消息的真实性。 sha1加密使用了apche的commons-codec(DigestUtils)开源工具
+#+begin_src jave
+		// 2. 将三个参数字符串拼接成一个字符串进行sha1加密
+		String temp = DigestUtils.sha1Hex(params.get(0) + params.get(1) +	params.get(2));
+#+end_src
 ** 当前日期: 2015/06/03 周三 
 - 微信返回的json串，不能直接转换为对象，需要用标识包装一下
 #+begin_src java
