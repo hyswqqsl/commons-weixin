@@ -23,7 +23,7 @@
 
 ** 当前日期: 2015/05/28 周四 
 - TextResponse实现了cloneable接口，可以克隆对象，防止缓冲对象被改变，应该所有响
-  应都加上cloneable接口？
+  应都加上cloneable接口
 - Response Entity使用了XStream实现实体和XML转换
 - 缓冲加大，每个响应对象形成缓冲池
 - Spring mvc 可以直接获得参数，@RequestParam String timestamp, 不需要使用HttpServletRequest.getParameter("timestamp")
@@ -38,3 +38,58 @@
   Illegal key size or default parameters Illegal key size or default parameters是
   指密钥长度是受限制的，java运行时环境读到的是受限的policy文件。文件位于
   ${java_home}/jre/lib/security这种限制是因为美国对软件出口的控制
+** 当前日期: 2015/06/03 周三 
+- 微信返回的json串，不能直接转换为对象，需要用标识包装一下
+#+begin_src java
+	/** 用object标识包装json，方便json转换为对象 */
+	private String jsonTemplate = "{object:json}";
+	xStream.alias("object", cls);
+	return (T) xStream.fromXML(json);
+#+end_src
+
+- 请求微信服务器的IP地址列表，返回的是多个ip_list，IpAddress类属性设计成List类型
+
+#+begin_src java
+{
+	"ip_list":["127.0.0.1","127.0.0.1","127.0.0.1","127.0.0.1"]
+}
+public class IpAddresses {
+	private List<String> ip_list;
+}
+#+end_src
+   这样的json转换为IpAddress时，需要进行如下设置：
+#+begin_src java
+	  /** 用object标识包装json，方便json转换为对象 */
+	  private String jsonTemplate = "{object:json}";
+		XStream xStream = new XStream(new JettisonMappedXmlDriver());  
+		xStream.alias("object", IpAddress.class);
+		// 设置attribute对应类中List类型
+		xStream.alias("ip_list", List.class);
+		xStream.addImplicitCollection(IpAddress.class, "ip_list");
+		xStream.alias("ip_list", String.class);
+#+end_src
+
+- 使用apache httpClient和spring-web实现https访问方式，最终使用
+  org.springframework.web.client.RestTemplate类发起访问，但是默认的编码是
+  ISO-8859-1，返回中文是乱码，需要改变RestTemplate的编码
+#+begin_src java
+	/*
+	 * 设置RestTemplate的编码，RestTemplate默认添加HttpMessageConverter的编码是ISO-8859-1，
+	 * 如果用其他编码，需要移除原有的StringHttpMessageConverter，添加指定字符集的StringHttpMessageConvert
+	 */
+	private void setRestTemplateCharSet(RestTemplate restTemplate, Charset charset) {
+		List<HttpMessageConverter<?>> converterList = restTemplate	.getMessageConverters();
+		HttpMessageConverter<?> converterTarget = null;
+		for (HttpMessageConverter<?> item : converterList) {
+			if (item.getClass() == StringHttpMessageConverter.class) {
+				converterTarget = item;
+				break;
+			}
+		}
+		if (converterTarget != null) {
+			converterList.remove(converterTarget);
+		}
+		HttpMessageConverter<?> converter = new StringHttpMessageConverter(charset);
+		converterList.add(converter);
+	}
+#+end_src
