@@ -3,6 +3,7 @@ package com.ironside.weixin.active;
 import com.ironside.weixin.active.entity.AccessToken;
 import com.ironside.weixin.active.entity.IpAddresses;
 import com.ironside.weixin.active.entity.UserInfo;
+import com.ironside.weixin.active.entity.UserList;
 
 /**
  * 与认证相关的处理
@@ -17,6 +18,8 @@ public class ActiveRequest {
 	private final String ip_url = "https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=ACCESS_TOKEN";
 	/** 获取用户信息请求url */
 	private final String user_info_url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
+	/** 获取帐号的关注者列表url */
+	private final String user_list_url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID";	
 	
 	/** 公众号全局凭证缓存 */
 	private AccessToken accessToken;
@@ -65,7 +68,7 @@ public class ActiveRequest {
 	public IpAddresses getIpAddress(AccessToken accessToken) {
 		String url = ip_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
 		String json = HttpsRequest.getInstance().processGet(url);
-		IpAddresses ipAddresses = JsonObjectConvert.getInstance().jsonToResponse(json, IpAddresses.class, "ip_list", String.class); 
+		IpAddresses ipAddresses = JsonObjectConvert.getInstance().jsonToResponse(json, IpAddresses.class, "ip_list"); 
 		return ipAddresses;
 	}
 
@@ -82,6 +85,23 @@ public class ActiveRequest {
 		String json = HttpsRequest.getInstance().processGet(url);
 		UserInfo userInfo = JsonObjectConvert.getInstance().jsonToResponse(json, UserInfo.class);
 		return userInfo;
+	}
+	
+	/**
+	 * 获取帐号的关注者列表，关注者列表由一串OpenID（加密后的微信号，每个用户对每个公众号的OpenID是唯一的）组成。
+	 * 一次拉取调用最多拉取10000个关注者的OpenID，可以通过多次拉取的方式来满足需求 
+	 * @param accessToken 公众号的全局凭证
+	 * @param nextOpenid 第一个拉取的OPENID，不填默认从头开始拉取
+	 * @return
+	 */
+	public UserList getUserList(AccessToken accessToken, String nextOpenid) {
+		if (nextOpenid==null) {
+			nextOpenid = "";
+		}
+		String url = user_list_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken()).replaceAll("NEXT_OPENID", nextOpenid);
+		String json = HttpsRequest.getInstance().processGet(url);
+		UserList userList = JsonObjectConvert.getInstance().jsonToResponse(json, UserList.class, "data", UserList.UserListData.class, "openid");
+		return userList;
 	}
 
 }

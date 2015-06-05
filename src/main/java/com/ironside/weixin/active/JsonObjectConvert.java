@@ -54,20 +54,42 @@ public class JsonObjectConvert {
 	 * 将微信服务器返回的json串转换为属性是List的请求返回对象
 	 * @param json 微信服务器返回的json串
 	 * @param classCls 请求返回类型
-	 * @param attribute 对应List的属性名 
+	 * @param nameOfList 对应List的属性名 
 	 * @param attributeCls 子类的类型
 	 * @return 请求返回对象
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T jsonToResponse(String json, Class<T> classCls, String attribute, Class<?> attributeCls) {
+	public <T> T jsonToResponse(String json, Class<T> classCls, String nameOfList) {
 		json = jsonTemplate.replaceAll("json", json);
 		XStream xStream = new XStream(new JettisonMappedXmlDriver());  
 		xStream.alias("object", classCls);
 		// 设置attribute对应类中List类型
-		xStream.alias(attribute, List.class);
-		xStream.addImplicitCollection(classCls, attribute);
-		xStream.alias(attribute, attributeCls);		
+		xStream.alias(nameOfList, List.class);
+		xStream.addImplicitCollection(classCls, nameOfList);
+		xStream.alias(nameOfList, String.class);		
 		return (T) xStream.fromXML(json);
 	}	
+	
+	/**
+	 * 将微信服务器返回的json串转换为子对象属性是List的请求返回对象
+	 * @param json json 微信服务器返回的json串
+	 * @param classCls classCls 请求返回类型
+	 * @param childClassName 子对象类名
+	 * @param childClassCls 子对象类型
+	 * @param nameOfList 对应List的属性名 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T jsonToResponse(String json, Class<T> classCls, String childClassName, Class<?> childClassCls, String nameOfList) {
+		json = jsonTemplate.replaceAll("json", json);
+		XStream xStream = new XStream(new JettisonMappedXmlDriver());  
+		xStream.alias("object", classCls);
+		xStream.alias(childClassName, childClassCls);
+		// 设置attribute对应类中List类型
+		xStream.alias(nameOfList, List.class);
+		xStream.addImplicitCollection(childClassCls, nameOfList);
+		xStream.alias(nameOfList, String.class);		
+		return (T) xStream.fromXML(json);		
+	}
 	
 }

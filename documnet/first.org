@@ -1,3 +1,5 @@
+** 当前日期： 2015/05/05 周二
+
 - 通用库设计的宗旨，是提供微信处理过程中的通用功能，简化微信处理设计
   IPostProcess和IEncyptPostProcess两个接口，第一个接口是明文微信处理，
   第二个 接口是加密微信处理；用户最终使用者两个接口的实现，
@@ -64,17 +66,65 @@ public class IpAddresses {
 	private List<String> ip_list;
 }
 #+end_src
-   这样的json转换为IpAddress时，需要进行如下设置：
+  这样的json转换为IpAddress时，需要进行如下设置：
 #+begin_src java
 	  /** 用object标识包装json，方便json转换为对象 */
 	  private String jsonTemplate = "{object:json}";
-		XStream xStream = new XStream(new JettisonMappedXmlDriver());  
-		xStream.alias("object", IpAddress.class);
-		// 设置attribute对应类中List类型
-		xStream.alias("ip_list", List.class);
-		xStream.addImplicitCollection(IpAddress.class, "ip_list");
-		xStream.alias("ip_list", String.class);
+ 	  XStream xStream = new XStream(new JettisonMappedXmlDriver());  
+	  xStream.alias("object", IpAddress.class);
+	  // 设置attribute对应类中List类型
+          xStream.alias("ip_list", List.class);
+   	  xStream.addImplicitCollection(IpAddress.class, "ip_list");
+	  xStream.alias("ip_list", String.class);
 #+end_src
+
+- 请求微信服务器的用户列表，返回的是这样的json，转换为下面的类
+
+#+BEGIN_SRC java
+String json = "{"total":2,"count":2,"data":{"openid":["OPENID1","OPENID2"]},"next_openid":"NEXT_OPENID"}";
+package com.ironside.weixin.active.entity;
+
+import java.util.List;
+
+/**
+ * 用户列表类
+ * @author 雪庭
+ * @sine 1.0 at 2015年6月5日
+ */
+public class UserList {
+
+	/** 关注该公众账号的总用户数 */
+	private int total;
+	/** 拉取的OPENID个数，最大值为10000 */
+	private int count;
+	/** 列表数据，OPENID的列表 */
+	private UserListData data;
+	/** 拉取列表的后一个用户的OPENID */
+	private String next_openid; 
+
+	/**
+	 * OPENID的列表数据类
+	 */
+	public class UserListData {
+		
+		List<String> openid;
+
+		
+	}
+}
+#+END_SRC
+  这样的json转换为UserInfo时，需要进行如下设置：
+#+BEGIN_SRC java
+	  /** 用object标识包装json，方便json转换为对象 */
+	  private String jsonTemplate = "{object:json}";
+	  XStream xStream = new XStream(new JettisonMappedXmlDriver());  
+	  xStream.alias("object", UserList.class);
+	  xStream.alias("data", UsereList.UserListData.class);
+	  // 设置attribute对应类中List类型
+	  xStream.alias("openid", List.class);
+	  xStream.addImplicitCollection(UsereList.UserListData.class, "openid");
+	  xStream.alias(nameOfList, String.class);
+#+END_SRC
 
 - 使用apache httpClient和spring-web实现https访问方式，最终使用
   org.springframework.web.client.RestTemplate类发起访问，但是默认的编码是
@@ -100,3 +150,6 @@ public class IpAddresses {
 		converterList.add(converter);
 	}
 #+end_src
+
+
+

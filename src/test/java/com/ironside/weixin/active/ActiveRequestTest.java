@@ -7,10 +7,12 @@ import static org.junit.Assert.assertTrue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.util.Assert;
 
 import com.ironside.weixin.active.entity.AccessToken;
 import com.ironside.weixin.active.entity.IpAddresses;
 import com.ironside.weixin.active.entity.UserInfo;
+import com.ironside.weixin.active.entity.UserList;
 
 public class ActiveRequestTest {
 	
@@ -51,5 +53,14 @@ public class ActiveRequestTest {
 		assertEquals(userInfo.getNickName(), "雪庭");
 		assertEquals(userInfo.getCity(), "兰州市");
 		assertEquals(userInfo.getProvince(), "甘肃");
+	}
+	
+	@Test
+	public void testGetUserList() {
+		AccessToken accessToken = activeRequest.getAccessToken(appid, secret);
+		UserList userList = activeRequest.getUserList(accessToken, null);
+		Assert.notNull(userList);
+		UserList.UserListData data = userList.getData();
+		Assert.notNull(data);
 	}
 }
