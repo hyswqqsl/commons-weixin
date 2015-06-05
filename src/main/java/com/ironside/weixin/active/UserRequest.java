@@ -1,5 +1,7 @@
 package com.ironside.weixin.active;
 
+import net.sf.json.JSONObject;
+
 import com.ironside.weixin.active.entity.AccessToken;
 import com.ironside.weixin.active.entity.UserInfo;
 import com.ironside.weixin.active.entity.UserList;
@@ -29,7 +31,9 @@ public class UserRequest {
 	/** 获取用户信息请求url */
 	private final String user_info_url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
 	/** 获取帐号的关注者列表url */
-	private final String user_list_url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID";	
+	private final String user_list_url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID";
+	/** 设置用户备注名url */
+	private final String user_remark_url = "https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=ACCESS_TOKEN";
 	
 	/**
 	 * 获取用户基本信息(unionId机制)，在关注者与公众号产生消息交互后，
@@ -61,6 +65,22 @@ public class UserRequest {
 		String json = HttpsRequest.getInstance().processGet(url);
 		UserList userList = JsonObjectConvert.getInstance().jsonToResponse(json, UserList.class, "data", UserList.UserListData.class, "openid");
 		return userList;
-	}	
+	}
+	
+	/**
+	 * 设置用户备注
+	 * @param accessToken 公众号的全局凭证
+	 * @param userRemarkJson 用户备注json
+	 * @return
+	 */
+	public boolean setUserRemark(AccessToken accessToken, String userRemarkJson) {
+		String url = user_remark_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
+		String json = HttpsRequest.getInstance().processPost(url, userRemarkJson);
+		JSONObject jsonObject = JSONObject.fromObject(json);
+		if (jsonObject.get("errcode").equals(Integer.valueOf(0))) {
+			return true;
+		}
+		return false;
+	}
 	
 }

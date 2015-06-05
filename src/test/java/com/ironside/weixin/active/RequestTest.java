@@ -14,7 +14,7 @@ import com.ironside.weixin.active.entity.IpAddresses;
 import com.ironside.weixin.active.entity.UserInfo;
 import com.ironside.weixin.active.entity.UserList;
 
-public class ActiveRequestTest {
+public class RequestTest {
 	
 	private final String appid = "wxdce9a330da720609";
 	private final String secret = "a9c33e27b711b683514f8b6404776967";
@@ -60,5 +60,12 @@ public class ActiveRequestTest {
 		Assert.notNull(userList);
 		UserList.UserListData data = userList.getData();
 		Assert.notNull(data);
+	}
+	
+	@Test
+	public void testSetUserRemark() {
+		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+		boolean result = UserRequest.getInstance().setUserRemark(accessToken, "{\"openid\":\"oC2dusx6l3O4EM5fpMpuAADJrVxM\",\"remark\":\"机器\"}");
+		Assert.isTrue(result);
 	}
 }
