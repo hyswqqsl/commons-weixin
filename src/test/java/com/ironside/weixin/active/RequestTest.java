@@ -11,6 +11,7 @@ import org.springframework.util.Assert;
 
 import com.ironside.weixin.WeixinException;
 import com.ironside.weixin.active.entity.AccessToken;
+import com.ironside.weixin.active.entity.Group;
 import com.ironside.weixin.active.entity.IpAddresses;
 import com.ironside.weixin.active.entity.UserInfo;
 import com.ironside.weixin.active.entity.UserList;
@@ -97,5 +98,20 @@ public class RequestTest {
 		} catch (WeixinException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void testCreateUserGroup() {
+		Group resultGroup = null;
+		String name = "好友";
+		try {
+			AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+			Group group = new Group();
+			group.setName(name);
+			resultGroup = UserRequest.getInstance().createGroup(accessToken, group);
+		} catch(WeixinException e) {
+			e.printStackTrace();
+		}
+		assertEquals(resultGroup.getName(), name);
 	}
 }

@@ -43,7 +43,8 @@ public class JsonObjectConvert {
 	}
 	
 	/**
-	 * 将微信服务器返回的json串转换为请求返回对象
+	 * 将微信服务器返回的json串转换为请求返回对象,
+	 * 这种转换方式的json没有类名，需啊先附加类名(object)
 	 * @param json 微信服务器返回的json串
 	 * @param cls 请求返回类型
 	 * @return 请求返回对象
@@ -57,6 +58,21 @@ public class JsonObjectConvert {
 	}
 	
 	/**
+	 * 将微信服务器返回的json串转换为请求返回对象,
+	 * 这种转换方式的json有类名
+	 * @param json 微信服务器返回的json串
+	 * @param cls 请求返回类型
+	 * @param className 类名
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T jsonToObject(String json, Class<T> cls, String className) {
+		XStream xStream = new XStream(new JettisonMappedXmlDriver());
+		xStream.alias(className, cls);
+		return (T) xStream.fromXML(json);
+	}
+	
+	/**
 	 * 将微信服务器返回的json串转换为属性是List的请求返回对象
 	 * @param json 微信服务器返回的json串
 	 * @param classCls 请求返回类型
@@ -65,7 +81,7 @@ public class JsonObjectConvert {
 	 * @return 请求返回对象
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T jsonToObject(String json, Class<T> classCls, String nameOfList) {
+	public <T> T jsonToObjectList(String json, Class<T> classCls, String nameOfList) {
 		json = jsonTemplate.replaceAll("json", json);
 		XStream xStream = new XStream(new JettisonMappedXmlDriver());  
 		xStream.alias("object", classCls);
@@ -79,14 +95,14 @@ public class JsonObjectConvert {
 	/**
 	 * 将微信服务器返回的json串转换为子对象属性是List的请求返回对象
 	 * @param json json 微信服务器返回的json串
-	 * @param classCls classCls 请求返回类型
+	 * @param classCls 请求返回类型
 	 * @param childClassName 子对象类名
 	 * @param childClassCls 子对象类型
 	 * @param nameOfList 对应List的属性名 
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T jsonToObject(String json, Class<T> classCls, String childClassName, Class<?> childClassCls, String nameOfList) {
+	public <T> T jsonToObjectSubList(String json, Class<T> classCls, String childClassName, Class<?> childClassCls, String nameOfList) {
 		json = jsonTemplate.replaceAll("json", json);
 		XStream xStream = new XStream(new JettisonMappedXmlDriver());  
 		xStream.alias("object", classCls);
@@ -98,14 +114,29 @@ public class JsonObjectConvert {
 		return (T) xStream.fromXML(json);		
 	}
 	
-	public <T> String ObjectToJson(Class<T> classCls, T object, boolean annotation) {
-		XStream xStream = new XStream(new JettisonMappedXmlDriver() {
-			public HierarchicalStreamWriter createWriter(Writer writer) {
-				return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-			}
-		});
-		xStream.autodetectAnnotations(annotation);
+	/**
+	 * 对象转换为json，根据实际情况，设置是否显示类名(displayClassName)，是否启用标签(useAnnotation)
+	 * @param classCls 请求返回类型
+	 * @param object 需要转换的对象
+	 * @param displayClassName 是否显示类名
+	 * @param useAnnotation 是否启用标签
+	 * @return 转换后的json串
+	 */
+	public <T> String ObjectToJson(Class<T> classCls, T object, boolean displayClassName, boolean useAnnotation) {
+		XStream xStream;
+		if (displayClassName==true) {
+			// 如果需要在json串中显示类名
+			xStream = new XStream(new JettisonMappedXmlDriver());
+		} else {
+			// 如果不需要在json串中显示类名
+			xStream = new XStream(new JettisonMappedXmlDriver() {
+				public HierarchicalStreamWriter createWriter(Writer writer) {
+					return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+				}
+			});
+		}
 		xStream.setMode(XStream.NO_REFERENCES);
+		xStream.autodetectAnnotations(useAnnotation);
 		String json = (String)xStream.toXML(object);
 		return json;
 	}

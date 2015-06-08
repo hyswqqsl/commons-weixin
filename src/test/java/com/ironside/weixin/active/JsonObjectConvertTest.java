@@ -23,7 +23,7 @@ public class JsonObjectConvertTest {
 	@Test
 	public void testConvertUserList() {
 		String json = "{\"total\":2,\"count\":2,\"data\":{\"openid\":[\"OPENID1\",\"OPENID2\"]},\"next_openid\":\"NEXT_OPENID\"}";
-		UserList userList = JsonObjectConvert.getInstance().jsonToObject(json, UserList.class, "data", UserList.UserListData.class, "openid");
+		UserList userList = JsonObjectConvert.getInstance().jsonToObjectSubList(json, UserList.class, "data", UserList.UserListData.class, "openid");
 		Assert.assertNotNull(userList);
 		Assert.assertEquals(userList.getCount(), 2);
 		Assert.assertEquals(userList.getData().getOpenid().size(), 2);
