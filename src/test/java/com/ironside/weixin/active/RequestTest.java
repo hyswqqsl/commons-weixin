@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
+import com.ironside.weixin.WeixinException;
 import com.ironside.weixin.active.entity.AccessToken;
 import com.ironside.weixin.active.entity.IpAddresses;
 import com.ironside.weixin.active.entity.UserInfo;
@@ -16,7 +17,8 @@ import com.ironside.weixin.active.entity.UserList;
 
 public class RequestTest {
 	
-	private final String appid = "wxdce9a330da720609";
+	// private final String appid = "wxdce9a330da720609";
+	private final String appid = "wxdce9a330da720609a";
 	private final String secret = "a9c33e27b711b683514f8b6404776967";
 	private final String openid = "oC2dusx6l3O4EM5fpMpuAADJrVxM";
 
@@ -30,7 +32,12 @@ public class RequestTest {
 
 	@Test
 	public void testGetAccessToken() {
-		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+		AccessToken accessToken = null;
+		try {
+			accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+		} catch (WeixinException e) {
+			e.printStackTrace();
+		}
 		assertTrue(accessToken.getExpiresIn()>7000 && accessToken.getExpiresIn()<8000);
 		assertTrue(accessToken.isOver()==false);
 		assertFalse(accessToken.getAccessTime()==0);
@@ -38,15 +45,27 @@ public class RequestTest {
 
 	@Test
 	public void testGetIpAddress() {
-		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
-		IpAddresses ipAddress = ActiveRequest.getInstance().getIpAddress(accessToken);
+		AccessToken accessToken = null;
+		IpAddresses ipAddress = null;
+		try {
+			accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+			ipAddress = ActiveRequest.getInstance().getIpAddress(accessToken);
+		} catch (WeixinException e) {
+			e.printStackTrace();
+		}
 		assertTrue(ipAddress.getIpList().size()>0);
 	}
 	
 	@Test 
 	public void testGetUserInfo() {
-		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
-		UserInfo userInfo = UserRequest.getInstance().getUserInfo(accessToken, openid);
+		AccessToken accessToken = null;
+		UserInfo userInfo = null;
+		try {
+			accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+			userInfo = UserRequest.getInstance().getUserInfo(accessToken, openid);
+		} catch (WeixinException e) {
+			e.printStackTrace();
+		}
 		assertEquals(userInfo.getOpenid(), openid);
 		assertEquals(userInfo.getNickName(), "雪庭");
 		assertEquals(userInfo.getCity(), "兰州市");
@@ -55,8 +74,14 @@ public class RequestTest {
 	
 	@Test
 	public void testGetUserList() {
-		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
-		UserList userList = UserRequest.getInstance().getUserList(accessToken, null);
+		AccessToken accessToken = null;
+		UserList userList = null;
+		try {
+			accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+			userList = UserRequest.getInstance().getUserList(accessToken, null);
+		} catch (WeixinException e) {
+			e.printStackTrace();
+		}
 		Assert.notNull(userList);
 		UserList.UserListData data = userList.getData();
 		Assert.notNull(data);
@@ -64,8 +89,12 @@ public class RequestTest {
 	
 	@Test
 	public void testSetUserRemark() {
-		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
-		boolean result = UserRequest.getInstance().setUserRemark(accessToken, "{\"openid\":\"oC2dusx6l3O4EM5fpMpuAADJrVxM\",\"remark\":\"机器\"}");
-		Assert.isTrue(result);
+		AccessToken accessToken = null;
+		try {
+			accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+			UserRequest.getInstance().setUserRemark(accessToken, "{\"openid\":\"oC2dusx6l3O4EM5fpMpuAADJrVxM\",\"remark\":\"机器\"}");
+		} catch (WeixinException e) {
+			e.printStackTrace();
+		}
 	}
 }

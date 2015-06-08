@@ -2,6 +2,11 @@ package com.ironside.weixin.active;
 
 import java.util.List;
 
+import net.sf.json.JSONObject;
+
+import com.ironside.weixin.WeixinEnum;
+import com.ironside.weixin.WeixinException;
+import com.qq.weixin.mp.aes.AesException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 
@@ -90,6 +95,25 @@ public class JsonObjectConvert {
 		xStream.addImplicitCollection(childClassCls, nameOfList);
 		xStream.alias(nameOfList, String.class);		
 		return (T) xStream.fromXML(json);		
+	}
+	
+	/**
+	 * 验证json错误信息，如果json是正常信息，或返回码是0，验证通过，否则抛出WeixinException异常
+	 * @param json 待验证json
+	 * @throws WeixinException 验证不通过，抛出异常
+	 */
+	public void validateResponse(String json) throws WeixinException {
+		JSONObject jsonObject = JSONObject.fromObject(json);
+		Object errcode = jsonObject.get("errcode");
+		if (errcode==null) {
+			return;
+		}
+		if (jsonObject.get("errcode").equals(Integer.valueOf(0))) {
+			return;
+		}		
+		int code = (Integer) jsonObject.get("errcode");
+		String message = (String) jsonObject.get("errmsg");
+		throw new WeixinException(code, message);
 	}
 	
 }

@@ -1,5 +1,6 @@
 package com.ironside.weixin.active;
 
+import com.ironside.weixin.WeixinException;
 import com.ironside.weixin.active.entity.AccessToken;
 import com.ironside.weixin.active.entity.IpAddresses;
 
@@ -46,9 +47,10 @@ public class ActiveRequest {
 	 * 
 	 * @param appid 第三方用户唯一凭证
 	 * @param secret 第三方用户唯一凭证密钥，即appsecret
-	 * @return 公众号全局票据
+	 * @return 公众号全局凭证
+	 * @throws WeixinException 失败时抛出WeixinException异常
 	 */
-	public AccessToken getAccessToken(String appid, String secret) {
+	public AccessToken getAccessToken(String appid, String secret) throws WeixinException {
 		// 如果公众号全局凭证不存在，就生成一个
 		if (accessToken==null) {
 			return doAccessToken(appid, secret);
@@ -66,10 +68,12 @@ public class ActiveRequest {
 	 * @param appid 第三方用户唯一凭证
 	 * @param secret 第三方用户唯一凭证密钥，即appsecret
 	 * @return 公众号全局凭证
+	 * @throws WeixinException 失败时抛出WeixinException异常
 	 */
-	private AccessToken doAccessToken(String appid, String secret) {
+	private AccessToken doAccessToken(String appid, String secret) throws WeixinException {
 		String url = access_token_url.replaceAll("APPID", appid).replaceAll("APPSECRET", secret);
 		String json = HttpsRequest.getInstance().processGet(url);
+		JsonObjectConvert.getInstance().validateResponse(json);		
 		AccessToken accessToken = JsonObjectConvert.getInstance().jsonToResponse(json, AccessToken.class);
 		accessToken.setAccessTime(System.currentTimeMillis()/1000);
 		return accessToken;
@@ -79,10 +83,12 @@ public class ActiveRequest {
 	 * 获得微信服务器的IP地址列表
 	 * @param accessToken 公众号的全局凭证
 	 * @return ip地址列表
+	 * @throws WeixinException 失败时抛出WeixinException异常
 	 */	
-	public IpAddresses getIpAddress(AccessToken accessToken) {
+	public IpAddresses getIpAddress(AccessToken accessToken) throws WeixinException {
 		String url = ip_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
 		String json = HttpsRequest.getInstance().processGet(url);
+		JsonObjectConvert.getInstance().validateResponse(json);		
 		IpAddresses ipAddresses = JsonObjectConvert.getInstance().jsonToResponse(json, IpAddresses.class, "ip_list"); 
 		return ipAddresses;
 	}
