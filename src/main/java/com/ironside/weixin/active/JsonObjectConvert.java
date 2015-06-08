@@ -1,14 +1,15 @@
 package com.ironside.weixin.active;
 
+import java.io.Writer;
 import java.util.List;
 
 import net.sf.json.JSONObject;
 
-import com.ironside.weixin.WeixinEnum;
 import com.ironside.weixin.WeixinException;
-import com.qq.weixin.mp.aes.AesException;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 
 /**
  * json串与对象转换类
@@ -48,9 +49,9 @@ public class JsonObjectConvert {
 	 * @return 请求返回对象
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T jsonToResponse(String json, Class<T> cls) {
+	public <T> T jsonToObject(String json, Class<T> cls) {
 		json = jsonTemplate.replaceAll("json", json);
-		XStream xStream = new XStream(new JettisonMappedXmlDriver());  
+		XStream xStream = new XStream(new JettisonMappedXmlDriver());
 		xStream.alias("object", cls);
 		return (T) xStream.fromXML(json);
 	}
@@ -64,7 +65,7 @@ public class JsonObjectConvert {
 	 * @return 请求返回对象
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T jsonToResponse(String json, Class<T> classCls, String nameOfList) {
+	public <T> T jsonToObject(String json, Class<T> classCls, String nameOfList) {
 		json = jsonTemplate.replaceAll("json", json);
 		XStream xStream = new XStream(new JettisonMappedXmlDriver());  
 		xStream.alias("object", classCls);
@@ -85,7 +86,7 @@ public class JsonObjectConvert {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T jsonToResponse(String json, Class<T> classCls, String childClassName, Class<?> childClassCls, String nameOfList) {
+	public <T> T jsonToObject(String json, Class<T> classCls, String childClassName, Class<?> childClassCls, String nameOfList) {
 		json = jsonTemplate.replaceAll("json", json);
 		XStream xStream = new XStream(new JettisonMappedXmlDriver());  
 		xStream.alias("object", classCls);
@@ -97,12 +98,24 @@ public class JsonObjectConvert {
 		return (T) xStream.fromXML(json);		
 	}
 	
+	public <T> String ObjectToJson(Class<T> classCls, T object, boolean annotation) {
+		XStream xStream = new XStream(new JettisonMappedXmlDriver() {
+			public HierarchicalStreamWriter createWriter(Writer writer) {
+				return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+			}
+		});
+		xStream.autodetectAnnotations(annotation);
+		xStream.setMode(XStream.NO_REFERENCES);
+		String json = (String)xStream.toXML(object);
+		return json;
+	}
+	
 	/**
 	 * 验证json错误信息，如果json是正常信息，或返回码是0，验证通过，否则抛出WeixinException异常
 	 * @param json 待验证json
 	 * @throws WeixinException 验证不通过，抛出异常
 	 */
-	public void validateResponse(String json) throws WeixinException {
+	public void validateJsonException(String json) throws WeixinException {
 		JSONObject jsonObject = JSONObject.fromObject(json);
 		Object errcode = jsonObject.get("errcode");
 		if (errcode==null) {

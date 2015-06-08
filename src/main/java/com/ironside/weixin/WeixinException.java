@@ -1,6 +1,5 @@
 package com.ironside.weixin;
 
-import com.ironside.weixin.active.JsonObjectConvert;
 
 /**
  * 微信异常类

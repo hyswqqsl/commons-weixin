@@ -1,7 +1,5 @@
 package com.ironside.weixin.active;
 
-import net.sf.json.JSONObject;
-
 import com.ironside.weixin.WeixinException;
 import com.ironside.weixin.active.entity.AccessToken;
 import com.ironside.weixin.active.entity.UserInfo;
@@ -36,7 +34,7 @@ public class UserRequest {
 	/** 设置用户备注名url */
 	private final String user_remark_url = "https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=ACCESS_TOKEN";
 	/** 创建分组 */
-	private final String user_create_group_url = "";
+	private final String user_create_group_url = "https://api.weixin.qq.com/cgi-bin/groups/create?access_token=ACCESS_TOKEN";
 	
 	/**
 	 * 获取用户基本信息(unionId机制)，在关注者与公众号产生消息交互后，
@@ -50,8 +48,8 @@ public class UserRequest {
 	public UserInfo getUserInfo(AccessToken accessToken, String openid) throws WeixinException {
 		String url = user_info_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken()).replaceAll("OPENID", openid);
 		String json = HttpsRequest.getInstance().processGet(url);
-		JsonObjectConvert.getInstance().validateResponse(json);		
-		UserInfo userInfo = JsonObjectConvert.getInstance().jsonToResponse(json, UserInfo.class);
+		JsonObjectConvert.getInstance().validateJsonException(json);		
+		UserInfo userInfo = JsonObjectConvert.getInstance().jsonToObject(json, UserInfo.class);
 		return userInfo;
 	}
 	
@@ -69,21 +67,22 @@ public class UserRequest {
 		}
 		String url = user_list_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken()).replaceAll("NEXT_OPENID", nextOpenid);
 		String json = HttpsRequest.getInstance().processGet(url);
-		JsonObjectConvert.getInstance().validateResponse(json);		
-		UserList userList = JsonObjectConvert.getInstance().jsonToResponse(json, UserList.class, "data", UserList.UserListData.class, "openid");
+		JsonObjectConvert.getInstance().validateJsonException(json);		
+		UserList userList = JsonObjectConvert.getInstance().jsonToObject(json, UserList.class, "data", UserList.UserListData.class, "openid");
 		return userList;
 	}
 	
 	/**
 	 * 设置用户备注
 	 * @param accessToken 公众号的全局凭证
-	 * @param userRemarkJson 用户备注json
+	 * @param userInfo 用户信息
 	 * @throws WeixinException 失败时抛出WeixinException异常
 	 */
-	public void setUserRemark(AccessToken accessToken, String userRemarkJson) throws WeixinException {
+	public void setUserRemark(AccessToken accessToken, UserInfo userInfo) throws WeixinException {
 		String url = user_remark_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
+		String userRemarkJson = JsonObjectConvert.getInstance().ObjectToJson(UserInfo.class, userInfo, true);
 		String json = HttpsRequest.getInstance().processPost(url, userRemarkJson);
-		JsonObjectConvert.getInstance().validateResponse(json);
+		JsonObjectConvert.getInstance().validateJsonException(json);
 	}
 	
 }

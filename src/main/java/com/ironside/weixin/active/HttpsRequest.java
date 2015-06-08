@@ -94,6 +94,22 @@ public class HttpsRequest {
 				HttpMethod.POST, httpEntity, String.class);
 		return response.getBody();
 	}
+	
+	/**
+	 * https方式访问，get方法
+	 * 
+	 * @param httpsUrl
+	 *            https地址
+	 * @param json
+	 *            post方式发送的json串
+	 * @return 微信服务器返回的json串
+	 */
+	public String processPost(String httpsUrl, String json, boolean annotions) {
+		HttpEntity<String> httpEntity = new HttpEntity<String>(json);
+		ResponseEntity<String> response = getRestTemplate().exchange(httpsUrl,
+				HttpMethod.POST, httpEntity, String.class);
+		return response.getBody();
+	}	
 
 	/**
 	 * 单例模式

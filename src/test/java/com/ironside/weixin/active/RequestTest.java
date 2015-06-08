@@ -17,8 +17,7 @@ import com.ironside.weixin.active.entity.UserList;
 
 public class RequestTest {
 	
-	// private final String appid = "wxdce9a330da720609";
-	private final String appid = "wxdce9a330da720609a";
+	private final String appid = "wxdce9a330da720609";
 	private final String secret = "a9c33e27b711b683514f8b6404776967";
 	private final String openid = "oC2dusx6l3O4EM5fpMpuAADJrVxM";
 
@@ -89,10 +88,12 @@ public class RequestTest {
 	
 	@Test
 	public void testSetUserRemark() {
-		AccessToken accessToken = null;
 		try {
-			accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
-			UserRequest.getInstance().setUserRemark(accessToken, "{\"openid\":\"oC2dusx6l3O4EM5fpMpuAADJrVxM\",\"remark\":\"机器\"}");
+			AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+			UserInfo userInfo = new UserInfo();
+			userInfo.setOpenid(openid);
+			userInfo.setRemark("湛然");
+			UserRequest.getInstance().setUserRemark(accessToken, userInfo); 
 		} catch (WeixinException e) {
 			e.printStackTrace();
 		}

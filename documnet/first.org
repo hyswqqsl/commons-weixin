@@ -153,3 +153,8 @@ public class UserList {
 
 
 
+** 当前日期: 2015/06/08 周一 
+   //启用Annotation
+   //xstream.autodetectAnnotations(true);
+
+http://www.oschina.net/code/snippet_116183_14202

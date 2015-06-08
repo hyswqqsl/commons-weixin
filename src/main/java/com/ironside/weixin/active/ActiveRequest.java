@@ -73,8 +73,8 @@ public class ActiveRequest {
 	private AccessToken doAccessToken(String appid, String secret) throws WeixinException {
 		String url = access_token_url.replaceAll("APPID", appid).replaceAll("APPSECRET", secret);
 		String json = HttpsRequest.getInstance().processGet(url);
-		JsonObjectConvert.getInstance().validateResponse(json);		
-		AccessToken accessToken = JsonObjectConvert.getInstance().jsonToResponse(json, AccessToken.class);
+		JsonObjectConvert.getInstance().validateJsonException(json);		
+		AccessToken accessToken = JsonObjectConvert.getInstance().jsonToObject(json, AccessToken.class);
 		accessToken.setAccessTime(System.currentTimeMillis()/1000);
 		return accessToken;
 	}
@@ -88,8 +88,8 @@ public class ActiveRequest {
 	public IpAddresses getIpAddress(AccessToken accessToken) throws WeixinException {
 		String url = ip_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
 		String json = HttpsRequest.getInstance().processGet(url);
-		JsonObjectConvert.getInstance().validateResponse(json);		
-		IpAddresses ipAddresses = JsonObjectConvert.getInstance().jsonToResponse(json, IpAddresses.class, "ip_list"); 
+		JsonObjectConvert.getInstance().validateJsonException(json);		
+		IpAddresses ipAddresses = JsonObjectConvert.getInstance().jsonToObject(json, IpAddresses.class, "ip_list"); 
 		return ipAddresses;
 	}
 
