@@ -2,6 +2,7 @@ package com.ironside.weixin.active;
 
 import com.ironside.weixin.WeixinException;
 import com.ironside.weixin.active.entity.AccessToken;
+import com.ironside.weixin.active.entity.Group;
 import com.ironside.weixin.active.entity.UserInfo;
 import com.ironside.weixin.active.entity.UserList;
 
@@ -68,7 +69,7 @@ public class UserRequest {
 		String url = user_list_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken()).replaceAll("NEXT_OPENID", nextOpenid);
 		String json = HttpsRequest.getInstance().processGet(url);
 		JsonObjectConvert.getInstance().validateJsonException(json);		
-		UserList userList = JsonObjectConvert.getInstance().jsonToObject(json, UserList.class, "data", UserList.UserListData.class, "openid");
+		UserList userList = JsonObjectConvert.getInstance().jsonToObjectSubList(json, UserList.class, "data", UserList.UserListData.class, "openid");
 		return userList;
 	}
 	
@@ -80,9 +81,25 @@ public class UserRequest {
 	 */
 	public void setUserRemark(AccessToken accessToken, UserInfo userInfo) throws WeixinException {
 		String url = user_remark_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
-		String userRemarkJson = JsonObjectConvert.getInstance().ObjectToJson(UserInfo.class, userInfo, true);
+		String userRemarkJson = JsonObjectConvert.getInstance().ObjectToJson(UserInfo.class, userInfo, false);
 		String json = HttpsRequest.getInstance().processPost(url, userRemarkJson);
 		JsonObjectConvert.getInstance().validateJsonException(json);
+	}
+	
+	/**
+	 * 创建分组
+	 * @param accessToken 公众号的全局凭证
+	 * @param group 用户组
+	 * @return 返回的用户组
+	 * @throws WeixinException 失败时抛出WeixinException异常
+	 */
+	public Group createGroup(AccessToken accessToken, Group group) throws WeixinException {
+		String url = user_create_group_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
+		String userGroupJson = JsonObjectConvert.getInstance().ObjectToJson(Group.class, group, true);
+		String json = HttpsRequest.getInstance().processPost(url, userGroupJson);
+		JsonObjectConvert.getInstance().validateJsonException(json);
+		Group resultGroup = JsonObjectConvert.getInstance().jsonToObject(json, Group.class, "group");
+		return resultGroup;
 	}
 	
 }

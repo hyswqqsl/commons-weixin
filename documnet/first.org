@@ -154,7 +154,97 @@ public class UserList {
 
 
 ** 当前日期: 2015/06/08 周一 
+
+- XStream的资料
+#+begin_example
    //启用Annotation
    //xstream.autodetectAnnotations(true);
 
-http://www.oschina.net/code/snippet_116183_14202
+   http://www.oschina.net/code/snippet_116183_14202
+#+end_example
+
+- UserInfo实体，在获取用户信息时，json转换为实体，使用全部字段，不使用标签；在设
+  置用户备注时，只使用oppenid和remark字段，所以在实体中使用了忽略标签
+#+begin_src java
+public class UserInfo {
+
+	/** 用户是否订阅该公众号标识，值为0时，代表此用户没有关注该公众号，拉取不到其余信息 */
+	@XStreamOmitField
+	private int subscribe;
+	/** 用户的标识，对当前公众号唯一 */
+	private String openid;	
+	/** 用户的昵称 */
+	@XStreamOmitField
+	private String nickname;
+	/** 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知 */
+	@XStreamOmitField
+	private int sex;
+	/** 用户所在城市 */
+	@XStreamOmitField
+	private String city;
+	/** 用户所在国家 */
+#+end_src
+
+- 微信返回的json有两种，一种不带类名，直接是信息
+#+begin_example
+{"access_token":"ACCESS_TOKEN","expires_in":7200}
+#+end_example
+   一种是带类名
+#+begin_example
+{
+    "group": {
+        "id": 107, 
+        "name": "test"
+    }
+}
+#+end_example
+   两种json转换为对象的方式有些区别，第一种json需要先附加类名(object)，然后设置
+   类名是object
+#+begin_src java
+	/**
+	 * 将微信服务器返回的json串转换为请求返回对象,
+	 * 这种转换方式的json没有类名，需要先附加类名(object)
+	 * @param json 微信服务器返回的json串
+	 * @param cls 请求返回类型
+	 * @return 请求返回对象
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T jsonToObject(String json, Class<T> cls) {
+		json = jsonTemplate.replaceAll("json", json);
+		XStream xStream = new XStream(new JettisonMappedXmlDriver());
+		xStream.alias("object", cls);
+		return (T) xStream.fromXML(json);
+	}
+#+end_src
+   第二种json中有类名，需要在方法中指定类名
+#+begin_src java
+	/**
+	 * 将微信服务器返回的json串转换为请求返回对象,
+	 * 这种转换方式的json有类名
+	 * @param json 微信服务器返回的json串
+	 * @param cls 请求返回类型
+	 * @param className 类名
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T jsonToObject(String json, Class<T> cls, String className) {
+		XStream xStream = new XStream(new JettisonMappedXmlDriver());
+		xStream.alias(className, cls);
+		return (T) xStream.fromXML(json);
+	}
+#+end_src
+   
+- 对象转换为json，根据实际情况，设置是否显示类名(displayClassName)，是否启用标签
+  (useAnnotation)
+  
+  设置用户备注时，转换后的json是不需要类名的，新建用户组时，转换后的json是需要
+  类名的，所以两个对象的转换参数是不一样的。
+#+begin_src java
+// 设置用户备注
+String userRemarkJson = JsonObjectConvert.getInstance().ObjectToJson(UserInfo.class, userInfo, false, true);
+// 创建分组
+String userGroupJson = JsonObjectConvert.getInstance().ObjectToJson(Group.class, group, true, true);
+#+end_src
+
+- 关于实体标签，json转换为实体时，必然使用标签，实体转换为json时，必然不使用标签
+

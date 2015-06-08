@@ -44,7 +44,7 @@ public class JsonObjectConvert {
 	
 	/**
 	 * 将微信服务器返回的json串转换为请求返回对象,
-	 * 这种转换方式的json没有类名，需啊先附加类名(object)
+	 * 这种转换方式的json没有类名，需要先附加类名(object)
 	 * @param json 微信服务器返回的json串
 	 * @param cls 请求返回类型
 	 * @return 请求返回对象
@@ -119,10 +119,9 @@ public class JsonObjectConvert {
 	 * @param classCls 请求返回类型
 	 * @param object 需要转换的对象
 	 * @param displayClassName 是否显示类名
-	 * @param useAnnotation 是否启用标签
 	 * @return 转换后的json串
 	 */
-	public <T> String ObjectToJson(Class<T> classCls, T object, boolean displayClassName, boolean useAnnotation) {
+	public <T> String ObjectToJson(Class<T> classCls, T object, boolean displayClassName) {
 		XStream xStream;
 		if (displayClassName==true) {
 			// 如果需要在json串中显示类名
@@ -136,7 +135,7 @@ public class JsonObjectConvert {
 			});
 		}
 		xStream.setMode(XStream.NO_REFERENCES);
-		xStream.autodetectAnnotations(useAnnotation);
+		xStream.autodetectAnnotations(true);
 		String json = (String)xStream.toXML(object);
 		return json;
 	}
