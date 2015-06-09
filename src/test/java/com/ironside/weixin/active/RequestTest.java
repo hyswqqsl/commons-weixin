@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 import com.ironside.weixin.WeixinException;
 import com.ironside.weixin.active.entity.AccessToken;
 import com.ironside.weixin.active.entity.Group;
+import com.ironside.weixin.active.entity.Groupes;
 import com.ironside.weixin.active.entity.IpAddresses;
 import com.ironside.weixin.active.entity.UserInfo;
 import com.ironside.weixin.active.entity.UserList;
@@ -83,8 +84,8 @@ public class RequestTest {
 			e.printStackTrace();
 		}
 		Assert.notNull(userList);
-		UserList.UserListData data = userList.getData();
-		Assert.notNull(data);
+		UserList.Useres useres = userList.getUseres();
+		Assert.notNull(useres);
 	}
 	
 	@Test
@@ -101,7 +102,7 @@ public class RequestTest {
 	}
 	
 	@Test
-	public void testCreateUserGroup() {
+	public void testCreateGroup() {
 		Group resultGroup = null;
 		String name = "好友";
 		try {
@@ -113,5 +114,19 @@ public class RequestTest {
 			e.printStackTrace();
 		}
 		assertEquals(resultGroup.getName(), name);
+	}
+	
+	@Test
+	public void testQueryGroupes() {
+		// 先建立一个分组
+		testCreateGroup();
+		Groupes groupes = null;
+		try {
+			AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+			groupes = UserRequest.getInstance().getGroupes(accessToken);
+		} catch(WeixinException e) {
+			e.printStackTrace();
+		}
+		assertTrue((groupes.getGroupList().size()>1));
 	}
 }

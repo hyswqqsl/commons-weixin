@@ -2,6 +2,8 @@ package com.ironside.weixin.active.entity;
 
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 /**
  * 用户列表类
  * @author 雪庭
@@ -14,7 +16,8 @@ public class UserList {
 	/** 拉取的OPENID个数，最大值为10000 */
 	private int count;
 	/** 列表数据，OPENID的列表 */
-	private UserListData data;
+	@XStreamAlias("data")
+	private Useres useres;
 	/** 拉取列表的后一个用户的OPENID */
 	private String next_openid; 
 
@@ -34,12 +37,12 @@ public class UserList {
 		this.count = count;
 	}
 
-	public UserListData getData() {
-		return data;
+	public Useres getUseres() {
+		return useres;
 	}
 
-	public void setData(UserListData data) {
-		this.data = data;
+	public void setUseres(Useres useres) {
+		this.useres = useres;
 	}
 
 	public String getNextOpenid() {
@@ -53,7 +56,7 @@ public class UserList {
 	/**
 	 * OPENID的列表数据类
 	 */
-	public class UserListData {
+	public class Useres {
 		
 		List<String> openid;
 

@@ -14,6 +14,8 @@ public class Group {
 	@XStreamOmitField
 	private int id;
 	private String name;
+	@XStreamOmitField
+	private int count;
 	
 	public int getId() {
 		return id;
@@ -26,6 +28,12 @@ public class Group {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public int getCount() {
+		return count;
+	}
+	public void setCount(int count) {
+		this.count = count;
 	}
 	
 

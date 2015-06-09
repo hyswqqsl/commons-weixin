@@ -1,0 +1,27 @@
+package com.ironside.weixin.active.entity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 用户所有分组
+ * @author 雪庭
+ * @sine 1.0 at 2015年6月9日
+ */
+public class Groupes {
+
+	private List<Group> groups;
+	
+	public Groupes() {
+		this.groups = new ArrayList<Group>();
+	}
+
+	public List<Group> getGroupList() {
+		return groups;
+	}
+
+	public void setGroupList(List<Group> groupList) {
+		this.groups = groupList;
+	}
+
+}

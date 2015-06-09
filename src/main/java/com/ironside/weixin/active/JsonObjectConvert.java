@@ -81,14 +81,14 @@ public class JsonObjectConvert {
 	 * @return 请求返回对象
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T jsonToObjectList(String json, Class<T> classCls, String nameOfList) {
+	public <T> T jsonToObjectList(String json, Class<T> classCls, Class<?> childClassCls, String nameOfList) {
 		json = jsonTemplate.replaceAll("json", json);
 		XStream xStream = new XStream(new JettisonMappedXmlDriver());  
 		xStream.alias("object", classCls);
 		// 设置attribute对应类中List类型
 		xStream.alias(nameOfList, List.class);
 		xStream.addImplicitCollection(classCls, nameOfList);
-		xStream.alias(nameOfList, String.class);		
+		xStream.alias(nameOfList, childClassCls);
 		return (T) xStream.fromXML(json);
 	}	
 	
@@ -105,6 +105,7 @@ public class JsonObjectConvert {
 	public <T> T jsonToObjectSubList(String json, Class<T> classCls, String childClassName, Class<?> childClassCls, String nameOfList) {
 		json = jsonTemplate.replaceAll("json", json);
 		XStream xStream = new XStream(new JettisonMappedXmlDriver());  
+		xStream.autodetectAnnotations(true);
 		xStream.alias("object", classCls);
 		xStream.alias(childClassName, childClassCls);
 		// 设置attribute对应类中List类型

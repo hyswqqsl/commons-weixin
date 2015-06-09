@@ -89,7 +89,7 @@ public class ActiveRequest {
 		String url = ip_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
 		String json = HttpsRequest.getInstance().processGet(url);
 		JsonObjectConvert.getInstance().validateJsonException(json);		
-		IpAddresses ipAddresses = JsonObjectConvert.getInstance().jsonToObjectList(json, IpAddresses.class, "ip_list"); 
+		IpAddresses ipAddresses = JsonObjectConvert.getInstance().jsonToObjectList(json, IpAddresses.class, String.class, "ip_list"); 
 		return ipAddresses;
 	}
 
