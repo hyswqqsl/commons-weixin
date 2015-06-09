@@ -71,8 +71,8 @@ public class UserRequest {
 		}
 		String url = user_list_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken()).replaceAll("NEXT_OPENID", nextOpenid);
 		String json = HttpsRequest.getInstance().processGet(url);
-		JsonObjectConvert.getInstance().validateJsonException(json);		
-		UserList userList = JsonObjectConvert.getInstance().jsonToObjectSubList(json, UserList.class, "data", UserList.Useres.class, "openid", String.class);
+		JsonObjectConvert.getInstance().validateJsonException(json);
+		UserList userList = JsonObjectConvert.getInstance().jsonToObject(json, UserList.class, true); 
 		return userList;
 	}
 	
@@ -84,7 +84,7 @@ public class UserRequest {
 	 */
 	public void setUserRemark(AccessToken accessToken, UserInfo userInfo) throws WeixinException {
 		String url = user_remark_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
-		String userRemarkJson = JsonObjectConvert.getInstance().ObjectToJson(UserInfo.class, userInfo, false);
+		String userRemarkJson = JsonObjectConvert.getInstance().ObjectToJsonNoClassName(UserInfo.class, userInfo);
 		String json = HttpsRequest.getInstance().processPost(url, userRemarkJson);
 		JsonObjectConvert.getInstance().validateJsonException(json);
 	}
@@ -115,7 +115,7 @@ public class UserRequest {
 		String url = query_group_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
 		String json = HttpsRequest.getInstance().processGet(url);
 		JsonObjectConvert.getInstance().validateJsonException(json);		
-		Groupes groupes = JsonObjectConvert.getInstance().jsonToObjectList(json, Groupes.class, "groups", Group.class); 
+		Groupes groupes = JsonObjectConvert.getInstance().jsonToObject(json, Groupes.class, "groups", true);
 		return groupes;
 	}
 	

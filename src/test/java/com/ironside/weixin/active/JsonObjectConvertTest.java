@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ironside.weixin.active.entity.IpAddresses;
 import com.ironside.weixin.active.entity.UserList;
 
 public class JsonObjectConvertTest {
@@ -16,11 +17,19 @@ public class JsonObjectConvertTest {
 	@After
 	public void tearDown() throws Exception {
 	}
+	
+	@Test
+	public void testConvertIpAddresses() {
+		String json = "{\"ip_list\":[\"127.0.0.1\",\"127.0.0.1\"]}";
+		IpAddresses ipAddresses = JsonObjectConvert.getInstance().jsonToObject(json, IpAddresses.class, "ip_list", true);
+		Assert.assertNotNull(ipAddresses);
+		Assert.assertNotNull(ipAddresses.getIpList().get(0));
+	}	
 
 	@Test
 	public void testConvertUserList() {
 		String json = "{\"total\":2,\"count\":2,\"data\":{\"openid\":[\"OPENID1\",\"OPENID2\"]},\"next_openid\":\"NEXT_OPENID\"}";
-		UserList userList = JsonObjectConvert.getInstance().jsonToObjectSubList(json, UserList.class, "data", UserList.Useres.class, "openid", String.class);
+		UserList userList = JsonObjectConvert.getInstance().jsonToObject(json, UserList.class, true); 
 		Assert.assertNotNull(userList);
 		Assert.assertEquals(userList.getCount(), 2);
 		Assert.assertEquals(userList.getUseres().getOpenidList().size(), 2);

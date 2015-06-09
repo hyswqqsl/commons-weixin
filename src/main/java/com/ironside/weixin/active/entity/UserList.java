@@ -3,6 +3,7 @@ package com.ironside.weixin.active.entity;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * 用户列表类
@@ -58,6 +59,7 @@ public class UserList {
 	 */
 	public class Useres {
 		
+		@XStreamImplicit
 		List<String> openid;
 
 		public List<String> getOpenidList() {
