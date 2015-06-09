@@ -77,18 +77,18 @@ public class JsonObjectConvert {
 	 * @param json 微信服务器返回的json串
 	 * @param classCls 请求返回类型
 	 * @param nameOfList 对应List的属性名 
-	 * @param attributeCls 子类的类型
+	 * @param nameCls 对应List的属性类型
 	 * @return 请求返回对象
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T jsonToObjectList(String json, Class<T> classCls, Class<?> childClassCls, String nameOfList) {
+	public <T> T jsonToObjectList(String json, Class<T> classCls, String nameOfList, Class<?> nameCls) {
 		json = jsonTemplate.replaceAll("json", json);
 		XStream xStream = new XStream(new JettisonMappedXmlDriver());  
 		xStream.alias("object", classCls);
 		// 设置attribute对应类中List类型
 		xStream.alias(nameOfList, List.class);
 		xStream.addImplicitCollection(classCls, nameOfList);
-		xStream.alias(nameOfList, childClassCls);
+		xStream.alias(nameOfList, nameCls);
 		return (T) xStream.fromXML(json);
 	}	
 	
@@ -98,11 +98,12 @@ public class JsonObjectConvert {
 	 * @param classCls 请求返回类型
 	 * @param childClassName 子对象类名
 	 * @param childClassCls 子对象类型
-	 * @param nameOfList 对应List的属性名 
+	 * @param nameOfList 对应List的属性名
+	 * @param nameCls 对应List的属性类型
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T jsonToObjectSubList(String json, Class<T> classCls, String childClassName, Class<?> childClassCls, String nameOfList) {
+	public <T> T jsonToObjectSubList(String json, Class<T> classCls, String childClassName, Class<?> childClassCls, String nameOfList, Class<?> nameClas) {
 		json = jsonTemplate.replaceAll("json", json);
 		XStream xStream = new XStream(new JettisonMappedXmlDriver());  
 		xStream.autodetectAnnotations(true);
@@ -111,7 +112,7 @@ public class JsonObjectConvert {
 		// 设置attribute对应类中List类型
 		xStream.alias(nameOfList, List.class);
 		xStream.addImplicitCollection(childClassCls, nameOfList);
-		xStream.alias(nameOfList, String.class);		
+		xStream.alias(nameOfList, nameClas);		
 		return (T) xStream.fromXML(json);		
 	}
 	

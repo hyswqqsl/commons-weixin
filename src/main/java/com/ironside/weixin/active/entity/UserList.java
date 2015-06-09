@@ -60,11 +60,11 @@ public class UserList {
 		
 		List<String> openid;
 
-		public List<String> getOpenid() {
+		public List<String> getOpenidList() {
 			return openid;
 		}
 
-		public void setOpenid(List<String> openid) {
+		public void setOpenidList(List<String> openid) {
 			this.openid = openid;
 		}
 		

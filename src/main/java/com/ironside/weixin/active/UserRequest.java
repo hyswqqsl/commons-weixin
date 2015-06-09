@@ -72,7 +72,7 @@ public class UserRequest {
 		String url = user_list_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken()).replaceAll("NEXT_OPENID", nextOpenid);
 		String json = HttpsRequest.getInstance().processGet(url);
 		JsonObjectConvert.getInstance().validateJsonException(json);		
-		UserList userList = JsonObjectConvert.getInstance().jsonToObjectSubList(json, UserList.class, "data", UserList.Useres.class, "openid");
+		UserList userList = JsonObjectConvert.getInstance().jsonToObjectSubList(json, UserList.class, "data", UserList.Useres.class, "openid", String.class);
 		return userList;
 	}
 	
@@ -106,7 +106,7 @@ public class UserRequest {
 	}
 	
 	/**
-	 * 
+	 * 获取所有分组
 	 * @param accessToken
 	 * @return
 	 * @throws WeixinException
@@ -115,7 +115,7 @@ public class UserRequest {
 		String url = query_group_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
 		String json = HttpsRequest.getInstance().processGet(url);
 		JsonObjectConvert.getInstance().validateJsonException(json);		
-		Groupes groupes = JsonObjectConvert.getInstance().jsonToObjectList(json, Groupes.class, Group.class, "groups"); 
+		Groupes groupes = JsonObjectConvert.getInstance().jsonToObjectList(json, Groupes.class, "groups", Group.class); 
 		return groupes;
 	}
 	

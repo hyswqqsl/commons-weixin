@@ -86,6 +86,7 @@ public class RequestTest {
 		Assert.notNull(userList);
 		UserList.Useres useres = userList.getUseres();
 		Assert.notNull(useres);
+		Assert.notNull(useres.getOpenidList().get(0));
 	}
 	
 	@Test

@@ -5,9 +5,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-
-
-
 import com.ironside.weixin.active.entity.UserList;
 
 public class JsonObjectConvertTest {
@@ -23,12 +20,12 @@ public class JsonObjectConvertTest {
 	@Test
 	public void testConvertUserList() {
 		String json = "{\"total\":2,\"count\":2,\"data\":{\"openid\":[\"OPENID1\",\"OPENID2\"]},\"next_openid\":\"NEXT_OPENID\"}";
-		UserList userList = JsonObjectConvert.getInstance().jsonToObjectSubList(json, UserList.class, "data", UserList.Useres.class, "openid");
+		UserList userList = JsonObjectConvert.getInstance().jsonToObjectSubList(json, UserList.class, "data", UserList.Useres.class, "openid", String.class);
 		Assert.assertNotNull(userList);
 		Assert.assertEquals(userList.getCount(), 2);
-		Assert.assertEquals(userList.getUseres().getOpenid().size(), 2);
-		Assert.assertEquals(userList.getUseres().getOpenid().get(0), "OPENID1");
-		Assert.assertEquals(userList.getUseres().getOpenid().get(1), "OPENID2");
+		Assert.assertEquals(userList.getUseres().getOpenidList().size(), 2);
+		Assert.assertEquals(userList.getUseres().getOpenidList().get(0), "OPENID1");
+		Assert.assertEquals(userList.getUseres().getOpenidList().get(1), "OPENID2");
 		Assert.assertEquals(userList.getNextOpenid(), "NEXT_OPENID");
 	}
 
