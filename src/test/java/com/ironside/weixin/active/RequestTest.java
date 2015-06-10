@@ -115,6 +115,7 @@ public class RequestTest {
 			e.printStackTrace();
 		}
 		assertEquals(resultGroup.getName(), name);
+		assertTrue((resultGroup.getId()>0));
 	}
 	
 	@Test
@@ -129,5 +130,36 @@ public class RequestTest {
 			e.printStackTrace();
 		}
 		assertTrue((groupes.getGroupList().size()>1));
+		assertTrue((groupes.getGroupList().get(1).getId()>0));
+	}
+	
+	@Test
+	public void testUpdateGroup() {
+		// 先获得分组
+		Groupes groupes = null;
+		AccessToken accessToken = null;
+		try {
+			accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+			groupes = UserRequest.getInstance().getGroupes(accessToken);
+		} catch(WeixinException e) {
+			e.printStackTrace();
+		}
+		// 修改分组名
+		Group group = groupes.getGroupList().get(3);
+		String name = "flysic";
+		group.setName(name);
+		try {
+			UserRequest.getInstance().updateGroup(accessToken, group);
+		} catch (WeixinException e) {
+			e.printStackTrace();
+		}
+		// 验证
+		try {
+			groupes = UserRequest.getInstance().getGroupes(accessToken);
+		} catch(WeixinException e) {
+			e.printStackTrace();
+		}
+		assertEquals(groupes.getGroupList().get(3).getId(), group.getId());
+		assertEquals(groupes.getGroupList().get(3).getName(), name);
 	}
 }

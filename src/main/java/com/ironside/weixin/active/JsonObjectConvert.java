@@ -48,7 +48,7 @@ public class JsonObjectConvert {
 	 * @return 转换后的对象
 	 */
 	public <T> T jsonToObject(String json, Class<T> cls) {
-		return jsonToObject(json, cls, false);
+		return jsonToObject(json, cls, true);
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class JsonObjectConvert {
 	 * @return 转换后的对象
 	 */
 	public <T> T jsonToObject(String json, Class<T> cls, String className) {
-		return jsonToObject(json, cls, className, false);
+		return jsonToObject(json, cls, className, true);
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class JsonObjectConvert {
 	 * @return 转换后的json串
 	 */
 	public <T> String ObjectToJson(Class<T> classCls, T object) {
-		return ObjectToJson(classCls, object, false);
+		return ObjectToJson(classCls, object, true);
 	}
 	
 	/**
@@ -126,7 +126,7 @@ public class JsonObjectConvert {
 	 * @return 转换后的json串
 	 */
 	public <T> String ObjectToJsonNoClassName(Class<T> classCls, T object) {
-		return ObjectToJsonNoClassName(classCls, object, false);
+		return ObjectToJsonNoClassName(classCls, object, true);
 	}
 
 	/**

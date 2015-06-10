@@ -11,10 +11,8 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @XStreamAlias("group")
 public class Group {
 
-	@XStreamOmitField
 	private int id;
 	private String name;
-	@XStreamOmitField
 	private int count;
 	
 	public int getId() {

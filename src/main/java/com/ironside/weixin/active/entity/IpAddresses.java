@@ -3,8 +3,15 @@ package com.ironside.weixin.active.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
+/**
+ * ip地址列表
+ * @author 雪庭
+ * @sine 1.0 at 2015年6月10日
+ */
+@XStreamAlias("ipAddresses")
 public class IpAddresses {
 	
 	@XStreamImplicit
@@ -21,6 +28,5 @@ public class IpAddresses {
 	public void setIpList(List<String> ipList) {
 		this.ip_list = ipList;
 	}
-
 
 }

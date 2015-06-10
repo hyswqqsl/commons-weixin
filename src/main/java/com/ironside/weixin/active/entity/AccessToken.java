@@ -1,5 +1,7 @@
 package com.ironside.weixin.active.entity;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 
 /**
  * access_token是公众号的全局唯一凭证，公众号调用各接口时都需使用access_token。
@@ -9,6 +11,7 @@ package com.ironside.weixin.active.entity;
  * @author 雪庭
  * @sine 1.0 at 2015年5月29日
  */
+@XStreamAlias("accessToken")
 public class AccessToken {
 
 	/** 获取到的凭证 */

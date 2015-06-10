@@ -10,6 +10,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  * @author 雪庭
  * @sine 1.0 at 2015年6月5日
  */
+@XStreamAlias("userList")
 public class UserList {
 
 	/** 关注该公众账号的总用户数 */
