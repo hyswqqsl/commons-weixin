@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.expression.spel.ast.OpPlus;
 import org.springframework.util.Assert;
 
 import com.ironside.weixin.WeixinException;
@@ -161,5 +162,38 @@ public class RequestTest {
 		}
 		assertEquals(groupes.getGroupList().get(3).getId(), group.getId());
 		assertEquals(groupes.getGroupList().get(3).getName(), name);
+	}
+	
+	@Test
+	public void testUpdateUserGroup() {
+		// 先获得分组
+		Groupes groupes = null;
+		AccessToken accessToken = null;
+		try {
+			accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+			groupes = UserRequest.getInstance().getGroupes(accessToken);
+		} catch(WeixinException e) {
+			e.printStackTrace();
+		}
+		Group group = groupes.getGroupList().get(3);
+		// 建立用户信息
+		UserInfo userInfo = new UserInfo();
+		userInfo.setOpenid(openid);
+		userInfo.setGroupId(group.getId());
+		// 修改用户群组
+		try {
+			UserRequest.getInstance().updateUserGroup(accessToken, userInfo);
+		} catch (WeixinException e) {
+			e.printStackTrace();
+		}
+		// 验证，查询用户信息
+		UserInfo userInfo2 = null;
+		try {
+			userInfo2 = UserRequest.getInstance().getUserInfo(accessToken, openid);
+		} catch (WeixinException e) {
+			e.printStackTrace();
+		}
+		assertEquals(userInfo2.getOpenid(), userInfo.getOpenid());
+		assertEquals(userInfo2.getGroupId(), userInfo.getGroupId());
 	}
 }

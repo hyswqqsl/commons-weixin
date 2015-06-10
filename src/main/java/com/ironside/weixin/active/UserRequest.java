@@ -33,7 +33,7 @@ public class UserRequest {
 	private final String user_info_url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
 	/** 获取帐号的关注者列表url */
 	private final String user_list_url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID";
-	/** 设置用户备注名url */
+	/** 修改用户备注名url */
 	private final String user_remark_url = "https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=ACCESS_TOKEN";
 	/** 创建分组 */
 	private final String create_group_url = "https://api.weixin.qq.com/cgi-bin/groups/create?access_token=ACCESS_TOKEN";
@@ -41,6 +41,8 @@ public class UserRequest {
 	private final String query_group_url = "https://api.weixin.qq.com/cgi-bin/groups/get?access_token=ACCESS_TOKEN";
 	/** 修改分组名 */
 	private final String update_query_name_url = "https://api.weixin.qq.com/cgi-bin/groups/update?access_token=ACCESS_TOKEN";
+	/** 修改用户分组 */
+	private final String update_user_group_url = "https://api.weixin.qq.com/cgi-bin/groups/members/update?access_token=ACCESS_TOKEN";
 	
 	/**
 	 * 获取用户基本信息(unionId机制)，在关注者与公众号产生消息交互后，
@@ -131,6 +133,20 @@ public class UserRequest {
 		String url = update_query_name_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
 		String userGroupUrl = JsonObjectConvert.getInstance().ObjectToJson(Group.class, group);
 		String json = HttpsRequest.getInstance().processPost(url, userGroupUrl);
+		JsonObjectConvert.getInstance().validateJsonException(json);
+	}
+	
+	/**
+	 * 修改用户分组
+	 * @param accessToken 公众号的全局凭证
+	 * @param userInfo 用户信息
+	 * @throws WeixinException 失败时抛出WeixinException异常
+	 */
+	public void updateUserGroup(AccessToken accessToken, UserInfo userInfo) throws WeixinException {
+		String url = update_user_group_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
+		String userInfoUrl = JsonObjectConvert.getInstance().ObjectToJsonNoClassName(UserInfo.class, userInfo);
+		userInfoUrl = userInfoUrl.replaceAll("groupid", "to_groupid");
+		String json = HttpsRequest.getInstance().processPost(url, userInfoUrl);
 		JsonObjectConvert.getInstance().validateJsonException(json);
 	}
 }
