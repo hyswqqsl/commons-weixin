@@ -1,6 +1,5 @@
 package com.ironside.weixin.active;
 
-import com.ironside.weixin.WeixinException;
 import com.ironside.weixin.active.entity.AccessToken;
 import com.ironside.weixin.active.entity.Group;
 import com.ironside.weixin.active.entity.Groupes;
@@ -51,11 +50,11 @@ public class UserRequest {
 	 * @param accessToken 公众号的全局凭证
 	 * @param openid 用户公众号
 	 * @return 用户
-	 * @throws WeixinException 失败时抛出WeixinException异常
 	 */
-	public UserInfo getUserInfo(AccessToken accessToken, String openid) throws WeixinException {
+	public UserInfo getUserInfo(AccessToken accessToken, String openid) {
 		String url = user_info_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken()).replaceAll("OPENID", openid);
 		String json = HttpsRequest.getInstance().processGet(url);
+		// 验证失败时抛出WeixinException异常
 		JsonObjectConvert.getInstance().validateJsonException(json);		
 		UserInfo userInfo = JsonObjectConvert.getInstance().jsonToObject(json, UserInfo.class,true);
 		return userInfo;
@@ -67,14 +66,14 @@ public class UserRequest {
 	 * @param accessToken 公众号的全局凭证
 	 * @param nextOpenid 第一个拉取的OPENID，不填默认从头开始拉取
 	 * @return 关注者列表由
-	 * @throws WeixinException 失败时抛出WeixinException异常
 	 */
-	public UserList getUserList(AccessToken accessToken, String nextOpenid) throws WeixinException {
+	public UserList getUserList(AccessToken accessToken, String nextOpenid) {
 		if (nextOpenid==null) {
 			nextOpenid = "";
 		}
 		String url = user_list_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken()).replaceAll("NEXT_OPENID", nextOpenid);
 		String json = HttpsRequest.getInstance().processGet(url);
+		// 验证失败时抛出WeixinException异常
 		JsonObjectConvert.getInstance().validateJsonException(json);
 		UserList userList = JsonObjectConvert.getInstance().jsonToObject(json, UserList.class); 
 		return userList;
@@ -84,12 +83,12 @@ public class UserRequest {
 	 * 设置用户备注
 	 * @param accessToken 公众号的全局凭证
 	 * @param userInfo 用户信息
-	 * @throws WeixinException 失败时抛出WeixinException异常
 	 */
-	public void setUserRemark(AccessToken accessToken, UserInfo userInfo) throws WeixinException {
+	public void setUserRemark(AccessToken accessToken, UserInfo userInfo) {
 		String url = user_remark_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
 		String userRemarkJson = JsonObjectConvert.getInstance().ObjectToJsonNoClassName(UserInfo.class, userInfo);
 		String json = HttpsRequest.getInstance().processPost(url, userRemarkJson);
+		// 验证失败时抛出WeixinException异常
 		JsonObjectConvert.getInstance().validateJsonException(json);
 	}
 	
@@ -98,12 +97,12 @@ public class UserRequest {
 	 * @param accessToken 公众号的全局凭证
 	 * @param group 用户组
 	 * @return 返回的用户组
-	 * @throws WeixinException 失败时抛出WeixinException异常
 	 */
-	public Group createGroup(AccessToken accessToken, Group group) throws WeixinException {
+	public Group createGroup(AccessToken accessToken, Group group) {
 		String url = create_group_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
 		String userGroupJson = JsonObjectConvert.getInstance().ObjectToJson(Group.class, group);
 		String json = HttpsRequest.getInstance().processPost(url, userGroupJson);
+		// 验证失败时抛出WeixinException异常
 		JsonObjectConvert.getInstance().validateJsonException(json);
 		Group resultGroup = JsonObjectConvert.getInstance().jsonToObject(json, Group.class, "group");
 		return resultGroup;
@@ -113,11 +112,11 @@ public class UserRequest {
 	 * 获取所有分组
 	 * @param accessToken 公众号的全局凭证
 	 * @return 用户所有分组
-	 * @throws WeixinException 失败时抛出WeixinException异常
 	 */
-	public Groupes getGroupes(AccessToken accessToken) throws WeixinException {
+	public Groupes getGroupes(AccessToken accessToken) {
 		String url = query_group_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
 		String json = HttpsRequest.getInstance().processGet(url);
+		// 验证失败时抛出WeixinException异常
 		JsonObjectConvert.getInstance().validateJsonException(json);		
 		Groupes groupes = JsonObjectConvert.getInstance().jsonToObject(json, Groupes.class, "groups");
 		return groupes;
@@ -127,12 +126,12 @@ public class UserRequest {
 	 * 修改分组名
 	 * @param accessToken 公众号的全局凭证
 	 * @param group 用户分组
-	 * @throws WeixinException 失败时抛出WeixinException异常
 	 */
-	public void updateGroup(AccessToken accessToken, Group group) throws WeixinException {
+	public void updateGroup(AccessToken accessToken, Group group) {
 		String url = update_query_name_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
 		String userGroupUrl = JsonObjectConvert.getInstance().ObjectToJson(Group.class, group);
 		String json = HttpsRequest.getInstance().processPost(url, userGroupUrl);
+		// 验证失败时抛出WeixinException异常
 		JsonObjectConvert.getInstance().validateJsonException(json);
 	}
 	
@@ -140,13 +139,13 @@ public class UserRequest {
 	 * 修改用户分组
 	 * @param accessToken 公众号的全局凭证
 	 * @param userInfo 用户信息
-	 * @throws WeixinException 失败时抛出WeixinException异常
 	 */
-	public void updateUserGroup(AccessToken accessToken, UserInfo userInfo) throws WeixinException {
+	public void updateUserGroup(AccessToken accessToken, UserInfo userInfo) {
 		String url = update_user_group_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
 		String userInfoUrl = JsonObjectConvert.getInstance().ObjectToJsonNoClassName(UserInfo.class, userInfo);
 		userInfoUrl = userInfoUrl.replaceAll("groupid", "to_groupid");
 		String json = HttpsRequest.getInstance().processPost(url, userInfoUrl);
+		// 验证失败时抛出WeixinException异常
 		JsonObjectConvert.getInstance().validateJsonException(json);
 	}
 }

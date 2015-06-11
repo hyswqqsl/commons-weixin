@@ -35,11 +35,7 @@ public class RequestTest {
 	@Test
 	public void testGetAccessToken() {
 		AccessToken accessToken = null;
-		try {
-			accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
-		} catch (WeixinException e) {
-			e.printStackTrace();
-		}
+		accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
 		assertTrue(accessToken.getExpiresIn()>7000 && accessToken.getExpiresIn()<8000);
 		assertTrue(accessToken.isOver()==false);
 		assertFalse(accessToken.getAccessTime()==0);
@@ -49,12 +45,8 @@ public class RequestTest {
 	public void testGetIpAddress() {
 		AccessToken accessToken = null;
 		IpAddresses ipAddress = null;
-		try {
-			accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
-			ipAddress = ActiveRequest.getInstance().getIpAddress(accessToken);
-		} catch (WeixinException e) {
-			e.printStackTrace();
-		}
+		accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+		ipAddress = ActiveRequest.getInstance().getIpAddress(accessToken);
 		assertTrue(ipAddress.getIpList().size()>0);
 	}
 	
@@ -62,12 +54,8 @@ public class RequestTest {
 	public void testGetUserInfo() {
 		AccessToken accessToken = null;
 		UserInfo userInfo = null;
-		try {
-			accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
-			userInfo = UserRequest.getInstance().getUserInfo(accessToken, openid);
-		} catch (WeixinException e) {
-			e.printStackTrace();
-		}
+		accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+		userInfo = UserRequest.getInstance().getUserInfo(accessToken, openid);
 		assertEquals(userInfo.getOpenid(), openid);
 		assertEquals(userInfo.getNickName(), "雪庭");
 		assertEquals(userInfo.getCity(), "兰州市");
@@ -78,12 +66,8 @@ public class RequestTest {
 	public void testGetUserList() {
 		AccessToken accessToken = null;
 		UserList userList = null;
-		try {
-			accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
-			userList = UserRequest.getInstance().getUserList(accessToken, null);
-		} catch (WeixinException e) {
-			e.printStackTrace();
-		}
+		accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+		userList = UserRequest.getInstance().getUserList(accessToken, null);
 		Assert.notNull(userList);
 		UserList.Useres useres = userList.getUseres();
 		Assert.notNull(useres);
@@ -92,29 +76,21 @@ public class RequestTest {
 	
 	@Test
 	public void testSetUserRemark() {
-		try {
-			AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
-			UserInfo userInfo = new UserInfo();
-			userInfo.setOpenid(openid);
-			userInfo.setRemark("湛然");
-			UserRequest.getInstance().setUserRemark(accessToken, userInfo); 
-		} catch (WeixinException e) {
-			e.printStackTrace();
-		}
+		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+		UserInfo userInfo = new UserInfo();
+		userInfo.setOpenid(openid);
+		userInfo.setRemark("湛然");
+		UserRequest.getInstance().setUserRemark(accessToken, userInfo); 
 	}
 	
 	@Test
 	public void testCreateGroup() {
 		Group resultGroup = null;
 		String name = "好友";
-		try {
-			AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
-			Group group = new Group();
-			group.setName(name);
-			resultGroup = UserRequest.getInstance().createGroup(accessToken, group);
-		} catch(WeixinException e) {
-			e.printStackTrace();
-		}
+		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+		Group group = new Group();
+		group.setName(name);
+		resultGroup = UserRequest.getInstance().createGroup(accessToken, group);
 		assertEquals(resultGroup.getName(), name);
 		assertTrue((resultGroup.getId()>0));
 	}
@@ -124,12 +100,8 @@ public class RequestTest {
 		// 先建立一个分组
 		testCreateGroup();
 		Groupes groupes = null;
-		try {
-			AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
-			groupes = UserRequest.getInstance().getGroupes(accessToken);
-		} catch(WeixinException e) {
-			e.printStackTrace();
-		}
+		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+		groupes = UserRequest.getInstance().getGroupes(accessToken);
 		assertTrue((groupes.getGroupList().size()>1));
 		assertTrue((groupes.getGroupList().get(1).getId()>0));
 	}
@@ -139,27 +111,15 @@ public class RequestTest {
 		// 先获得分组
 		Groupes groupes = null;
 		AccessToken accessToken = null;
-		try {
-			accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
-			groupes = UserRequest.getInstance().getGroupes(accessToken);
-		} catch(WeixinException e) {
-			e.printStackTrace();
-		}
+		accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+		groupes = UserRequest.getInstance().getGroupes(accessToken);
 		// 修改分组名
 		Group group = groupes.getGroupList().get(3);
 		String name = "flysic";
 		group.setName(name);
-		try {
-			UserRequest.getInstance().updateGroup(accessToken, group);
-		} catch (WeixinException e) {
-			e.printStackTrace();
-		}
+		UserRequest.getInstance().updateGroup(accessToken, group);
 		// 验证
-		try {
-			groupes = UserRequest.getInstance().getGroupes(accessToken);
-		} catch(WeixinException e) {
-			e.printStackTrace();
-		}
+		groupes = UserRequest.getInstance().getGroupes(accessToken);
 		assertEquals(groupes.getGroupList().get(3).getId(), group.getId());
 		assertEquals(groupes.getGroupList().get(3).getName(), name);
 	}
@@ -169,30 +129,18 @@ public class RequestTest {
 		// 先获得分组
 		Groupes groupes = null;
 		AccessToken accessToken = null;
-		try {
-			accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
-			groupes = UserRequest.getInstance().getGroupes(accessToken);
-		} catch(WeixinException e) {
-			e.printStackTrace();
-		}
+		accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+		groupes = UserRequest.getInstance().getGroupes(accessToken);
 		Group group = groupes.getGroupList().get(3);
 		// 建立用户信息
 		UserInfo userInfo = new UserInfo();
 		userInfo.setOpenid(openid);
 		userInfo.setGroupId(group.getId());
 		// 修改用户群组
-		try {
-			UserRequest.getInstance().updateUserGroup(accessToken, userInfo);
-		} catch (WeixinException e) {
-			e.printStackTrace();
-		}
+		UserRequest.getInstance().updateUserGroup(accessToken, userInfo);
 		// 验证，查询用户信息
 		UserInfo userInfo2 = null;
-		try {
-			userInfo2 = UserRequest.getInstance().getUserInfo(accessToken, openid);
-		} catch (WeixinException e) {
-			e.printStackTrace();
-		}
+		userInfo2 = UserRequest.getInstance().getUserInfo(accessToken, openid);
 		assertEquals(userInfo2.getOpenid(), userInfo.getOpenid());
 		assertEquals(userInfo2.getGroupId(), userInfo.getGroupId());
 	}

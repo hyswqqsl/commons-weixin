@@ -153,7 +153,7 @@ public class JsonObjectConvert {
 	 * @param json 待验证json
 	 * @throws WeixinException 验证不通过，抛出异常
 	 */
-	public void validateJsonException(String json) throws WeixinException {
+	public void validateJsonException(String json) {
 		JSONObject jsonObject = JSONObject.fromObject(json);
 		Object errcode = jsonObject.get("errcode");
 		if (errcode==null) {

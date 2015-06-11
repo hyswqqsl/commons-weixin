@@ -48,9 +48,8 @@ public class ActiveRequest {
 	 * @param appid 第三方用户唯一凭证
 	 * @param secret 第三方用户唯一凭证密钥，即appsecret
 	 * @return 公众号全局凭证
-	 * @throws WeixinException 失败时抛出WeixinException异常
 	 */
-	public AccessToken getAccessToken(String appid, String secret) throws WeixinException {
+	public AccessToken getAccessToken(String appid, String secret) {
 		// 如果公众号全局凭证不存在，就生成一个
 		if (accessToken==null) {
 			return doAccessToken(appid, secret);
@@ -68,11 +67,11 @@ public class ActiveRequest {
 	 * @param appid 第三方用户唯一凭证
 	 * @param secret 第三方用户唯一凭证密钥，即appsecret
 	 * @return 公众号全局凭证
-	 * @throws WeixinException 失败时抛出WeixinException异常
 	 */
-	private AccessToken doAccessToken(String appid, String secret) throws WeixinException {
+	private AccessToken doAccessToken(String appid, String secret) {
 		String url = access_token_url.replaceAll("APPID", appid).replaceAll("APPSECRET", secret);
 		String json = HttpsRequest.getInstance().processGet(url);
+		// 验证失败时抛出WeixinException异常
 		JsonObjectConvert.getInstance().validateJsonException(json);		
 		AccessToken accessToken = JsonObjectConvert.getInstance().jsonToObject(json, AccessToken.class);
 		accessToken.setAccessTime(System.currentTimeMillis()/1000);
@@ -83,11 +82,11 @@ public class ActiveRequest {
 	 * 获得微信服务器的IP地址列表
 	 * @param accessToken 公众号的全局凭证
 	 * @return ip地址列表
-	 * @throws WeixinException 失败时抛出WeixinException异常
 	 */	
-	public IpAddresses getIpAddress(AccessToken accessToken) throws WeixinException {
+	public IpAddresses getIpAddress(AccessToken accessToken) {
 		String url = ip_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
 		String json = HttpsRequest.getInstance().processGet(url);
+		// 验证失败时抛出WeixinException异常
 		JsonObjectConvert.getInstance().validateJsonException(json);		
 		IpAddresses ipAddresses = JsonObjectConvert.getInstance().jsonToObject(json, IpAddresses.class, "ip_list");
 		return ipAddresses;

@@ -7,7 +7,7 @@ package com.ironside.weixin;
  * @author 雪庭
  * @sine 1.0 at 2015年6月8日
  */
-public class WeixinException extends Exception {
+public class WeixinException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
