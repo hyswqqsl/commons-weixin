@@ -15,18 +15,19 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 public class Groupes {
 
 	@XStreamImplicit
-	private List<Group> groups;
+	@XStreamAlias("groups")
+	private List<Group> groupList;
 	
 	public Groupes() {
-		this.groups = new ArrayList<Group>();
+		this.groupList = new ArrayList<Group>();
 	}
-
+	
 	public List<Group> getGroupList() {
-		return groups;
+		return groupList;
 	}
 
 	public void setGroupList(List<Group> groupList) {
-		this.groups = groupList;
+		this.groupList = groupList;
 	}
 
 }

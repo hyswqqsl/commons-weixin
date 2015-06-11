@@ -144,4 +144,5 @@ public class RequestTest {
 		assertEquals(userInfo2.getOpenid(), userInfo.getOpenid());
 		assertEquals(userInfo2.getGroupId(), userInfo.getGroupId());
 	}
+	
 }

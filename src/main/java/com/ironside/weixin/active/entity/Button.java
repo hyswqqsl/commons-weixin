@@ -1,12 +1,17 @@
 package com.ironside.weixin.active.entity;
 
+import java.util.List;
+
 import org.springframework.util.Assert;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 /**
- * 菜单类
+ * 一级菜单类
  * @author 雪庭
  * @sine 1.0 at 2015年6月11日
  */
+@XStreamAlias("button")
 public class Button {
 
 	// 菜单的响应动作类型
@@ -18,94 +23,33 @@ public class Button {
 	// 网页链接，用户点击菜单可打开链接，不超过256字节 
 	private String url;
 	// 调用新增永久素材接口返回的合法media_id
+	@XStreamAlias("media_id")
 	private String mediaId;
+	// 二级菜单
+	@XStreamAlias("sub_button")
+	private List<Button> subButtonList;
 	
 	/**
-	 * 隐藏构造函数
+	 * 添加二级菜单
+	 * @param subButton 二级菜单
 	 */
-	private Button() {
+	public void addSubButton(Button subButton) {
+		Assert.isTrue(subButton.getButtonList()==null);
+		if (this.subButtonList.size()>=5) {
+			return;
+		}
+		this.type = null;
+		this.key = null;
+		this.url = null;
+		this.mediaId = null;
+		this.subButtonList.add(subButton);
 	}
-	
-	/**
-	 * 验证菜单标题，验证不通过，抛出IllegalArgumentException异常
-	 * @param name 菜单标题
-	 */
-	private static void validateName(String name) {
-		Assert.hasText(name);
-		Assert.isTrue(name.length()<=16);
-	}
-	
-	/**
-	 * 验证菜单KEY值，验证不通过，抛出IllegalArgumentException异常
-	 * @param key 菜单KEY值
-	 */
-	private static void validateKey(String key) {
-		Assert.hasText(key);
-		Assert.isTrue(key.length()<=128);
-	}
-	
-	/**
-	 * 验证网页链接，验证不通过，抛出IllegalArgumentException异常
-	 * @param url
-	 */
-	private static void validateUrl(String url) {
-		Assert.hasText(url);
-		Assert.isTrue(url.length()<=256);		
-	}
-	
-	/**
-	 * 建立点击推事件菜单
-	 * @param name 菜单标题
-	 * @param key 菜单KEY值
-	 * @return 点击推事件菜单
-	 */
-	public static Button makeClickButton(String name, String key) {
-		validateName(name);
-		validateKey(key);
-		Button button = new Button();
-		button.setType(CLICK);
-		button.setName(name);
-		button.setKey(key);
-		return button;
-	}
-	
-	/**
-	 * 建立跳转URL菜单
-	 * @param name 菜单标题
-	 * @param url 网页链接
-	 * @return 跳转URL菜单
-	 */
-	public static Button makeViewButton(String name, String url) {
-		validateUrl(name);
-		validateUrl(url);
-		Button button = new Button();
-		button.setType(VIEW);
-		button.setName(name);
-		button.setUrl(url);
-		return button;
-	}
-	
-	/**
-	 * 建立扫码推事件菜单
-	 * @param name 菜单标题
-	 * @param key 菜单KEY值
-	 * @return 扫码推事件菜单
-	 */
-	public static Button makeScancodePushButton(String name, String key) {
-		validateName(name);
-		validateKey(key);
-		Button button = new Button();
-		button.setType(SCANCODE_PUSH);
-		button.setName(name);
-		button.setKey(key);
-		return button;
-	}
-
+		
 	public String getType() {
 		return type;
 	}
 	
-	private void setType(String type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 	
@@ -113,7 +57,7 @@ public class Button {
 		return name;
 	}
 	
-	private void setName(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 	
@@ -121,7 +65,7 @@ public class Button {
 		return key;
 	}
 	
-	private void setKey(String key) {
+	public void setKey(String key) {
 		this.key = key;
 	}
 	
@@ -129,7 +73,7 @@ public class Button {
 		return url;
 	}
 	
-	private void setUrl(String url) {
+	public void setUrl(String url) {
 		this.url = url;
 	}
 	
@@ -137,8 +81,16 @@ public class Button {
 		return mediaId;
 	}
 	
-	private void setMediaId(String mediaId) {
+	public void setMediaId(String mediaId) {
 		this.mediaId = mediaId;
+	}
+	
+	public List<Button> getButtonList() {
+		return subButtonList;
+	}
+
+	public void setButtonList(List<Button> buttonList) {
+		this.subButtonList = buttonList;
 	}
 	
 	/** 点击推事件 */
@@ -161,5 +113,7 @@ public class Button {
 	public static String MEDIA_ID = "media_id";
 	/** 跳转图文消息URL */
 	public static String VIEW_LIMITED= "view_limited";
+
+
 
 }

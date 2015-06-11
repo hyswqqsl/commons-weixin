@@ -1,5 +1,6 @@
 package com.ironside.weixin.active.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -61,14 +62,19 @@ public class UserList {
 	public class Useres {
 		
 		@XStreamImplicit
-		List<String> openid;
+		@XStreamAlias("openid")
+		List<String> openidList;
+		
+		public Useres() {
+			this.openidList = new ArrayList<String>();
+		}
 
 		public List<String> getOpenidList() {
-			return openid;
+			return openidList;
 		}
 
 		public void setOpenidList(List<String> openid) {
-			this.openid = openid;
+			this.openidList = openid;
 		}
 		
 	}
