@@ -1,10 +1,10 @@
 package com.ironside.weixin.active.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.util.Assert;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * 一级菜单类
@@ -26,15 +26,19 @@ public class Button {
 	@XStreamAlias("media_id")
 	private String mediaId;
 	// 二级菜单
+	@XStreamImplicit
 	@XStreamAlias("sub_button")
-	private List<Button> subButtonList;
+	private List<SubButton> subButtonList;
+	
+	public Button() {
+		this.subButtonList = new ArrayList<SubButton>();
+	}
 	
 	/**
 	 * 添加二级菜单
 	 * @param subButton 二级菜单
 	 */
 	public void addSubButton(Button subButton) {
-		Assert.isTrue(subButton.getButtonList()==null);
 		if (this.subButtonList.size()>=5) {
 			return;
 		}
@@ -42,7 +46,7 @@ public class Button {
 		this.key = null;
 		this.url = null;
 		this.mediaId = null;
-		this.subButtonList.add(subButton);
+		this.subButtonList.add(new SubButton(subButton));
 	}
 		
 	public String getType() {
@@ -85,11 +89,11 @@ public class Button {
 		this.mediaId = mediaId;
 	}
 	
-	public List<Button> getButtonList() {
+	public List<SubButton> getButtonList() {
 		return subButtonList;
 	}
 
-	public void setButtonList(List<Button> buttonList) {
+	public void setButtonList(List<SubButton> buttonList) {
 		this.subButtonList = buttonList;
 	}
 	

@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import javax.swing.ButtonModel;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,9 +14,12 @@ import org.springframework.util.Assert;
 
 import com.ironside.weixin.WeixinException;
 import com.ironside.weixin.active.entity.AccessToken;
+import com.ironside.weixin.active.entity.Button;
 import com.ironside.weixin.active.entity.Group;
 import com.ironside.weixin.active.entity.Groupes;
 import com.ironside.weixin.active.entity.IpAddresses;
+import com.ironside.weixin.active.entity.Menu;
+import com.ironside.weixin.active.entity.MenuManager;
 import com.ironside.weixin.active.entity.UserInfo;
 import com.ironside.weixin.active.entity.UserList;
 
@@ -132,7 +137,7 @@ public class RequestTest {
 		accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
 		groupes = UserRequest.getInstance().getGroupes(accessToken);
 		Group group = groupes.getGroupList().get(3);
-		// 建立用户信息
+		// 生产用户信息
 		UserInfo userInfo = new UserInfo();
 		userInfo.setOpenid(openid);
 		userInfo.setGroupId(group.getId());
@@ -143,6 +148,28 @@ public class RequestTest {
 		userInfo2 = UserRequest.getInstance().getUserInfo(accessToken, openid);
 		assertEquals(userInfo2.getOpenid(), userInfo.getOpenid());
 		assertEquals(userInfo2.getGroupId(), userInfo.getGroupId());
+	}
+	
+	@Test
+	public void testCreateMenu() {
+		// 生成菜单对象
+		Menu menu = new Menu();
+		Button button = MenuManager.makeClickButton("按钮1", "click1");
+		menu.addButton(button);
+		button = MenuManager.makeScancodePushButton("扫描1", "scan1");
+		menu.addButton(button);
+		button = MenuManager.makeClickButton("请看子菜单", "click2");
+		menu.addButton(button);
+		Button subButton = MenuManager.makeClickButton("子菜单1", "sub1");
+		button.addSubButton(subButton);
+		subButton = MenuManager.makeScancodePushButton("子菜单2", "sub2");
+		button.addSubButton(subButton);
+		subButton = MenuManager.makeViewButton("子菜单3", "http://cn.bing.com/?FORM=Z9FD1");
+		button.addSubButton(subButton);
+		// 建立菜单
+		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+		MenuRequest.getInstance().createMenu(accessToken, menu);
+		// 验证
 	}
 	
 }

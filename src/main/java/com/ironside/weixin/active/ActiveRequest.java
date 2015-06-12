@@ -1,6 +1,5 @@
 package com.ironside.weixin.active;
 
-import com.ironside.weixin.WeixinException;
 import com.ironside.weixin.active.entity.AccessToken;
 import com.ironside.weixin.active.entity.IpAddresses;
 

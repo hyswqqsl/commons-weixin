@@ -6,6 +6,11 @@ import com.ironside.weixin.active.entity.Groupes;
 import com.ironside.weixin.active.entity.UserInfo;
 import com.ironside.weixin.active.entity.UserList;
 
+/**
+ * 与用户相关的处理
+ * @author 雪庭
+ * @sine 1.0 at 2015年6月3日
+ */
 public class UserRequest {
 	
 	/** 单例 */
