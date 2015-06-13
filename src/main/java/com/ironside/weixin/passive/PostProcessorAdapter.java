@@ -1,12 +1,12 @@
 package com.ironside.weixin.passive;
 
-import com.ironside.weixin.passive.request.entity.EventClickEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuClickEntity;
 import com.ironside.weixin.passive.request.entity.EventLocationEntity;
 import com.ironside.weixin.passive.request.entity.EventScanEntity;
 import com.ironside.weixin.passive.request.entity.EventScanSubscribeEntity;
 import com.ironside.weixin.passive.request.entity.EventSubscribeEntity;
 import com.ironside.weixin.passive.request.entity.EventUnSubscribeEntity;
-import com.ironside.weixin.passive.request.entity.EventViewEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuViewEntity;
 import com.ironside.weixin.passive.request.entity.ImageEntity;
 import com.ironside.weixin.passive.request.entity.LinkEntity;
 import com.ironside.weixin.passive.request.entity.LocationEntity;
@@ -80,11 +80,11 @@ public class PostProcessorAdapter implements IPostProcessor {
 		return result;
 	}
 
-	public String postProcessEventClick(EventClickEntity entity) {
+	public String postProcessEventClick(EventMenuClickEntity entity) {
 		return result;
 	}
 
-	public String postProcessEventView(EventViewEntity entity) {
+	public String postProcessEventView(EventMenuViewEntity entity) {
 		return result;
 	}
 

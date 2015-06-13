@@ -5,7 +5,7 @@ package com.ironside.weixin.passive.request.entity;
  * @author ZXJ
  * @sine 1.0 at 2015年4月8日
  */
-public class EventScanEntity extends EventClickEntity {
+public class EventScanEntity extends EventMenuClickEntity {
 	
 	/** 二维码的ticket，可用来换取二维码图片 */
 	private String Ticket;

@@ -2,6 +2,8 @@ package com.ironside.weixin.active.entity;
 
 import org.springframework.util.Assert;
 
+import com.ironside.weixin.passive.request.entity.EntityType;
+
 /**
  * 菜单工厂类
  * @author 雪庭
@@ -60,7 +62,7 @@ public class MenuFactory {
 	 * @return 菜单按钮
 	 */
 	public static Button makeClickButton(String name, String key) {
-		return makeEventkeyButton(Button.CLICK, name, key);
+		return makeEventkeyButton(EntityType.EVENT_MENU_CLICK, name, key);
 	}
 	
 	/**
@@ -73,7 +75,7 @@ public class MenuFactory {
 		validateUrl(name);
 		validateUrl(url);
 		Button button = new Button();
-		button.setType(Button.VIEW);
+		button.setType(EntityType.EVENT_MENU_VIEW);
 		button.setName(name);
 		button.setUrl(url);
 		return button;
@@ -86,7 +88,7 @@ public class MenuFactory {
 	 * @return 菜单按钮
 	 */
 	public static Button makeScancodePushButton(String name, String key) {
-		return makeEventkeyButton(Button.SCANCODE_PUSH, name, key);
+		return makeEventkeyButton(EntityType.EVENT_MENU_SCANCODE_PUSH, name, key);
 	}
 	
 	/**
@@ -96,7 +98,7 @@ public class MenuFactory {
 	 * @return 菜单按钮
 	 */	
 	public static Button makeScancodeWaitmsg(String name, String key) {
-		return makeEventkeyButton(Button.SCANCODE_WAITMSG, name, key);
+		return makeEventkeyButton(EntityType.EVENT_MENU_SCANCODE_WAITMSG, name, key);
 	}
 	
 	/**
@@ -106,7 +108,7 @@ public class MenuFactory {
 	 * @return 菜单按钮
 	 */
 	public static Button makePicSysphoto(String name, String key) {
-		return makeEventkeyButton(Button.PIC_SYSPHOTO, name, key);
+		return makeEventkeyButton(EntityType.EVENT_MENU_PIC_SYSPHOTO, name, key);
 	}
 	
 	/**
@@ -116,7 +118,7 @@ public class MenuFactory {
 	 * @return 菜单按钮
 	 */
 	public static Button makePicPhotoOrAlbum(String name, String key) {
-		return makeEventkeyButton(Button.PIC_PHOTO_OR_ALBUM, name, key);
+		return makeEventkeyButton(EntityType.EVENT_MENU_PIC_PHOTO_OR_ALBUM, name, key);
 	}
 	
 	/**
@@ -126,7 +128,7 @@ public class MenuFactory {
 	 * @return 菜单按钮
 	 */
 	public static Button makePicWeixin(String name, String key) {
-		return makeEventkeyButton(Button.PIC_WEIXIN, name, key);
+		return makeEventkeyButton(EntityType.EVENT_MENU_PIC_WEIXIN, name, key);
 	}
 	
 	/**
@@ -136,26 +138,7 @@ public class MenuFactory {
 	 * @return 菜单按钮
 	 */
 	public static Button makeLocationSelect(String name, String key) {
-		return makeEventkeyButton(Button.LOCATION_SELECT, name, key);
+		return makeEventkeyButton(EntityType.EVENT_MENU_LOCATION_SELECT, name, key);
 	}
 	
-	/**
-	 * 建立下发消息（除文本消息）菜单按钮
-	 * @param name 菜单标题
-	 * @param key 菜单KEY值
-	 * @return 菜单按钮
-	 */
-	public static Button makeMediaId(String name, String key) {
-		return makeEventkeyButton(Button.MEDIA_ID, name, key);
-	}
-	
-	/**
-	 * 建立跳转图文消息URL菜单按钮
-	 * @param name 菜单标题
-	 * @param key 菜单KEY值
-	 * @return 菜单按钮
-	 */
-	public static Button makeViewLimited(String name, String key) {
-		return makeEventkeyButton(Button.VIEW_LIMITED, name, key);
-	}
 }

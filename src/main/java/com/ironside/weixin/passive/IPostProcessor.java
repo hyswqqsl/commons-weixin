@@ -1,12 +1,12 @@
 package com.ironside.weixin.passive;
 
-import com.ironside.weixin.passive.request.entity.EventClickEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuClickEntity;
 import com.ironside.weixin.passive.request.entity.EventLocationEntity;
 import com.ironside.weixin.passive.request.entity.EventScanEntity;
 import com.ironside.weixin.passive.request.entity.EventScanSubscribeEntity;
 import com.ironside.weixin.passive.request.entity.EventSubscribeEntity;
 import com.ironside.weixin.passive.request.entity.EventUnSubscribeEntity;
-import com.ironside.weixin.passive.request.entity.EventViewEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuViewEntity;
 import com.ironside.weixin.passive.request.entity.ImageEntity;
 import com.ironside.weixin.passive.request.entity.LinkEntity;
 import com.ironside.weixin.passive.request.entity.LocationEntity;
@@ -111,12 +111,12 @@ public interface IPostProcessor {
 	 * @param entity 实体
 	 * @return 响应消息
 	 */
-	String postProcessEventClick(EventClickEntity entity);
+	String postProcessEventClick(EventMenuClickEntity entity);
 	
 	/** 
 	 * 处理自定义菜单-点击菜单跳转链接时的事件实体
 	 * @param entity 实体
 	 * @return 响应消息
 	 */
-	String postProcessEventView(EventViewEntity entity);
+	String postProcessEventView(EventMenuViewEntity entity);
 }

@@ -1,6 +1,6 @@
 package com.ironside.weixin.passive;
 
-import com.ironside.weixin.passive.request.entity.EventClickEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuClickEntity;
 import com.ironside.weixin.passive.request.entity.TextEntity;
 import com.ironside.weixin.passive.request.entity.VideoEntity;
 import com.ironside.weixin.passive.response.entity.AbstractBaseResponse;
@@ -29,7 +29,7 @@ public class MyPostProcessor extends PostProcessorAdapter {
 	}
 
 	@Override
-	public String postProcessEventClick(EventClickEntity entity) {
+	public String postProcessEventClick(EventMenuClickEntity entity) {
 		// 取得点击菜单的事件KEY值
 		String eventKey = entity.getEventKey();
 		AbstractBaseResponse response = null;

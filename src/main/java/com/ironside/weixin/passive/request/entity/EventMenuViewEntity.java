@@ -5,6 +5,6 @@ package com.ironside.weixin.passive.request.entity;
  * @author 雪庭
  * @sine 1.0 at 2015年4月8日
  */
-public class EventViewEntity extends EventClickEntity {
+public class EventMenuViewEntity extends EventMenuClickEntity {
 
 }

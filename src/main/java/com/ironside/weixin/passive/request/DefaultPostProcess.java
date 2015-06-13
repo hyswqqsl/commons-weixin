@@ -9,13 +9,13 @@ import com.ironside.weixin.passive.IPostProcessor;
 import com.ironside.weixin.passive.PostProcessorAdapter;
 import com.ironside.weixin.passive.request.entity.AbstractBaseEntity;
 import com.ironside.weixin.passive.request.entity.EntityType;
-import com.ironside.weixin.passive.request.entity.EventClickEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuClickEntity;
 import com.ironside.weixin.passive.request.entity.EventLocationEntity;
 import com.ironside.weixin.passive.request.entity.EventScanEntity;
 import com.ironside.weixin.passive.request.entity.EventScanSubscribeEntity;
 import com.ironside.weixin.passive.request.entity.EventSubscribeEntity;
 import com.ironside.weixin.passive.request.entity.EventUnSubscribeEntity;
-import com.ironside.weixin.passive.request.entity.EventViewEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuViewEntity;
 import com.ironside.weixin.passive.request.entity.ImageEntity;
 import com.ironside.weixin.passive.request.entity.LinkEntity;
 import com.ironside.weixin.passive.request.entity.LocationEntity;
@@ -139,7 +139,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 			 */
 			xStream.alias("xml", EventLocationEntity.class);
 			break;
-		case EntityType.EVENT_CLICK:
+		case EntityType.EVENT_MENU_CLICK:
 			/*
 		  	 <xml>
 		 	 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -150,9 +150,9 @@ public class DefaultPostProcess extends AbstractPostProcess {
 			 <EventKey><![CDATA[EVENTKEY]]></EventKey>
 			 </xml>
 			 */
-			 xStream.alias("xml", EventClickEntity.class);
+			 xStream.alias("xml", EventMenuClickEntity.class);
 			 break;
-		case EntityType.EVENT_VIEW:
+		case EntityType.EVENT_MENU_VIEW:
 			/*
 			 <xml>
 			 <ToUserName><![CDATA[toUser]]></ToUserName>
@@ -163,7 +163,7 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		  	 <EventKey><![CDATA[www.qq.com]]></EventKey>
 			 </xml>
 			 */
-			xStream.alias("xml", EventViewEntity.class);
+			xStream.alias("xml", EventMenuViewEntity.class);
 			break;
 		default :
 			throw new IllegalStateException(String.format("解析事件消息出错:(%s)事件类型未知", event));
@@ -319,11 +319,11 @@ public class DefaultPostProcess extends AbstractPostProcess {
 		case EntityType.EVENT_LOCATION:
 			result = this.processor.postProcessEventLocation((EventLocationEntity) entity);
 			break;
-		case EntityType.EVENT_CLICK:
-			result = this.processor.postProcessEventClick((EventClickEntity) entity);
+		case EntityType.EVENT_MENU_CLICK:
+			result = this.processor.postProcessEventClick((EventMenuClickEntity) entity);
 			break;
-		case EntityType.EVENT_VIEW:
-			result = this.processor.postProcessEventView((EventViewEntity) entity);
+		case EntityType.EVENT_MENU_VIEW:
+			result = this.processor.postProcessEventView((EventMenuViewEntity) entity);
 			break;
 		default:
 			throw new IllegalStateException(String.format("处理事件实体异常-事件实体不是预期的类型: %s", event));
