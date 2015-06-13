@@ -152,7 +152,6 @@ public class UserList {
 #+end_src
 
 
-
 ** 当前日期: 2015/06/08 周一 
 
 - XStream的资料
@@ -246,5 +245,11 @@ String userRemarkJson = JsonObjectConvert.getInstance().ObjectToJson(UserInfo.cl
 String userGroupJson = JsonObjectConvert.getInstance().ObjectToJson(Group.class, group, true, true);
 #+end_src
 
-- 关于实体标签，json转换为实体时，必然使用标签，实体转换为json时，必然不使用标签
+- 关于实体标签，json转换为实体时，必然使用标签，实体转换为json时，使用标签，会产生多余字段，不多没有关系，不会出错
+
+** 2015/06/13
+
+- 菜单类包含一级按钮和二级按钮，菜单包含3个一级按钮，一级按钮包含5个二级按钮，MenuFactory用于产生具体按钮
+- Button和SubButton内容完全一致，只是方便转换为json，所以设计了SubButton
+
 

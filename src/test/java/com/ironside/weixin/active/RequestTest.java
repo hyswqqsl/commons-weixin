@@ -19,7 +19,7 @@ import com.ironside.weixin.active.entity.Group;
 import com.ironside.weixin.active.entity.Groupes;
 import com.ironside.weixin.active.entity.IpAddresses;
 import com.ironside.weixin.active.entity.Menu;
-import com.ironside.weixin.active.entity.MenuManager;
+import com.ironside.weixin.active.entity.MenuFactory;
 import com.ironside.weixin.active.entity.UserInfo;
 import com.ironside.weixin.active.entity.UserList;
 
@@ -163,17 +163,17 @@ public class RequestTest {
 	public void testCreateMenu() {
 		// 生成菜单对象
 		Menu menu = new Menu();
-		Button button = MenuManager.makeClickButton("按钮1", "click1");
+		Button button = MenuFactory.makeClickButton("按钮1", "click1");
 		menu.addButton(button);
 		//button = MenuManager.makeScancodePushButton("扫描1", "scan1");
 		//menu.addButton(button);
-		button = MenuManager.makeClickButton("请看子菜单", "click2");
+		button = MenuFactory.makeClickButton("请看子菜单", "click2");
 		menu.addButton(button);
-		Button subButton = MenuManager.makeClickButton("子菜单1", "sub1");
+		Button subButton = MenuFactory.makeClickButton("子菜单1", "sub1");
 		button.addSubButton(subButton);
-		subButton = MenuManager.makeScancodePushButton("子菜单2", "sub2");
+		subButton = MenuFactory.makeScancodePushButton("子菜单2", "sub2");
 		button.addSubButton(subButton);
-		subButton = MenuManager.makeViewButton("子菜单3", "http://cn.bing.com/?FORM=Z9FD1");
+		subButton = MenuFactory.makeViewButton("子菜单3", "http://cn.bing.com/?FORM=Z9FD1");
 		button.addSubButton(subButton);
 		// 建立菜单
 		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);

@@ -7,7 +7,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
- * 一级菜单类
+ * 一级按钮类
  * @author 雪庭
  * @sine 1.0 at 2015年6月11日
  */
