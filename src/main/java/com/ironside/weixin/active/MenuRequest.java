@@ -32,7 +32,10 @@ public class MenuRequest {
 	
 	/** 自定义菜单创建url */
 	private final String create_menu_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
-	/**  */
+	/** 自定义菜单查询接口 */
+	private final String query_menu_url = "https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN";
+	/** 删除自定义菜单 */
+	private final String delete_menu_url = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN";
 	
 	/**
 	 * 新建菜单
@@ -44,13 +47,33 @@ public class MenuRequest {
 		String createMenuJson = JsonObjectConvert.getInstance().ObjectToJson(Menu.class, menu);
 		createMenuJson = createMenuJson.replaceAll("\\{\"menu\":", "");
 		createMenuJson = createMenuJson.substring(0, createMenuJson.length()-1);
-		createMenuJson = createMenuJson.replaceAll(",\"sub_button\":\\[\"\"\\]", "");
 		String json = HttpsRequest.getInstance().processPost(url, createMenuJson);
 		JsonObjectConvert.getInstance().validateJsonException(json);
 	}
 	
+	/**
+	 * 查询菜单
+	 * @param accessToken 公众号的全局凭证
+	 * @return 菜单
+	 */
 	public Menu queryMenu(AccessToken accessToken) {
-		retrun null;
+		String url = query_menu_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
+		String json = HttpsRequest.getInstance().processGet(url);
+		JsonObjectConvert.getInstance().validateJsonException(json);
+		json = json.replaceAll("\\{\"menu\":", "");
+		json = json.substring(0, json.length()-1);		
+		Menu menu = JsonObjectConvert.getInstance().jsonToObject(json, Menu.class);
+		return menu;
+	}
+	
+	/**
+	 * 删除菜单
+	 * @param accessToken 公众号的全局凭证
+	 */
+	public void deleteMenu(AccessToken accessToken) {
+		String url = delete_menu_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
+		String json = HttpsRequest.getInstance().processGet(url);
+		JsonObjectConvert.getInstance().validateJsonException(json);
 	}
 
 }

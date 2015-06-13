@@ -47,6 +47,8 @@ public class UserRequest {
 	private final String update_query_name_url = "https://api.weixin.qq.com/cgi-bin/groups/update?access_token=ACCESS_TOKEN";
 	/** 修改用户分组 */
 	private final String update_user_group_url = "https://api.weixin.qq.com/cgi-bin/groups/members/update?access_token=ACCESS_TOKEN";
+	/** 删除用户分组 */
+	private final String delete_user_group_url = "https://api.weixin.qq.com/cgi-bin/groups/delete?access_token=ACCESS_TOKEN";
 	
 	/**
 	 * 获取用户基本信息(unionId机制)，在关注者与公众号产生消息交互后，
@@ -150,6 +152,19 @@ public class UserRequest {
 		String userInfoUrl = JsonObjectConvert.getInstance().ObjectToJsonNoClassName(UserInfo.class, userInfo);
 		userInfoUrl = userInfoUrl.replaceAll("groupid", "to_groupid");
 		String json = HttpsRequest.getInstance().processPost(url, userInfoUrl);
+		// 验证失败时抛出WeixinException异常
+		JsonObjectConvert.getInstance().validateJsonException(json);
+	}
+
+	/**
+	 * 删除用户分组
+	 * @param accessToken 公众号的全局凭证
+	 * @param group 用户分组
+	 */
+	public void deleteGroup(AccessToken accessToken, Group group) {
+		String url = delete_user_group_url.replaceAll("ACCESS_TOKEN", accessToken.getAccessToken());
+		String groupUrl = JsonObjectConvert.getInstance().ObjectToJson(Group.class, group);
+		String json = HttpsRequest.getInstance().processPost(url, groupUrl);
 		// 验证失败时抛出WeixinException异常
 		JsonObjectConvert.getInstance().validateJsonException(json);
 	}

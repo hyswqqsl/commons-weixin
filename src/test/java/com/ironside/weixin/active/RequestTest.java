@@ -88,6 +88,15 @@ public class RequestTest {
 		UserRequest.getInstance().setUserRemark(accessToken, userInfo); 
 	}
 	
+	@Test 
+	public void testDeleteGroup() {
+		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+		Groupes groupes = UserRequest.getInstance().getGroupes(accessToken);		
+		UserRequest.getInstance().deleteGroup(accessToken, groupes.getGroupList().get(groupes.getGroupList().size()-1));
+		Groupes groupes2 = UserRequest.getInstance().getGroupes(accessToken);
+		assertEquals(groupes.getGroupList().size(), groupes2.getGroupList().size()+1);
+	}
+	
 	@Test
 	public void testCreateGroup() {
 		Group resultGroup = null;
@@ -98,12 +107,12 @@ public class RequestTest {
 		resultGroup = UserRequest.getInstance().createGroup(accessToken, group);
 		assertEquals(resultGroup.getName(), name);
 		assertTrue((resultGroup.getId()>0));
+		// 删除分组
+		UserRequest.getInstance().deleteGroup(accessToken, resultGroup);
 	}
 	
 	@Test
 	public void testQueryGroupes() {
-		// 先建立一个分组
-		testCreateGroup();
 		Groupes groupes = null;
 		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
 		groupes = UserRequest.getInstance().getGroupes(accessToken);
@@ -156,8 +165,8 @@ public class RequestTest {
 		Menu menu = new Menu();
 		Button button = MenuManager.makeClickButton("按钮1", "click1");
 		menu.addButton(button);
-		button = MenuManager.makeScancodePushButton("扫描1", "scan1");
-		menu.addButton(button);
+		//button = MenuManager.makeScancodePushButton("扫描1", "scan1");
+		//menu.addButton(button);
 		button = MenuManager.makeClickButton("请看子菜单", "click2");
 		menu.addButton(button);
 		Button subButton = MenuManager.makeClickButton("子菜单1", "sub1");
@@ -170,6 +179,8 @@ public class RequestTest {
 		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
 		MenuRequest.getInstance().createMenu(accessToken, menu);
 		// 验证
+		Menu menu2 = MenuRequest.getInstance().queryMenu(accessToken);
+		assertEquals(menu2.getButtonList().size(), 2);
 	}
 	
 }
