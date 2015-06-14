@@ -45,15 +45,15 @@ public class EntityType {
 	/** 自定义菜单-点击菜单跳转链接时的事件 */
 	public static final String EVENT_MENU_VIEW = "view";
 	/** 自定义菜单-扫码推事件 */
-	public static String EVENT_MENU_SCANCODE_PUSH = "scancode_push";
+	public static final String EVENT_MENU_SCANCODE_PUSH = "scancode_push";
 	/** 自定义菜单-扫码推事件且弹出“消息接收中”提示框 */
-	public static String EVENT_MENU_SCANCODE_WAITMSG = "scancode_waitmsg";
+	public static final String EVENT_MENU_SCANCODE_WAITMSG = "scancode_waitmsg";
 	/** 自定义菜单-弹出系统拍照发图 */
-	public static String EVENT_MENU_PIC_SYSPHOTO = "pic_sysphoto";
+	public static final String EVENT_MENU_PIC_SYSPHOTO = "pic_sysphoto";
 	/** 自定义菜单-弹出拍照或者相册发图 */
-	public static String EVENT_MENU_PIC_PHOTO_OR_ALBUM = "pic_photo_or_album";
+	public static final String EVENT_MENU_PIC_PHOTO_OR_ALBUM = "pic_photo_or_album";
 	/** 自定义菜单-弹出微信相册发图器 */
-	public static String EVENT_MENU_PIC_WEIXIN = "pic_weixin";
+	public static final String EVENT_MENU_PIC_WEIXIN = "pic_weixin";
 	/** 自定义菜单-弹出地理位置选择器 */
-	public static String EVENT_MENU_LOCATION_SELECT = "location_select";
+	public static final String EVENT_MENU_LOCATION_SELECT = "location_select";
 }

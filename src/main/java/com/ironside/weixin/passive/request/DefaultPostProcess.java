@@ -11,6 +11,8 @@ import com.ironside.weixin.passive.request.entity.AbstractBaseEntity;
 import com.ironside.weixin.passive.request.entity.EntityType;
 import com.ironside.weixin.passive.request.entity.EventMenuClickEntity;
 import com.ironside.weixin.passive.request.entity.EventLocationEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuPicSysphotoEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuScancodePushEntity;
 import com.ironside.weixin.passive.request.entity.EventScanEntity;
 import com.ironside.weixin.passive.request.entity.EventScanSubscribeEntity;
 import com.ironside.weixin.passive.request.entity.EventSubscribeEntity;
@@ -164,6 +166,41 @@ public class DefaultPostProcess extends AbstractPostProcess {
 			 </xml>
 			 */
 			xStream.alias("xml", EventMenuViewEntity.class);
+			break;
+		case EntityType.EVENT_MENU_SCANCODE_PUSH:
+			/*
+			<xml><ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
+			<FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
+			<CreateTime>1408090502</CreateTime>
+			<MsgType><![CDATA[event]]></MsgType>
+			<Event><![CDATA[scancode_push]]></Event>
+			<EventKey><![CDATA[6]]></EventKey>
+			<ScanCodeInfo><ScanType><![CDATA[qrcode]]></ScanType>
+			<ScanResult><![CDATA[1]]></ScanResult>
+			</ScanCodeInfo>
+			</xml>
+			 */
+			xStream.alias("xml", EventMenuScancodePushEntity.class);
+			xStream.alias("ScanCodeInfo", EventMenuScancodePushEntity.ScanCodeInfo.class);
+			break;
+		case EntityType.EVENT_MENU_PIC_SYSPHOTO:
+			/*
+			<xml><ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
+			<FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
+			<CreateTime>1408090651</CreateTime>
+			<MsgType><![CDATA[event]]></MsgType>
+			<Event><![CDATA[pic_sysphoto]]></Event>
+			<EventKey><![CDATA[6]]></EventKey>
+			<SendPicsInfo><Count>1</Count>
+			<PicList><item><PicMd5Sum><![CDATA[1b5f7c23b5bf75682a53e7b6d163e185]]></PicMd5Sum>
+			</item>
+			</PicList>
+			</SendPicsInfo>
+			</xml>
+			 */
+			xStream.alias("xml", EventMenuPicSysphotoEntity.class);
+			xStream.alias("SendPicsInfo", EventMenuPicSysphotoEntity.SendPicsInfo.class);
+			xStream.alias("item", EventMenuPicSysphotoEntity.SendPicsInfo.item.class);
 			break;
 		default :
 			throw new IllegalStateException(String.format("解析事件消息出错:(%s)事件类型未知", event));
