@@ -5,7 +5,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
- * 自定义菜单-弹出系统拍照发图的事件推送
+ * 自定义菜单-弹出系统拍照发图的事件消息实体
  * @author 雪庭
  * @sine 1.0 at 2015年6月13日
  */

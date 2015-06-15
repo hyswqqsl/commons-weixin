@@ -4,7 +4,6 @@ import org.springframework.util.Assert;
 
 import com.qq.weixin.mp.aes.AesException;
 import com.qq.weixin.mp.aes.WXBizMsgCrypt;
-import com.sun.org.apache.bcel.internal.generic.DDIV;
 
 /**
  * POST方式推送给微信公众账号的加密消息处理，具体实现消息加密、解密。

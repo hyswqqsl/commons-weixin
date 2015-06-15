@@ -11,7 +11,10 @@ import com.ironside.weixin.passive.request.entity.AbstractBaseEntity;
 import com.ironside.weixin.passive.request.entity.EntityType;
 import com.ironside.weixin.passive.request.entity.EventMenuClickEntity;
 import com.ironside.weixin.passive.request.entity.EventLocationEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuLocationSelectEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuPicPhotoOrAlbumEntity;
 import com.ironside.weixin.passive.request.entity.EventMenuPicSysphotoEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuPicWeixinEntity;
 import com.ironside.weixin.passive.request.entity.EventMenuScancodePushEntity;
 import com.ironside.weixin.passive.request.entity.EventScanEntity;
 import com.ironside.weixin.passive.request.entity.EventScanSubscribeEntity;
@@ -202,6 +205,63 @@ public class DefaultPostProcess extends AbstractPostProcess {
 			xStream.alias("SendPicsInfo", EventMenuPicSysphotoEntity.SendPicsInfo.class);
 			xStream.alias("item", EventMenuPicSysphotoEntity.SendPicsInfo.item.class);
 			break;
+		case EntityType.EVENT_MENU_PIC_PHOTO_OR_ALBUM:
+			/**
+			<xml><ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
+			<FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
+			<CreateTime>1408090816</CreateTime>
+			<MsgType><![CDATA[event]]></MsgType>
+			<Event><![CDATA[pic_photo_or_album]]></Event>
+			<EventKey><![CDATA[6]]></EventKey>
+			<SendPicsInfo><Count>1</Count>
+			<PicList><item><PicMd5Sum><![CDATA[5a75aaca956d97be686719218f275c6b]]></PicMd5Sum>
+			</item>
+			</PicList>
+			</SendPicsInfo>
+			</xml>
+			 */
+			xStream.alias("xml", EventMenuPicPhotoOrAlbumEntity.class);
+			xStream.alias("SendPicsInfo", EventMenuPicSysphotoEntity.SendPicsInfo.class);
+			xStream.alias("item", EventMenuPicSysphotoEntity.SendPicsInfo.item.class);
+			break;
+		case EntityType.EVENT_MENU_PIC_WEIXIN:
+			/**
+			<xml><ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
+			<FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
+			<CreateTime>1408090816</CreateTime>
+			<MsgType><![CDATA[event]]></MsgType>
+			<Event><![CDATA[pic_weixin]]></Event>
+			<EventKey><![CDATA[6]]></EventKey>
+			<SendPicsInfo><Count>1</Count>
+			<PicList><item><PicMd5Sum><![CDATA[5a75aaca956d97be686719218f275c6b]]></PicMd5Sum>
+			</item>
+			</PicList>
+			</SendPicsInfo>
+			</xml>
+			 */
+			xStream.alias("xml", EventMenuPicWeixinEntity.class);
+			xStream.alias("SendPicsInfo", EventMenuPicSysphotoEntity.SendPicsInfo.class);
+			xStream.alias("item", EventMenuPicSysphotoEntity.SendPicsInfo.item.class);
+			break;			
+		case EntityType.EVENT_MENU_LOCATION_SELECT:
+			/*
+			<xml><ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>
+			<FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>
+			<CreateTime>1408091189</CreateTime>
+			<MsgType><![CDATA[event]]></MsgType>
+			<Event><![CDATA[location_select]]></Event>
+			<EventKey><![CDATA[6]]></EventKey>
+			<SendLocationInfo><Location_X><![CDATA[23]]></Location_X>
+			<Location_Y><![CDATA[113]]></Location_Y>
+			<Scale><![CDATA[15]]></Scale>
+			<Label><![CDATA[ 广州市海珠区客村艺苑路 106号]]></Label>
+			<Poiname><![CDATA[]]></Poiname>
+			</SendLocationInfo>
+			</xml>
+			 */
+			xStream.alias("xml", EventMenuLocationSelectEntity.class);
+			xStream.alias("SendLocationInfo", EventMenuLocationSelectEntity.SendLocationInfo.class);
+			break;
 		default :
 			throw new IllegalStateException(String.format("解析事件消息出错:(%s)事件类型未知", event));
 		}
@@ -357,10 +417,10 @@ public class DefaultPostProcess extends AbstractPostProcess {
 			result = this.processor.postProcessEventLocation((EventLocationEntity) entity);
 			break;
 		case EntityType.EVENT_MENU_CLICK:
-			result = this.processor.postProcessEventClick((EventMenuClickEntity) entity);
+			result = this.processor.postProcessEventMenuClick((EventMenuClickEntity) entity);
 			break;
 		case EntityType.EVENT_MENU_VIEW:
-			result = this.processor.postProcessEventView((EventMenuViewEntity) entity);
+			result = this.processor.postProcessEventMenuView((EventMenuViewEntity) entity);
 			break;
 		default:
 			throw new IllegalStateException(String.format("处理事件实体异常-事件实体不是预期的类型: %s", event));

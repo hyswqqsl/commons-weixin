@@ -2,6 +2,12 @@ package com.ironside.weixin.passive;
 
 import com.ironside.weixin.passive.request.entity.EventMenuClickEntity;
 import com.ironside.weixin.passive.request.entity.EventLocationEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuLocationSelectEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuPicPhotoOrAlbumEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuPicSysphotoEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuPicWeixinEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuScancodePushEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuScancodeWaitmsgEntity;
 import com.ironside.weixin.passive.request.entity.EventScanEntity;
 import com.ironside.weixin.passive.request.entity.EventScanSubscribeEntity;
 import com.ironside.weixin.passive.request.entity.EventSubscribeEntity;
@@ -80,12 +86,47 @@ public class PostProcessorAdapter implements IPostProcessor {
 		return result;
 	}
 
-	public String postProcessEventClick(EventMenuClickEntity entity) {
+	public String postProcessEventMenuClick(EventMenuClickEntity entity) {
 		return result;
 	}
 
-	public String postProcessEventView(EventMenuViewEntity entity) {
+	public String postProcessEventMenuView(EventMenuViewEntity entity) {
 		return result;
+	}
+
+	@Override
+	public String postProcessEventMenuScancodePush(
+			EventMenuScancodePushEntity entity) {
+		return result;
+	}
+
+	@Override
+	public String postProcessEventMenuScancodeWaitmsg(
+			EventMenuScancodeWaitmsgEntity entity) {
+		return result;		
+	}
+
+	@Override
+	public String postProcessEventMenuPicSysphoto(
+			EventMenuPicSysphotoEntity entity) {
+		return result;
+	}
+
+	@Override
+	public String postProcessEventMenuPicPhotoOrAlbum(
+			EventMenuPicPhotoOrAlbumEntity entity) {
+		return result;
+	}
+
+	@Override
+	public String postProcessEventMenuPicWeixin(EventMenuPicWeixinEntity entity) {
+		return result;		
+	}
+
+	@Override
+	public String postProcessEventMenuLocationSelect(
+			EventMenuLocationSelectEntity entity) {
+		return result;				
 	}
 
 }

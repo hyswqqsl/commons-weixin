@@ -8,7 +8,10 @@ import org.junit.Test;
 import com.ironside.weixin.passive.request.DefaultPostProcess;
 import com.ironside.weixin.passive.request.entity.AbstractBaseEntity;
 import com.ironside.weixin.passive.request.entity.EntityType;
+import com.ironside.weixin.passive.request.entity.EventMenuLocationSelectEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuPicPhotoOrAlbumEntity;
 import com.ironside.weixin.passive.request.entity.EventMenuPicSysphotoEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuPicWeixinEntity;
 import com.ironside.weixin.passive.request.entity.EventMenuScancodePushEntity;
 import com.ironside.weixin.passive.request.entity.EventScanSubscribeEntity;
 import com.ironside.weixin.passive.request.entity.EventSubscribeEntity;
@@ -121,7 +124,7 @@ public class DefaultPostProcessTest {
  		// 调用解析
 		AbstractBaseEntity entity = process.analyze(xml);
 		EventMenuScancodePushEntity sEntity = (EventMenuScancodePushEntity)entity;
-		Assert.assertEquals("gh_e136c6e50636", sEntity.getToUserName());
+		Assert.assertEquals(sEntity.getToUserName(), "gh_e136c6e50636");
 		Assert.assertEquals(sEntity.getMsgType(), EntityType.EVENT);
 		Assert.assertEquals(sEntity.getEvent(), EntityType.EVENT_MENU_SCANCODE_PUSH);
 		Assert.assertNotNull(sEntity.getScanCodeInfo());
@@ -144,12 +147,79 @@ public class DefaultPostProcessTest {
 		// 调用解析
 		entity = process.analyze(xml);
 		EventMenuPicSysphotoEntity sEntity2 = (EventMenuPicSysphotoEntity)entity;
-		Assert.assertEquals("gh_e136c6e50636", sEntity2.getToUserName());
+		Assert.assertEquals(sEntity2.getToUserName(), "gh_e136c6e50636");
 		Assert.assertEquals(sEntity2.getMsgType(), EntityType.EVENT);
 		Assert.assertEquals(sEntity2.getEvent(), EntityType.EVENT_MENU_PIC_SYSPHOTO);
 		Assert.assertNotNull(sEntity2.getSendPicsInfo());
 		Assert.assertEquals(sEntity2.getSendPicsInfo().getPicList().size(), 1);
 		Assert.assertEquals(sEntity2.getSendPicsInfo().getPicList().get(0).getPicMd5Sum(), "1b5f7c23b5bf75682a53e7b6d163e185");
+		/** 弹出微信相册发图器的事件推送 */
+		// 调用解析
+		xml = "<xml>" +
+				"<ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>" +
+				"<FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>" +
+				"<CreateTime>1408090816</CreateTime>" +
+				"<MsgType><![CDATA[event]]></MsgType>" +
+				"<Event><![CDATA[pic_photo_or_album]]></Event>" +
+				"<EventKey><![CDATA[6]]></EventKey>" +
+				"<SendPicsInfo><Count>1</Count>" +
+				"<PicList><item><PicMd5Sum><![CDATA[5a75aaca956d97be686719218f275c6b]]></PicMd5Sum>" +
+				"</item>" +
+				"</PicList>" +
+				"</SendPicsInfo>" +
+				"</xml>";
+		entity = process.analyze(xml);
+		EventMenuPicPhotoOrAlbumEntity sEntity3 = (EventMenuPicPhotoOrAlbumEntity)entity;
+		Assert.assertEquals(sEntity3.getToUserName(), "gh_e136c6e50636");
+		Assert.assertEquals(sEntity3.getMsgType(), EntityType.EVENT);
+		Assert.assertEquals(sEntity3.getEvent(), EntityType.EVENT_MENU_PIC_PHOTO_OR_ALBUM);
+		Assert.assertNotNull(sEntity3.getSendPicsInfo());
+		Assert.assertEquals(sEntity3.getSendPicsInfo().getPicList().size(), 1);
+		Assert.assertEquals(sEntity3.getSendPicsInfo().getPicList().get(0).getPicMd5Sum(), "5a75aaca956d97be686719218f275c6b");		
+		/** 弹出微信相册发图器的事件推送 */
+		xml = "<xml>" +
+				"<ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>" +
+				"<FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>" +
+				"<CreateTime>1408090816</CreateTime>" +
+				"<MsgType><![CDATA[event]]></MsgType>" +
+				"<Event><![CDATA[pic_weixin]]></Event>" +
+				"<EventKey><![CDATA[6]]></EventKey>" +
+				"<SendPicsInfo><Count>1</Count>" +
+				"<PicList><item><PicMd5Sum><![CDATA[5a75aaca956d97be686719218f275c6b]]></PicMd5Sum>" +
+				"</item>" +
+				"</PicList>" +
+				"</SendPicsInfo>" +
+				"</xml>";		
+		entity = process.analyze(xml);
+		EventMenuPicWeixinEntity sEntity4 = (EventMenuPicWeixinEntity)entity;
+		Assert.assertEquals(sEntity4.getToUserName(), "gh_e136c6e50636");
+		Assert.assertEquals(sEntity4.getMsgType(), EntityType.EVENT);
+		Assert.assertEquals(sEntity4.getEvent(), EntityType.EVENT_MENU_PIC_WEIXIN);
+		Assert.assertNotNull(sEntity4.getSendPicsInfo());
+		Assert.assertEquals(sEntity4.getSendPicsInfo().getPicList().size(), 1);
+		Assert.assertEquals(sEntity4.getSendPicsInfo().getPicList().get(0).getPicMd5Sum(), "5a75aaca956d97be686719218f275c6b");
+		/** 弹出地理位置选择器的事件推送 */
+		xml = "<xml>" +
+				"<ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>" +
+				"<FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>" +
+				"<CreateTime>1408091189</CreateTime>" +
+				"<MsgType><![CDATA[event]]></MsgType>" +
+				"<Event><![CDATA[location_select]]></Event>" +
+				"<EventKey><![CDATA[6]]></EventKey>" +
+				"<SendLocationInfo><Location_X><![CDATA[23]]></Location_X>" +
+				"<Location_Y><![CDATA[113]]></Location_Y>" +
+				"<Scale><![CDATA[15]]></Scale>" +
+				"<Label><![CDATA[广州市海珠区客村艺苑路 106号]]></Label>" +
+				"<Poiname><![CDATA[]]></Poiname>" +
+				"</SendLocationInfo>" +
+				"</xml>";
+		entity = process.analyze(xml);
+		EventMenuLocationSelectEntity sEntity5 = (EventMenuLocationSelectEntity)entity;
+		Assert.assertEquals(sEntity5.getToUserName(), "gh_e136c6e50636");
+		Assert.assertEquals(sEntity5.getMsgType(), EntityType.EVENT);
+		Assert.assertEquals(sEntity5.getEvent(), EntityType.EVENT_MENU_LOCATION_SELECT);
+		Assert.assertNotNull(sEntity5.getSendLocationInfo());
+		Assert.assertEquals(sEntity5.getSendLocationInfo().getLabel(), "广州市海珠区客村艺苑路 106号");
 	}
 	
 }

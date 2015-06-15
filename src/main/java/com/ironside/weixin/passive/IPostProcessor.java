@@ -2,6 +2,12 @@ package com.ironside.weixin.passive;
 
 import com.ironside.weixin.passive.request.entity.EventMenuClickEntity;
 import com.ironside.weixin.passive.request.entity.EventLocationEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuLocationSelectEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuPicPhotoOrAlbumEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuPicSysphotoEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuPicWeixinEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuScancodePushEntity;
+import com.ironside.weixin.passive.request.entity.EventMenuScancodeWaitmsgEntity;
 import com.ironside.weixin.passive.request.entity.EventScanEntity;
 import com.ironside.weixin.passive.request.entity.EventScanSubscribeEntity;
 import com.ironside.weixin.passive.request.entity.EventSubscribeEntity;
@@ -23,100 +29,142 @@ import com.ironside.weixin.passive.request.entity.VoiceEntity;
 public interface IPostProcessor {
 	
 	/**
-	 * 处理文本实体
+	 * 处理文本消息实体
 	 * @param entity 实体
 	 * @return 响应消息
 	 */
 	String postProcessText(TextEntity entity);
 	
 	/** 
-	 * 处理图片实体
+	 * 处理图片消息实体
 	 * @param entity 实体
 	 * @return 响应消息
 	 */
 	String postProcessImage(ImageEntity entity);
 	
 	/** 
-	 * 处理语音实体
+	 * 处理语音消息实体
 	 * @param entity 实体
 	 * @return 响应消息
 	 */
 	String postProcessVoice(VoiceEntity entity);
 	
 	/** 
-	 * 处理视频实体
+	 * 处理视频消息实体
 	 * @param entity 实体
 	 * @return 响应消息
 	 */
 	String postProcessVideo(VideoEntity entity);
 	
 	/** 
-	 * 处理小视频实体
+	 * 处理小视频消息实体
 	 * @param entity 实体
 	 * @return 响应消息
 	 */
 	String postProcessShortVideo(ShortVideoEntity entity);
 	
 	/** 
-	 * 处理地理位置实体
+	 * 处理地理位置消息实体
 	 * @param entity 实体
 	 * @return 响应消息
 	 */
 	String postProcessLocation(LocationEntity entity);
 	
 	/** 
-	 * 处理链接实体
+	 * 处理链接消息实体
 	 * @param entity 实体
 	 * @return 响应消息
 	 */
 	String postProcessLink(LinkEntity entity);
 	
 	/** 
-	 * 处理关注/取消关注-订阅事件实体
+	 * 处理关注/取消关注-订阅事件消息实体
 	 * @param entity 实体
 	 * @return 响应消息
 	 */
 	String postProcessEventSubscribe(EventSubscribeEntity entity);
 	
 	/** 
-	 * 处理关注/取消关注-取消订阅事件实体
+	 * 处理关注/取消关注-取消订阅事件消息实体
 	 * @param entity 实体
 	 * @return 响应消息
 	 */
 	String postProcessEventUnSubscribe(EventUnSubscribeEntity entity);
 	
 	/** 
-	 * 处理扫描带参数二维码-用户未关注时，进行关注后的事件实体
+	 * 处理扫描带参数二维码-用户未关注时，进行关注后的事件消息实体
 	 * @param entity 实体
 	 * @return 响应消息
 	 */
 	String postProcessEventScanSubscribe(EventScanSubscribeEntity entity);
 	
 	/** 
-	 * 处理扫描带参数二维码-用户已关注时的事件实体
+	 * 处理扫描带参数二维码-用户已关注时的事件消息实体
 	 * @param entity 实体
 	 * @return 响应消息
 	 */
 	String postProcessEventScan(EventScanEntity entity);
 	
 	/** 
-	 * 处理上报地理位置事件实体	 
+	 * 处理上报地理位置事件消息实体	 
 	 * @param entity 实体
 	 * @return 响应消息	
 	 */
 	String postProcessEventLocation(EventLocationEntity entity);
 	
 	/** 
-	 * 处理自定义菜单-点击菜单拉取消息时的事件实体
+	 * 处理自定义菜单-点击菜单拉取消息时的事件消息实体
 	 * @param entity 实体
 	 * @return 响应消息
 	 */
-	String postProcessEventClick(EventMenuClickEntity entity);
+	String postProcessEventMenuClick(EventMenuClickEntity entity);
 	
 	/** 
-	 * 处理自定义菜单-点击菜单跳转链接时的事件实体
+	 * 处理自定义菜单-点击菜单跳转链接时的事件消息实体
 	 * @param entity 实体
 	 * @return 响应消息
 	 */
-	String postProcessEventView(EventMenuViewEntity entity);
+	String postProcessEventMenuView(EventMenuViewEntity entity);
+	
+	/**
+	 * 处理自定义菜单-扫码推事件的事件推送消息实体
+	 * @param entity 实体
+	 * @return 响应消息
+	 */
+	String postProcessEventMenuScancodePush(EventMenuScancodePushEntity entity);
+	
+	/**
+	 * 处理自定义菜单-扫码推事件且弹出“消息接收中”提示框的事件推送消息实体 
+	 * @param entity 实体
+	 * @return 响应消息
+	 */
+	String postProcessEventMenuScancodeWaitmsg(EventMenuScancodeWaitmsgEntity entity);
+	
+	/**
+	 * 处理自定义菜单-弹出系统拍照发图的事件推送消息实体 
+	 * @param entity 实体
+	 * @return 响应消息
+	 */
+	String postProcessEventMenuPicSysphoto(EventMenuPicSysphotoEntity entity);
+	
+	/**
+	 * 处理自定义菜单-弹出拍照或者相册发图的事件推送消息实体 
+	 * @param entity 实体
+	 * @return 响应消息
+	 */
+	String postProcessEventMenuPicPhotoOrAlbum(EventMenuPicPhotoOrAlbumEntity entity);
+	
+	/**
+	 * 处理自定义菜单-弹出微信相册发图器的事件推送消息实体
+	 * @param entity 实体
+	 * @return 响应消息
+	 */
+	String postProcessEventMenuPicWeixin(EventMenuPicWeixinEntity entity);
+	
+	/**
+	 * 处理自定义菜单-弹出地理位置选择器的事件推送
+	 * @param entity 实体
+	 * @return 响应消息
+	 */
+	String postProcessEventMenuLocationSelect(EventMenuLocationSelectEntity entity);
 }

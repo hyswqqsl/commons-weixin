@@ -29,7 +29,7 @@ public class MyPostProcessor extends PostProcessorAdapter {
 	}
 
 	@Override
-	public String postProcessEventClick(EventMenuClickEntity entity) {
+	public String postProcessEventMenuClick(EventMenuClickEntity entity) {
 		// 取得点击菜单的事件KEY值
 		String eventKey = entity.getEventKey();
 		AbstractBaseResponse response = null;
