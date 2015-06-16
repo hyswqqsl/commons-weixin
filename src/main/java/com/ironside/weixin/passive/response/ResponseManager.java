@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import com.ironside.weixin.passive.request.entity.AbstractBaseEntity;
 import com.ironside.weixin.passive.response.entity.AbstractBaseResponse;
 import com.ironside.weixin.passive.response.entity.ImageResponse;
+import com.ironside.weixin.passive.response.entity.ImageResponse.Image;
 import com.ironside.weixin.passive.response.entity.MusicResponse;
 import com.ironside.weixin.passive.response.entity.NewsResponse;
 import com.ironside.weixin.passive.response.entity.NewsResponse.News;
@@ -412,6 +413,9 @@ public class ResponseManager {
 		Assert.notNull(response);
 		response.setFromUserName(entity.getToUserName());
 		response.setToUserName(entity.getFromUserName());
+		ImageResponse.Image image = response.new Image();
+		image.setMediaId("f_79hUmXIreErst9BLJDe2i0HZUKPQF9kPs9VOaRm_JCbM4gsc04VuIdRRdb82dg");
+		response.setImage(image);
 		return response;
 	}
 

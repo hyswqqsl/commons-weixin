@@ -8,9 +8,9 @@ package com.ironside.weixin.passive.request.entity;
 public class LocationEntity extends AbstractBaseEntity {
 	
 	/** 地理位置维度 */
-	private String LocationX;
+	private String Location_X;
 	/**	地理位置经度 */
-	private String LocationY;
+	private String Location_Y;
 	/** 地图缩放大小 */
 	private String Scale;
 	/** 地理位置信息 */
@@ -23,7 +23,7 @@ public class LocationEntity extends AbstractBaseEntity {
 	 * @return 地理位置维度
 	 */
 	public String getLocationX() {
-		return LocationX;
+		return Location_X;
 	}
 	
 	/**
@@ -31,7 +31,7 @@ public class LocationEntity extends AbstractBaseEntity {
 	 * @param locationX 地理位置维度
 	 */
 	public void setLocationX(String locationX) {
-		this.LocationX = locationX;
+		this.Location_X = locationX;
 	}
 	
 	/**
@@ -39,7 +39,7 @@ public class LocationEntity extends AbstractBaseEntity {
 	 * @return 地理位置经度
 	 */	
 	public String getLocationY() {
-		return LocationY;
+		return Location_Y;
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public class LocationEntity extends AbstractBaseEntity {
 	 * @param locationY 地理位置经度
 	 */	
 	public void setLocationY(String locationY) {
-		this.LocationY = locationY;
+		this.Location_Y = locationY;
 	}
 	
 	/**

@@ -42,10 +42,10 @@ public class Button {
 		if (this.subButtonList.size()>=5) {
 			return;
 		}
-		this.type = null;
-		this.key = null;
-		this.url = null;
-		this.mediaId = null;
+		//this.type = null;
+		//this.key = null;
+		//this.url = null;
+		//this.mediaId = null;
 		this.subButtonList.add(new SubButton(subButton));
 	}
 		

@@ -88,7 +88,7 @@ public class RequestTest {
 		UserRequest.getInstance().setUserRemark(accessToken, userInfo); 
 	}
 	
-	@Test 
+	// @Test 
 	public void testDeleteGroup() {
 		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
 		Groupes groupes = UserRequest.getInstance().getGroupes(accessToken);		
@@ -97,18 +97,18 @@ public class RequestTest {
 		assertEquals(groupes.getGroupList().size(), groupes2.getGroupList().size()+1);
 	}
 	
-	@Test
+	// @Test
 	public void testCreateGroup() {
 		Group resultGroup = null;
 		String name = "好友";
 		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+		// 删除分组
+		UserRequest.getInstance().deleteGroup(accessToken, resultGroup);
 		Group group = new Group();
 		group.setName(name);
 		resultGroup = UserRequest.getInstance().createGroup(accessToken, group);
 		assertEquals(resultGroup.getName(), name);
 		assertTrue((resultGroup.getId()>0));
-		// 删除分组
-		UserRequest.getInstance().deleteGroup(accessToken, resultGroup);
 	}
 	
 	@Test
@@ -165,8 +165,6 @@ public class RequestTest {
 		Menu menu = new Menu();
 		Button button = MenuFactory.makeClickButton("按钮1", "click1");
 		menu.addButton(button);
-		//button = MenuManager.makeScancodePushButton("扫描1", "scan1");
-		//menu.addButton(button);
 		button = MenuFactory.makeClickButton("请看子菜单", "click2");
 		menu.addButton(button);
 		Button subButton = MenuFactory.makeClickButton("子菜单1", "sub1");
@@ -175,12 +173,14 @@ public class RequestTest {
 		button.addSubButton(subButton);
 		subButton = MenuFactory.makeViewButton("子菜单3", "http://cn.bing.com/?FORM=Z9FD1");
 		button.addSubButton(subButton);
+		button = MenuFactory.makeClickButton("按钮2", "click3");
+		menu.addButton(button);
 		// 建立菜单
 		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
 		MenuRequest.getInstance().createMenu(accessToken, menu);
 		// 验证
 		Menu menu2 = MenuRequest.getInstance().queryMenu(accessToken);
-		assertEquals(menu2.getButtonList().size(), 2);
+		assertEquals(menu2.getButtonList().size(), 3);
 	}
 	
 }

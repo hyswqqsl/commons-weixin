@@ -151,7 +151,6 @@ public class UserList {
 	}
 #+end_src
 
-
 ** 当前日期: 2015/06/08 周一 
 
 - XStream的资料
@@ -251,5 +250,11 @@ String userGroupJson = JsonObjectConvert.getInstance().ObjectToJson(Group.class,
 
 - 菜单类包含一级按钮和二级按钮，菜单包含3个一级按钮，一级按钮包含5个二级按钮，MenuFactory用于产生具体按钮
 - Button和SubButton内容完全一致，只是方便转换为json，所以设计了SubButton
+
+** 当前日期: 2015/06/15 周一 
+- 完成了各种类型的菜单按钮生产，MenuFactory
+- 完成POST处理器接口和缺省适配模式，处理各种类型自定义菜单事件
+
+- nat123 awareness/1112shy11
 
 
