@@ -30,7 +30,7 @@ public class AccessToken {
 	 */
 	public boolean isOver() {
 		long now = System.currentTimeMillis() / 1000;
-		if ((now - access_time) >= expires_in) {
+		if ((now - access_time - 10) >= expires_in) {
 			return true;
 		}
 		return false;

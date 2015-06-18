@@ -19,4 +19,6 @@ public class ResponseType {
 	public static final String MUSIC = "music";
 	/** 图文回复 */
 	public static final String NEWS = "news";
+	/** 消息转发到多客服 */
+	public static final String TRANSFER_CUSTOMER = "transfer_customer_service";
 }

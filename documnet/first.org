@@ -257,4 +257,134 @@ String userGroupJson = JsonObjectConvert.getInstance().ObjectToJson(Group.class,
 
 - nat123 awareness/1112shy11
 
+** 当前日期: 2015/06/16 周二  阶段总结
+ 
+
+*** 加大缓冲，web测试程序
+  - TextResponse实现了cloneable接口，可以克隆对象，防止缓冲对象被改变，所有响应都
+    加上cloneable接口
+  - 缓冲加大，每个响应对象形成缓冲池
+  - Spring mvc 可以直接获得参数，@RequestParam String timestamp, 不需要使用HttpServletRequest.getParameter("timestamp")
+  - Spring mvc 可以直接获得数据，@RequestBody String postData)，不需要输入流方式
+  - Spring mvc 可以直接返回数据@ResponseBody，不需要输出流方式
+  - @RequestMapping(method = RequestMethod.POST, produces = "text/html;charset=utf-8")可以保证返回数据是UTF-8格式
+  - 使用apache httpClient和spring-web实现https访问方式，很方便
+
+*** 编码
+
+  - 使用spring mvc接收post信息，需要设置编码
+#+begin_src java
+  /**
+	 * 处理POST方式推送给微信公众账号的消息处理
+	 * @param postData 具体实现消息解析
+	 * @return 响应信息
+	 */
+	@RequestMapping(method = RequestMethod.POST, produces = "text/html;charset=utf-8")
+	@ResponseBody
+	public String post(@RequestBody String postData) {
+		String responseData =  postProcess.process(postData);
+		return responseData;
+	}
+#+end_src
+
+  - 使用apache httpClient和spring-web实现https发送方式，最终使用
+    org.springframework.web.client.RestTemplate类发起访问，但是默认的编码是
+    ISO-8859-1，返回中文是乱码，需要改变RestTemplate的编码
+#+begin_src java
+	/*
+	 * 设置RestTemplate的编码，RestTemplate默认添加HttpMessageConverter的编码是ISO-8859-1，
+	 * 如果用其他编码，需要移除原有的StringHttpMessageConverter，添加指定字符集的StringHttpMessageConvert
+	 */
+	private void setRestTemplateCharSet(RestTemplate restTemplate, Charset charset) {
+		List<HttpMessageConverter<?>> converterList = restTemplate	.getMessageConverters();
+		HttpMessageConverter<?> converterTarget = null;
+		for (HttpMessageConverter<?> item : converterList) {
+			if (item.getClass() == StringHttpMessageConverter.class) {
+				converterTarget = item;
+				break;
+			}
+		}
+		if (converterTarget != null) {
+			converterList.remove(converterTarget);
+		}
+		HttpMessageConverter<?> converter = new StringHttpMessageConverter(charset);
+		converterList.add(converter);
+	}
+#+end_src
+
+*** json object
+
+  - 微信返回的json有两种，一种不带类名，直接是信息
+#+begin_example
+{"access_token":"ACCESS_TOKEN","expires_in":7200}
+#+end_example
+   一种是带类名
+#+begin_example
+{
+    "group": {
+        "id": 107, 
+        "name": "test"
+    }
+}
+#+end_example
+   两种json转换为对象的方式有些区别，第一种json需要先附加类名(object)，然后设置
+   类名是object
+#+begin_src java
+	/**
+	 * 将微信服务器返回的json串转换为请求返回对象,
+	 * 这种转换方式的json没有类名，需要先附加类名(object)
+	 * @param json 微信服务器返回的json串
+	 * @param cls 请求返回类型
+	 * @return 请求返回对象
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T jsonToObject(String json, Class<T> cls) {
+		json = jsonTemplate.replaceAll("json", json);
+		XStream xStream = new XStream(new JettisonMappedXmlDriver());
+		xStream.alias("object", cls);
+		return (T) xStream.fromXML(json);
+	}
+#+end_src
+   第二种json中有类名，需要在方法中指定类名
+#+begin_src java
+	/**
+	 * 将微信服务器返回的json串转换为请求返回对象,
+	 * 这种转换方式的json有类名
+	 * @param json 微信服务器返回的json串
+	 * @param cls 请求返回类型
+	 * @param className 类名
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T jsonToObject(String json, Class<T> cls, String className) {
+		XStream xStream = new XStream(new JettisonMappedXmlDriver());
+		xStream.alias(className, cls);
+		return (T) xStream.fromXML(json);
+	}
+#+end_src
+   
+  - 对象转换为json，根据实际情况，设置是否显示类名(displayClassName)
+  
+#+begin_src java
+// 设置用户备注
+String userRemarkJson = JsonObjectConvert.getInstance().ObjectToJsonNoClassName(UserInfo.class, userInfo);
+// 新建分组
+String userGroupJson = JsonObjectConvert.getInstance().ObjectToJson(Group.class, group);
+#+end_src
+
+  - 实体转换为json时，会产生多余字段，不多没有关系，不会出错
+
+
+
+
+
+
+*** 菜单
+
+- 菜单类包含一级按钮和二级按钮，菜单包含3个一级按钮，一级按钮包含5个二级按钮，MenuFactory用于产生具体按钮
+- Button和SubButton内容完全一致，只是方便转换为json，所以设计了SubButton
+- 完成了各种类型的菜单按钮生产，MenuFactory
+- 完成POST处理器接口和缺省适配模式，处理各种类型自定义菜单事件
+- 设置微信号？
+
 

@@ -19,6 +19,7 @@ import com.ironside.weixin.passive.response.entity.NewsResponse;
 import com.ironside.weixin.passive.response.entity.NewsResponse.News;
 import com.ironside.weixin.passive.response.entity.ResponseType;
 import com.ironside.weixin.passive.response.entity.TextResponse;
+import com.ironside.weixin.passive.response.entity.TransferCustomerResponse;
 import com.ironside.weixin.passive.response.entity.VideoResponse;
 import com.ironside.weixin.passive.response.entity.VoiceResponse;
 import com.thoughtworks.xstream.XStream;
@@ -107,6 +108,21 @@ public class ResponseManager {
 			+ "<PicUrl><![CDATA[picUrl]]></PicUrl><Url><![CDATA[url]]></Url></item><item><Title><![CDATA[title]]></Title>"
 			+ "<Description><![CDATA[description]]></Description><PicUrl><![CDATA[picUrl]]></PicUrl><Url><![CDATA[url]]></Url></item>"
 			+ "</Articles></xml>";
+	
+	/**
+	 * <xml>
+	 *      <ToUserName><![CDATA[touser]]></ToUserName>
+	 *      <FromUserName><![CDATA[fromuser]]></FromUserName>
+	 *      <CreateTime>1399197672</CreateTime>
+	 *      <MsgType><![CDATA[transfer_customer_service]]></MsgType>
+	 *      <TransInfo>
+	 *          <KfAccount><![CDATA[test1@test]]></KfAccount>
+	 *      </TransInfo>
+	 * </xml>
+	 */
+	private final String DEFAULT_TRANSFER_CUSTOMER_STRING = "<xml><ToUserName><![CDATA[touser]]></ToUserName><FromUserName><![CDATA[fromuser]]>"
+			+ "</FromUserName><CreateTime>1399197672</CreateTime><MsgType><![CDATA[transfer_customer_service]]></MsgType><TransInfo><KfAccount>"
+			+ "<![CDATA[test1@test]]></KfAccount></TransInfo></xml>";
 
 	/** 文本类型回复xml文件 */
 	Properties textXmlFileProperties;
@@ -139,6 +155,8 @@ public class ResponseManager {
 	/** 图文回复消息缓冲 */
 	NewsResponse defaultNewsResponse;
 	Map<String, NewsResponse> newsResponseMap;
+	/** 消息转发到多客服缓冲 */
+	TransferCustomerResponse defaultCustomerResponse;
 
 	/** 用于替换的键对值 */
 	private Properties properties;
@@ -414,7 +432,6 @@ public class ResponseManager {
 		response.setFromUserName(entity.getToUserName());
 		response.setToUserName(entity.getFromUserName());
 		ImageResponse.Image image = response.new Image();
-		image.setMediaId("f_79hUmXIreErst9BLJDe2i0HZUKPQF9kPs9VOaRm_JCbM4gsc04VuIdRRdb82dg");
 		response.setImage(image);
 		return response;
 	}
@@ -886,6 +903,35 @@ public class ResponseManager {
 	}
 
 	/**
+	 * 取得默认消息转发到多客服回复实体</br> 如果缓冲中有实体，直接返回；否则从解析字符串
+	 * @return
+	 */
+	TransferCustomerResponse getTransferCustomerResponse() {
+		if (this.defaultCustomerResponse==null) {
+			XStream xStream = new XStream();
+			xStream.alias("xml", TransferCustomerResponse.class);
+			this.defaultCustomerResponse = (TransferCustomerResponse) xStream.fromXML(DEFAULT_TRANSFER_CUSTOMER_STRING);			
+		}
+		return this.defaultCustomerResponse;
+	}
+	
+	/**
+	 * 
+	 * 取得默认消息转发到多客服回复实体，根据请求实体设置fromUser和toUser
+	 * 
+	 * @param requset
+	 *            请求实体
+	 * @return 回复实体
+	 */	
+	public TransferCustomerResponse getTransferCustomerResponse(AbstractBaseEntity entity) {
+		TransferCustomerResponse response = getTransferCustomerResponse();
+		Assert.notNull(response);
+		response.setFromUserName(entity.getToUserName());
+		response.setToUserName(entity.getFromUserName());
+		return response;		
+	}
+
+	/**
 	 * 回复实体转换为xml字符串
 	 * 
 	 * @param response
@@ -928,6 +974,11 @@ public class ResponseManager {
 			xStream.alias("item", News.class);
 			NewsResponse newsResponse = (NewsResponse) response;
 			xmlStr = xStream.toXML(newsResponse);
+			break;
+		case ResponseType.TRANSFER_CUSTOMER:
+			xStream.alias("xml", TransferCustomerResponse.class);
+			TransferCustomerResponse customerResponse = (TransferCustomerResponse)response;
+			xmlStr = xStream.toXML(customerResponse);
 			break;
 		default:
 			throw new IllegalStateException(String.format(

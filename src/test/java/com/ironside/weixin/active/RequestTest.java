@@ -4,17 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import javax.swing.ButtonModel;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.expression.spel.ast.OpPlus;
 import org.springframework.util.Assert;
 
-import com.ironside.weixin.WeixinException;
 import com.ironside.weixin.active.entity.AccessToken;
 import com.ironside.weixin.active.entity.Button;
+import com.ironside.weixin.active.entity.CustomerServerInfo;
 import com.ironside.weixin.active.entity.Group;
 import com.ironside.weixin.active.entity.Groupes;
 import com.ironside.weixin.active.entity.IpAddresses;
@@ -24,10 +21,21 @@ import com.ironside.weixin.active.entity.UserInfo;
 import com.ironside.weixin.active.entity.UserList;
 
 public class RequestTest {
+
+	private final String openid = "oraSIuB0b-zzRtyfFaHV-hH1eojs";
+	// ironside公众号
+	private final String appid = "wx2b2655fa5312a8d0";
+	private final String id = "gh_f4722dc86212";
+	private final String secret = "c7fcb3867fee2d7c91cfc5edbe18f2ac";
+	private final String aseKey = "Ltgx7XmuZm3ugsCzui1lOPV0ItB9GusSGIx5DVVHjuE";
+	// flysic-free公众号
+	/*
+	private final String appid = "wxc3c531f0f5bd5887";
+	private final String id = "flysic-free";
+	private final String secret = "6929af2c937f8d7a172e188368b3d31b";
+	private final String aseKey = "m7St9PPv8D3gLAvAWJjGGjBpwFOWLWQYcxGJye82bQh";
+	*/
 	
-	private final String appid = "wxdce9a330da720609";
-	private final String secret = "a9c33e27b711b683514f8b6404776967";
-	private final String openid = "oC2dusx6l3O4EM5fpMpuAADJrVxM";
 
 	@Before
 	public void setUp() throws Exception {
@@ -100,7 +108,7 @@ public class RequestTest {
 	// @Test
 	public void testCreateGroup() {
 		Group resultGroup = null;
-		String name = "好友";
+		String name = "flysic";
 		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
 		// 删除分组
 		UserRequest.getInstance().deleteGroup(accessToken, resultGroup);
@@ -128,14 +136,14 @@ public class RequestTest {
 		accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
 		groupes = UserRequest.getInstance().getGroupes(accessToken);
 		// 修改分组名
-		Group group = groupes.getGroupList().get(3);
+		Group group = groupes.getGroupList().get(2);
 		String name = "flysic";
 		group.setName(name);
 		UserRequest.getInstance().updateGroup(accessToken, group);
 		// 验证
 		groupes = UserRequest.getInstance().getGroupes(accessToken);
-		assertEquals(groupes.getGroupList().get(3).getId(), group.getId());
-		assertEquals(groupes.getGroupList().get(3).getName(), name);
+		assertEquals(groupes.getGroupList().get(2).getId(), group.getId());
+		assertEquals(groupes.getGroupList().get(2).getName(), name);
 	}
 	
 	@Test
@@ -145,8 +153,8 @@ public class RequestTest {
 		AccessToken accessToken = null;
 		accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
 		groupes = UserRequest.getInstance().getGroupes(accessToken);
-		Group group = groupes.getGroupList().get(3);
-		// 生产用户信息
+		Group group = groupes.getGroupList().get(2);
+		// 生成用户信息
 		UserInfo userInfo = new UserInfo();
 		userInfo.setOpenid(openid);
 		userInfo.setGroupId(group.getId());
@@ -181,6 +189,18 @@ public class RequestTest {
 		// 验证
 		Menu menu2 = MenuRequest.getInstance().queryMenu(accessToken);
 		assertEquals(menu2.getButtonList().size(), 3);
+	}
+	
+	@Test
+	public void testGetCustomerServeres() {
+		AccessToken accessToken = ActiveRequest.getInstance().getAccessToken(appid, secret);
+		CustomerServerInfo customerServerInfo = new CustomerServerInfo();
+		customerServerInfo.setCount("test1@gh_881cb5a2dc3a");
+		customerServerInfo.setNickName("客服1");
+		customerServerInfo.setPassword("96e79218965eb72c92a549dd5a330112");
+		String json = CustomerServerRequest.getInstance().addCustomerServer(accessToken, customerServerInfo);
+		json = CustomerServerRequest.getInstance().getCustomerServeres(accessToken);
+		org.junit.Assert.assertNotNull(json);
 	}
 	
 }

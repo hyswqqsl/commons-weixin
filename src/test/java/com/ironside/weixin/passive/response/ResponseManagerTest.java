@@ -13,6 +13,7 @@ import com.ironside.weixin.passive.response.entity.MusicResponse;
 import com.ironside.weixin.passive.response.entity.NewsResponse;
 import com.ironside.weixin.passive.response.entity.ResponseType;
 import com.ironside.weixin.passive.response.entity.TextResponse;
+import com.ironside.weixin.passive.response.entity.TransferCustomerResponse;
 import com.ironside.weixin.passive.response.entity.VideoResponse;
 import com.ironside.weixin.passive.response.entity.VoiceResponse;
 import com.thoughtworks.xstream.converters.reflection.AbstractReflectionConverter.UnknownFieldException;
@@ -323,5 +324,13 @@ public class ResponseManagerTest {
 		xmlStr = this.responseManager.responseToXml(newsResponse);
 		xmlStr = xmlStr.trim().replaceAll(" ", "").replaceAll("\r","").replaceAll("\n","");
 		Assert.assertEquals(xmlStr, NEWS_RESPONSE_TO_XML);
+		// *** 测试转换消息转发到多客服 ***
+		TransferCustomerResponse customerResponse = this.responseManager.getTransferCustomerResponse();
+		// 验证消息
+		Assert.assertEquals(customerResponse.getMsgType(), ResponseType.TRANSFER_CUSTOMER);
+		xmlStr = this.responseManager.responseToXml(customerResponse);
+		xmlStr = xmlStr.trim().replaceAll(" ", "").replaceAll("\r","").replaceAll("\n","");
+		// Assert.assertEquals(xmlStr, TEXT_RESPONSE_TO_XML);		
 	}
+	
 }
