@@ -6,7 +6,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * 自定义菜单-弹出系统拍照发图的事件消息实体
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年6月13日
  */
 public class EventMenuPicSysphotoEntity extends EventMenuClickEntity {

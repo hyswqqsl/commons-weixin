@@ -9,7 +9,7 @@ import org.flysic.commons.weixin.passive.response.entity.TextResponse;
 
 /**
  * 测试用的POST处理器
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年5月8日
  */
 public class MyPostProcessor extends PostProcessorAdapter {

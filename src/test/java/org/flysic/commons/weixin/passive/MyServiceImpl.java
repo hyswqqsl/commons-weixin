@@ -5,7 +5,7 @@ import org.springframework.util.Assert;
 /**
  * 模拟数据库服务
  * 
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年5月8日
  */
 public class MyServiceImpl {

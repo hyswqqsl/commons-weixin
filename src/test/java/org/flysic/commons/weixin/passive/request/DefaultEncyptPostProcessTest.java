@@ -25,7 +25,7 @@ import com.qq.weixin.mp.aes.WXBizMsgCrypt;
 
 /**
  * POST方式推送给微信公众账号的加密消息处理，具体实现消息加密、解密测试
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年5月10日
  */
 public class DefaultEncyptPostProcessTest {

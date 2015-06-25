@@ -2,7 +2,7 @@ package org.flysic.commons.weixin.passive.response.entity;
 
 /**
  * 消息转发到多客服
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年6月16日
  */
 public class TransferCustomerResponse extends AbstractBaseResponse {

@@ -9,7 +9,7 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
 
 /**
  * XML解析器,转换属性加上CDATA[[]]
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年5月7日
  */
 public class CdataXppDriver extends XppDriver {
@@ -21,7 +21,7 @@ public class CdataXppDriver extends XppDriver {
 
 	/**
 	 * 自定义输出类
-	 * @author 雪庭
+	 * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
 	 */
 	class CdataPrintWriter extends PrettyPrintWriter {
 

@@ -2,7 +2,7 @@ package org.flysic.commons.weixin.passive.request.entity;
 
 /**
  * 基础POST实体类
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年4月6日
  */
 public abstract class AbstractBaseEntity {

@@ -2,7 +2,7 @@ package org.flysic.commons.weixin.passive.request;
 
 /**
  * POST方式推送给微信公众账号的消息处理，消息分为普通消息和事件消息两种。
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @since 1.0 at 2015年4月3日
  */
 public interface IPostProcess {

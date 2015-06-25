@@ -13,7 +13,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 /**
  * json串与对象转换类
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年6月2日
  */
 public class JsonObjectConvert {

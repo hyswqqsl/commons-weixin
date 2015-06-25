@@ -33,7 +33,7 @@ import com.thoughtworks.xstream.XStream;
 /**
  * POST方式推送给微信公众账号的消息处理，具体实现消息解析、处理实体。
  * 
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @since 1.0 at 2015年4月3日
  */
 public class DefaultPostProcess extends AbstractPostProcess {

@@ -12,7 +12,7 @@ import org.springframework.util.Assert;
 /**
  * xml解析
  * 
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine at 2015年4月14日
  */
 public class XmlParse {

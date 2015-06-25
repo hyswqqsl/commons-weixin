@@ -13,7 +13,7 @@ import org.springframework.util.Assert;
  * 并且带上四个参数(signature、timestamp、nonce、echostr)，
  * 开发者通过对签名(即signature)的效验，来判断此条消息的真实性。
  * 
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年5月26日
  */
 public class DefaultGetProcess implements IGetProcess {

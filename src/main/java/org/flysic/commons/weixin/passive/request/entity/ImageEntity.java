@@ -2,7 +2,7 @@ package org.flysic.commons.weixin.passive.request.entity;
 
 /**
  * 图片消息实体
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年4月6日
  */
 public class ImageEntity extends AbstractBaseEntity {

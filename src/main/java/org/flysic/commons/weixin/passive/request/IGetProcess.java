@@ -4,7 +4,7 @@ package org.flysic.commons.weixin.passive.request;
  * 在开发者首次提交验证申请时，微信服务器将发送GET请求到填写的URL上，
  * 并且带上四个参数(signature、timestamp、nonce、echostr)，
  * 开发者通过对签名(即signature)的效验，来判断此条消息的真实性。 
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年5月26日
  */
 public interface IGetProcess {

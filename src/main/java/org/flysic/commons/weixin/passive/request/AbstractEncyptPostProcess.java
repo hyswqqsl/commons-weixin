@@ -6,7 +6,7 @@ import com.qq.weixin.mp.aes.AesException;
 
 /**
  * POST方式推送给微信公众账号的加密消息处理，定义加密解密处理逻辑。
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年4月3日
  */
 public abstract class AbstractEncyptPostProcess extends DefaultPostProcess implements IEncyptPostProcess {

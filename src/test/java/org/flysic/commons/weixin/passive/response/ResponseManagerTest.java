@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.converters.reflection.AbstractReflectionConverte
 
 /**
  * 回复实体管理测试
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年4月14日
  */
 public class ResponseManagerTest {

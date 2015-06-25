@@ -5,7 +5,7 @@ import org.flysic.commons.weixin.active.entity.CustomerServerInfo;
 
 /**
  * 与客服相关的处理
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年6月16日
  */
 public class CustomerServerRequest {

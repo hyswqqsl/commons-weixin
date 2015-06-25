@@ -27,7 +27,7 @@ import com.thoughtworks.xstream.XStream;
 /**
  * 回复实体管理
  * 
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年4月9日
  */
 public class ResponseManager {

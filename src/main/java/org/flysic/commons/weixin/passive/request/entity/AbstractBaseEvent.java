@@ -2,7 +2,7 @@ package org.flysic.commons.weixin.passive.request.entity;
 
 /**
  * 基础POST事件实体类
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine at 2015年5月7日
  */
 public abstract class AbstractBaseEvent extends AbstractBaseEntity {

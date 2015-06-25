@@ -8,7 +8,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * 开发者需要进行妥善保存。access_token的存储至少要保留512个字符空间。
  * access_token的有效期目前为2个小时，需定时刷新，重复获取将导致上次获取的access_token失效
  * 
- * @author 雪庭
+ * @author 雪庭(flysic) QQ: 119238122 微信: flysic github: https://github.com/flysic
  * @sine 1.0 at 2015年5月29日
  */
 @XStreamAlias("accessToken")
