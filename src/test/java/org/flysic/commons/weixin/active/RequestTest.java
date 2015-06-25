@@ -131,7 +131,7 @@ public class RequestTest {
 		assertTrue((groupes.getGroupList().get(1).getId()>0));
 	}
 	
-	@Test
+	// @Test
 	public void testUpdateGroup() {
 		// 先获得分组
 		Groupes groupes = null;

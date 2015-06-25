@@ -115,14 +115,11 @@ public class ResponseManager {
 	 *      <FromUserName><![CDATA[fromuser]]></FromUserName>
 	 *      <CreateTime>1399197672</CreateTime>
 	 *      <MsgType><![CDATA[transfer_customer_service]]></MsgType>
-	 *      <TransInfo>
-	 *          <KfAccount><![CDATA[test1@test]]></KfAccount>
-	 *      </TransInfo>
 	 * </xml>
 	 */
 	private final String DEFAULT_TRANSFER_CUSTOMER_STRING = "<xml><ToUserName><![CDATA[touser]]></ToUserName><FromUserName><![CDATA[fromuser]]>"
-			+ "</FromUserName><CreateTime>1399197672</CreateTime><MsgType><![CDATA[transfer_customer_service]]></MsgType><TransInfo><KfAccount>"
-			+ "<![CDATA[test1@test]]></KfAccount></TransInfo></xml>";
+			+ "</FromUserName><CreateTime>1399197672</CreateTime><MsgType><![CDATA[transfer_customer_service]]></MsgType>"
+			+ "</xml>";
 
 	/** 文本类型回复xml文件 */
 	Properties textXmlFileProperties;
