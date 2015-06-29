@@ -12,13 +12,12 @@ import org.flysic.commons.weixin.passive.response.entity.AbstractBaseResponse;
 import org.flysic.commons.weixin.passive.response.entity.ImageResponse;
 import org.flysic.commons.weixin.passive.response.entity.MusicResponse;
 import org.flysic.commons.weixin.passive.response.entity.NewsResponse;
+import org.flysic.commons.weixin.passive.response.entity.NewsResponse.News;
 import org.flysic.commons.weixin.passive.response.entity.ResponseType;
 import org.flysic.commons.weixin.passive.response.entity.TextResponse;
 import org.flysic.commons.weixin.passive.response.entity.TransferCustomerResponse;
 import org.flysic.commons.weixin.passive.response.entity.VideoResponse;
 import org.flysic.commons.weixin.passive.response.entity.VoiceResponse;
-import org.flysic.commons.weixin.passive.response.entity.ImageResponse.Image;
-import org.flysic.commons.weixin.passive.response.entity.NewsResponse.News;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -120,7 +119,22 @@ public class ResponseManager {
 	private final String DEFAULT_TRANSFER_CUSTOMER_STRING = "<xml><ToUserName><![CDATA[touser]]></ToUserName><FromUserName><![CDATA[fromuser]]>"
 			+ "</FromUserName><CreateTime>1399197672</CreateTime><MsgType><![CDATA[transfer_customer_service]]></MsgType>"
 			+ "</xml>";
-
+	
+	/**
+	 * <xml>
+	 *     <ToUserName><![CDATA[touser]]></ToUserName>
+	 *     <FromUserName><![CDATA[fromuser]]></FromUserName>
+	 *     <CreateTime>1399197672</CreateTime>
+	 *     <MsgType><![CDATA[transfer_customer_service]]></MsgType>
+	 *     <TransInfo>
+	 *         <KfAccount><![CDATA[test1@test]]></KfAccount>
+	 *     </TransInfo>
+	 * </xml>
+  	 */
+	private final String DEFAULT_TRANSFER_CUSTOMER_KFACOUNT_STRING = "<xml><ToUserName><![CDATA[touser]]></ToUserName><FromUserName><![CDATA[fromuser]]>"
+			+ "</FromUserName><CreateTime>1399197672</CreateTime><MsgType><![CDATA[transfer_customer_service]]></MsgType><TransInfo><KfAccount>"
+			+ "<![CDATA[test1@test]]></KfAccount></TransInfo></xml>";
+	
 	/** 文本类型回复xml文件 */
 	Properties textXmlFileProperties;
 	/** 图片类型回复xml文件 */
@@ -913,6 +927,19 @@ public class ResponseManager {
 	}
 	
 	/**
+	 * 取得默认消息转发到指定客服回复实体</br>
+	 * @param KfAccount 客服号
+	 * @return
+	 */
+	TransferCustomerResponse getTransferCustomerResponse(String KfAccount) {
+		XStream xStream = new XStream();
+		xStream.alias("xml", TransferCustomerResponse.class);
+		String xml = DEFAULT_TRANSFER_CUSTOMER_KFACOUNT_STRING.replaceAll("test1@test", KfAccount);
+		TransferCustomerResponse response = (TransferCustomerResponse) xStream.fromXML(xml);
+		return response;
+	}
+	
+	/**
 	 * 
 	 * 取得默认消息转发到多客服回复实体，根据请求实体设置fromUser和toUser
 	 * 
@@ -926,6 +953,21 @@ public class ResponseManager {
 		response.setFromUserName(entity.getToUserName());
 		response.setToUserName(entity.getFromUserName());
 		return response;		
+	}
+	
+	/**
+	 * 取得默认消息转发到指定客服回复实体，根据请求实体设置fromUser和toUser
+	 * @param entity
+	 * @param KfAccount
+	 * @return
+	 */
+	public TransferCustomerResponse getTransferCustomerResponse(AbstractBaseEntity entity, String KfAccount) {
+		StringUtils.hasText(KfAccount);
+		TransferCustomerResponse response = getTransferCustomerResponse(KfAccount);
+		Assert.notNull(response);
+		response.setFromUserName(entity.getToUserName());
+		response.setToUserName(entity.getFromUserName());
+		return response;
 	}
 
 	/**

@@ -331,6 +331,12 @@ public class ResponseManagerTest {
 		xmlStr = this.responseManager.responseToXml(customerResponse);
 		xmlStr = xmlStr.trim().replaceAll(" ", "").replaceAll("\r","").replaceAll("\n","");
 		// Assert.assertEquals(xmlStr, TEXT_RESPONSE_TO_XML);		
+		// *** 测试转换消息转发到指定客服 ***
+		customerResponse = this.responseManager.getTransferCustomerResponse("001@ironside431");
+		// 验证消息
+		Assert.assertEquals(customerResponse.getMsgType(), ResponseType.TRANSFER_CUSTOMER);
+		xmlStr = this.responseManager.responseToXml(customerResponse);
+		xmlStr = xmlStr.trim().replaceAll(" ", "").replaceAll("\r","").replaceAll("\n","");
 	}
 	
 }
